@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="http://jelix.org/ns/module/1.0">
+    <info id="mapBuilder3liz.com" name="mapBuilder" createdate="2018-10-03">
+        <version date="2018-10-03">0.1pre</version>
+        <label lang="en_US">mapBuilder</label>
+        <description lang="en_US" />
+        <license URL="">All rights reserved</license>
+        <copyright>2011-2018 3liz</copyright>
+        <creator name="Nicolas Boisteault" email="nboisteault@3liz.com" />
+        <!--<contributor name="hisname" email="hisemail@yoursite.undefined"  since="" role=""/>-->
+        <homepageURL>https://3liz.com</homepageURL>
+    </info>
+    <dependencies>
+        <jelix minversion="1.6.18" maxversion="1.6.*"/>
+    </dependencies>
+</module>
