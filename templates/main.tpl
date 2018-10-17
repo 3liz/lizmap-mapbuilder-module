@@ -1,3 +1,4 @@
+<h2>Catalogue de couches</h2>
 <aside id="layerSelection">
   <ul>
   {foreach $nestedTree as $key => $repository}
@@ -14,6 +15,11 @@
   </ul>
 </aside>
 
+<h2>Couches sélectionnées</h2>
+<aside id="layerSelected">
+  <ul></ul>
+</aside>
+
 
 <div id="map" class="map"></div>
 <script type="text/javascript">
@@ -26,8 +32,8 @@
           })
         ],
         view: new ol.View({
-          center: ol.proj.fromLonLat([37.41, 8.82]),
-          zoom: 4
+          center: [430645.4279553129, 5404295.196391977],
+          zoom: 13
         })
       });
 
@@ -41,7 +47,7 @@
           });
           return myArray;
         }
-        var myObj = {title: layer.Title};
+        var myObj = {title: layer.Title, checkbox: true, repository: "repo"};
         myArray.push(myObj);
         if(layer.hasOwnProperty('Layer')){
           myObj.folder = true;
@@ -51,6 +57,24 @@
       }
 
       $('#layerSelection').fancytree({
+        selectMode: 3,
+          select: function(event, data) {
+            var node = data.node;
+            var parentList = node.getParentList();
+            // We get repositoryId and projectId from parents node in the tree
+            var repositoryId = parentList[1].data.repository;
+            var projectId = parentList[1].data.project;
+
+            if(node.selected){
+              var layer = new ol.layer.Image({
+                        source: new ol.source.ImageWMS({
+                          url: '/index.php/lizmap/service/?repository='+repositoryId+'&project='+projectId,
+                          params: {'LAYERS': node.title}
+                        })
+                      });
+              map.addLayer(layer);
+            }
+          },
          lazyLoad: function(event, data){
           //https://github.com/mar10/fancytree/wiki/TutorialLoadData
           var repositoryId = data.node.data.repository;
