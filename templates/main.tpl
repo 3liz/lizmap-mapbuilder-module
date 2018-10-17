@@ -61,6 +61,9 @@
             layerTree.push({title: layer.getProperties().title, checkbox: true});
           });
 
+        // Reverse to show top layers at top of the tree
+        layerTree.reverse();
+
         if($.ui.fancytree.getTree("#layerSelected") === null){
           $('#layerSelected').fancytree({
               source: layerTree,
