@@ -63,7 +63,31 @@
 
         if($.ui.fancytree.getTree("#layerSelected") === null){
           $('#layerSelected').fancytree({
-              source: layerTree
+              source: layerTree,
+              extensions: ["dnd5"],
+              dnd5: {
+                dragStart: function(node, data) {
+                  return true;
+                },
+                dragDrop: function(node, data) {
+                  var transfer = data.dataTransfer;
+
+                  node.debug("drop", data);
+
+                  if( data.otherNode ) {
+                    // Drop another Fancytree node from same frame
+                    // (maybe from another tree however)
+                    var sameTree = (data.otherNode.tree === data.tree);
+
+                    data.otherNode.moveTo(node, data.hitMode);
+                  }
+                },
+                dragEnter: function(node, data) {
+                  // Don't allow dropping *over* a node (would create a child). Just
+                  // allow changing the order:
+                  return ["before", "after"];
+                }
+              }
             });
         }else{
           $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
