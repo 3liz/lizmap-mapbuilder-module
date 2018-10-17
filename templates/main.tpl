@@ -28,6 +28,7 @@
         target: 'map',
         layers: [
           new ol.layer.Tile({
+            title: "OSM",
             source: new ol.source.OSM()
           })
         ],
@@ -37,8 +38,6 @@
         })
       });
 
-    $(function(){
-
       function buildLayerTree(layer){
         var myArray = [];
         if(Array.isArray(layer)){
@@ -47,7 +46,7 @@
           });
           return myArray;
         }
-        var myObj = {title: layer.Title, checkbox: true, repository: "repo"};
+        var myObj = {title: layer.Title, checkbox: true};
         myArray.push(myObj);
         if(layer.hasOwnProperty('Layer')){
           myObj.folder = true;
@@ -55,6 +54,23 @@
         }
         return myArray;
       }
+
+      function refreshLayerSelected(){
+        var layerTree = [];
+        map.getLayers().forEach(function(layer) {
+            layerTree.push({title: layer.getProperties().title, checkbox: true});
+          });
+
+        if($.ui.fancytree.getTree("#layerSelected") === null){
+          $('#layerSelected').fancytree({
+              source: layerTree
+            });
+        }else{
+          $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
+        }
+      }
+
+    $(function(){
 
       $('#layerSelection').fancytree({
         selectMode: 3,
@@ -67,12 +83,16 @@
 
             if(node.selected){
               var layer = new ol.layer.Image({
+                        title: node.title,
+                        repository: repositoryId,
+                        projectId: projectId,
                         source: new ol.source.ImageWMS({
                           url: '/index.php/lizmap/service/?repository='+repositoryId+'&project='+projectId,
                           params: {'LAYERS': node.title}
                         })
                       });
               map.addLayer(layer);
+              refreshLayerSelected();
             }
           },
          lazyLoad: function(event, data){
