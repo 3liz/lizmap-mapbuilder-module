@@ -91,5 +91,33 @@ $(function() {
         }
     });
 
-    $('#layerSelected').fancytree();
+    $('#layerSelected').fancytree({
+        extensions: ["dnd5"],
+        dnd5: {
+            dragStart: function(node, data) {
+                return true;
+            },
+            dragDrop: function(node, data) {
+                if (data.otherNode) {
+                    data.otherNode.moveTo(node, data.hitMode);
+                }
+                // Parcourt de la liste des nodes pour mettre à jour le Z-index des couches
+                var allNodes = node.parent.children;
+
+                for (var i = 0; i < allNodes.length; i++) {
+                    var layers = map.getLayers().getArray();
+                    for (var j = 0; j < layers.length; j++) {
+                        if (allNodes[i].data.ol_uid == layers[j].ol_uid) {
+                            layers[j].setZIndex(allNodes.length - i);
+                        }
+                    }
+                }
+            },
+            dragEnter: function(node, data) {
+                // Don't allow dropping *over* a node (would create a child). Just
+                // allow changing the order:
+                return ["before", "after"];
+            }
+        }
+    });
 });
