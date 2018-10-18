@@ -12,13 +12,7 @@
 class mapBuilderModuleInstaller extends jInstallerModule {
 
     function install() {
-        //if ($this->firstDbExec())
-        //    $this->execSQLScript('sql/install');
-
-        /*if ($this->firstExec('acl2')) {
-            jAcl2DbManager::addSubject('my.subject', 'mapBuilder~acl.my.subject', 'subject.group.id');
-            jAcl2DbManager::addRight('admins', 'my.subject'); // for admin group
-        }
-        */
+    	// Copy this CSS
+        $this->copyDirectoryContent('../www/css/skin-win8', jApp::wwwPath('mapBuilder/skin-win8'));
     }
 }
