@@ -5,16 +5,20 @@
         </col>
         <col width="70px">
         </col>
+        <col>
+        </col>
     </colgroup>
     <thead>
         <tr>
             <th>Couche</th>
             <th>Style</th>
+            <th>Ajout</th>
         </tr>
     </thead>
     <!-- Otionally define a row that serves as template, when new nodes are created: -->
     <tbody>
         <tr>
+            <td></td>
             <td></td>
             <td></td>
         </tr>

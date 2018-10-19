@@ -8,7 +8,12 @@ $(function() {
             });
             return myArray;
         }
-        var myObj = { title: layer.Title, checkbox: true, style: layer.Style};
+
+        var myObj = { title: layer.Title};
+        if(layer.hasOwnProperty('Style')){
+          myObj.style = layer.Style;
+        }
+
         myArray.push(myObj);
         if (layer.hasOwnProperty('Layer')) {
             myObj.folder = true;
@@ -20,7 +25,7 @@ $(function() {
     function refreshLayerSelected() {
         var layerTree = [];
         map.getLayers().forEach(function(layer) {
-            layerTree.push({ title: layer.getProperties().title, checkbox: true, ol_uid: layer.ol_uid });
+            layerTree.push({ title: layer.getProperties().title, ol_uid: layer.ol_uid });
         });
 
         // Reverse to show top layers at top of the tree
@@ -105,6 +110,11 @@ $(function() {
               styleOption += "<option>"+style.Name+"</option>";
             });
             $tdList.eq(1).html("<select>"+styleOption+"</select>");
+          }
+          // Add button for layers (level 1 => repositories, 2 => projects)
+          // TODO : ajouter fonction d'ajout de la couche sur un click d'un bouton
+          if(node.getLevel() > 2){
+            $tdList.eq(2).html("<button>+</button>");
           }
         }
     });
