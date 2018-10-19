@@ -8,7 +8,7 @@ $(function() {
             });
             return myArray;
         }
-        var myObj = { title: layer.Title, checkbox: true };
+        var myObj = { title: layer.Title, checkbox: true, style: layer.Style};
         myArray.push(myObj);
         if (layer.hasOwnProperty('Layer')) {
             myObj.folder = true;
@@ -94,6 +94,18 @@ $(function() {
                     dfd.resolve(buildLayerTree(node.Layer.Layer));
                 }
             });
+        },
+        renderColumns: function(event, data) {
+          var node = data.node,
+          $tdList = $(node.tr).find(">td");
+          // Style list
+          if(node.data.hasOwnProperty('style')){
+            var styleOption = "";
+            node.data.style.forEach(function(style) {
+              styleOption += "<option>"+style.Name+"</option>";
+            });
+            $tdList.eq(1).html("<select>"+styleOption+"</select>");
+          }
         }
     });
 
