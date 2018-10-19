@@ -1,35 +1,35 @@
 $(function() {
 
-  function buildLayerTree(layer) {
-      var myArray = [];
-      if (Array.isArray(layer)) {
-          layer.forEach(function(sublayer) {
-              myArray = myArray.concat(buildLayerTree(sublayer));
-          });
-          return myArray;
-      }
-      var myObj = { title: layer.Title, checkbox: true };
-      myArray.push(myObj);
-      if (layer.hasOwnProperty('Layer')) {
-          myObj.folder = true;
-          myObj.children = buildLayerTree(layer.Layer);
-      }
-      return myArray;
-  }
+    function buildLayerTree(layer) {
+        var myArray = [];
+        if (Array.isArray(layer)) {
+            layer.forEach(function(sublayer) {
+                myArray = myArray.concat(buildLayerTree(sublayer));
+            });
+            return myArray;
+        }
+        var myObj = { title: layer.Title, checkbox: true };
+        myArray.push(myObj);
+        if (layer.hasOwnProperty('Layer')) {
+            myObj.folder = true;
+            myObj.children = buildLayerTree(layer.Layer);
+        }
+        return myArray;
+    }
 
-  function refreshLayerSelected() {
-      var layerTree = [];
-      map.getLayers().forEach(function(layer) {
-          layerTree.push({ title: layer.getProperties().title, checkbox: true, ol_uid: layer.ol_uid });
-      });
+    function refreshLayerSelected() {
+        var layerTree = [];
+        map.getLayers().forEach(function(layer) {
+            layerTree.push({ title: layer.getProperties().title, checkbox: true, ol_uid: layer.ol_uid });
+        });
 
-      // Reverse to show top layers at top of the tree
-      layerTree.reverse();
+        // Reverse to show top layers at top of the tree
+        layerTree.reverse();
 
-      if ($.ui.fancytree.getTree("#layerSelected") !== null) {
-          $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
-      }
-  }
+        if ($.ui.fancytree.getTree("#layerSelected") !== null) {
+            $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
+        }
+    }
 
     var map = new ol.Map({
         target: 'map',
@@ -47,6 +47,7 @@ $(function() {
 
     $('#layerSelection').fancytree({
         selectMode: 3,
+        source: mapBuilder.layerSelectionTree,
         select: function(event, data) {
             var node = data.node;
             var parentList = node.getParentList();

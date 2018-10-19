@@ -13,10 +13,7 @@ class defaultCtrl extends jController {
     *
     */
     function index() {
-    	// TODO : put code in class
-    	// TODO : deal with ACL
-    	// TODO? : create tree in JSON then load it with fancytree
-    	
+
         $rep = $this->getResponse('html', true);// true désactive le template général
         $rep->title = "Map Builder";
         // Assets
@@ -30,28 +27,36 @@ class defaultCtrl extends jController {
         $rep->addJSLinkModule('mapBuilder','js/jquery.fancytree-all-deps.min.js');
         $rep->addJSLinkModule('mapBuilder','js/main.js');
 
-        $rep->bodyTpl = 'mapBuilder~main';
-
-        $services = lizmap::getServices();
-
-        $repository = lizmap::getRepository($services->defaultRepository);
-
         $nestedTree = array();
         
         $repositories = lizmap::getRepositoryList();
 
+        // Build repository + project tree for FancyTree 
         foreach ($repositories as $key => $repositoryName) {
         	$repository = lizmap::getRepository($repositoryName);
 
-        	$nestedTree[$repositoryName]['label'] = $repository->getData('label');
         	$projects = $repository->getProjects();
 
+        	$projectArray = array();
         	foreach ($projects as $project) {
-        		$nestedTree[$repositoryName]['projects'][$project->getKey()] = $project->getData('title');
+        		$projectArray[] = [
+        			"title" => $project->getData('title'),
+        			"lazy" => true,
+        			"repository" => $repositoryName,
+        			"project" => $project->getKey()
+        		];
         	}
+
+        	$nestedTree[] = [
+        		"title" => $repository->getData('label'),
+        		"children" => $projectArray
+        	];
         }
 
-        $rep->body->assign('nestedTree', $nestedTree);
+        // Write tree as JSON
+        $rep->addJSCode('var mapBuilder = {}; mapBuilder.layerSelectionTree = '.json_encode($nestedTree).';');
+
+        $rep->bodyTpl = 'mapBuilder~main';
 
         return $rep;
     }
