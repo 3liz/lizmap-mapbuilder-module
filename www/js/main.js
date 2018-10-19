@@ -48,6 +48,11 @@ $(function() {
     $('#layerSelection').fancytree({
         selectMode: 3,
         source: mapBuilder.layerSelectionTree,
+        extensions: ["table"],
+        table: {
+          indentation: 20,      // indent 20px per node level
+          nodeColumnIdx: 0     // render the node title into the first column
+        },
         select: function(event, data) {
             var node = data.node;
             var parentList = node.getParentList();
