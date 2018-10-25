@@ -1,3 +1,5 @@
+var map = null;
+
 $(function() {
 
     function buildLayerTree(layer) {
@@ -36,7 +38,7 @@ $(function() {
         }
     }
 
-    var map = new ol.Map({
+    map = new ol.Map({
         target: 'map',
         // layers: [
         //   new ol.layer.Tile({
@@ -46,7 +48,7 @@ $(function() {
         // ],
         view: new ol.View({
             center: [430645.4279553129, 5404295.196391977],
-            zoom: 13
+            zoom: 12
         })
     });
 
@@ -109,14 +111,42 @@ $(function() {
             node.data.style.forEach(function(style) {
               styleOption += "<option>"+style.Name+"</option>";
             });
-            $tdList.eq(1).html("<select>"+styleOption+"</select>");
+            $tdList.eq(1).html("<select class='layerStyles'>"+styleOption+"</select>");
           }
           // Add button for layers (level 1 => repositories, 2 => projects)
-          // TODO : ajouter fonction d'ajout de la couche sur un click d'un bouton
           if(node.getLevel() > 2){
-            $tdList.eq(2).html("<button>+</button>");
+            $tdList.eq(2).html("<button class='addLayerButton'>+</button>");
           }
         }
+    });
+
+    /* Handle custom addLayerButton clicks (http://wwwendt.de/tech/fancytree/demo/#sample-ext-table.html) */
+    $('#layerSelection').on("click", ".addLayerButton", function(e){
+      var node = $.ui.fancytree.getNode(e);
+
+      var parentList = node.getParentList();
+      // We get repositoryId and projectId from parents node in the tree
+      var repositoryId = parentList[1].data.repository;
+      var projectId = parentList[1].data.project;
+
+      var layer = new ol.layer.Image({
+          title: node.title,
+          repositoryId: repositoryId,
+          projectId: projectId,
+          source: new ol.source.ImageWMS({
+              url: '/index.php/lizmap/service/?repository=' + repositoryId + '&project=' + projectId,
+              params: {
+                'LAYERS': node.title,
+                'STYLES': $(node.tr).find(">td .layerStyles :selected").text()
+              }
+          })
+      });
+
+      map.addLayer(layer);
+      refreshLayerSelected();
+      
+
+      e.stopPropagation();  // prevent fancytree activate for this row
     });
 
     $('#layerSelected').fancytree({
