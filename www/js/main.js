@@ -37,7 +37,7 @@ $(function() {
         // Reverse to show top layers at top of the tree
         layerTree.reverse();
         // Remove empty values (TODO: à améliorer)
-        layerTree = layerTree = layerTree.filter(n => n);
+        layerTree = layerTree.filter(n => n);
 
         if ($.ui.fancytree.getTree("#layerSelected") !== null) {
             $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
@@ -155,7 +155,6 @@ $(function() {
 
       map.addLayer(newLayer);
       refreshLayerSelected();
-      
       e.stopPropagation();  // prevent fancytree activate for this row
     });
 
@@ -209,7 +208,6 @@ $(function() {
         }
       }
       refreshLayerSelected();
-      
       e.stopPropagation();  // prevent fancytree activate for this row
     });
 });
