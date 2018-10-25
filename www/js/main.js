@@ -27,15 +27,17 @@ $(function() {
     function refreshLayerSelected() {
         var layerTree = [];
         map.getLayers().forEach(function(layer) {
-            layerTree.push({
+          layerTree[layer.getZIndex()] = {
               title: layer.getProperties().title,
               styles: layer.getSource().getParams().STYLES,
               ol_uid: layer.ol_uid
-            });
+            };
         });
 
         // Reverse to show top layers at top of the tree
         layerTree.reverse();
+        // Remove empty values (TODO: à améliorer)
+        layerTree = layerTree = layerTree.filter(n => n);
 
         if ($.ui.fancytree.getTree("#layerSelected") !== null) {
             $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
@@ -123,7 +125,7 @@ $(function() {
       var repositoryId = parentList[1].data.repository;
       var projectId = parentList[1].data.project;
 
-      var layer = new ol.layer.Image({
+      var newLayer = new ol.layer.Image({
           title: node.title,
           repositoryId: repositoryId,
           projectId: projectId,
@@ -136,7 +138,22 @@ $(function() {
           })
       });
 
-      map.addLayer(layer);
+      var maxZindex = -1;
+      // Get maximum Z-index to put new layer at top of the stack
+      map.getLayers().forEach(function(layer) {
+        var zIndex = layer.getZIndex();
+        if(zIndex !== undefined && zIndex > maxZindex){
+          maxZindex = zIndex;
+        }
+      });
+
+      if(maxZindex > -1){
+        newLayer.setZIndex(maxZindex + 1);
+      }else{
+        newLayer.setZIndex(0);
+      }
+
+      map.addLayer(newLayer);
       refreshLayerSelected();
       
       e.stopPropagation();  // prevent fancytree activate for this row
@@ -177,6 +194,22 @@ $(function() {
         renderColumns: function(event, data) {
           var node = data.node;
           $(node.tr).find(".layerSelectedStyles").text(node.data.styles);
+
+          $(node.tr).find(">td").eq(2).html("<button class='deleteLayerButton'>-</button>");
         }
+    });
+
+    $('#layerSelected').on("click", ".deleteLayerButton", function(e){
+      var node = $.ui.fancytree.getNode(e);
+
+      var layers = map.getLayers().getArray();
+      for (var i = 0; i < layers.length; i++) {
+        if(layers[i].ol_uid == node.data.ol_uid){
+          map.removeLayer(layers[i]);
+        }
+      }
+      refreshLayerSelected();
+      
+      e.stopPropagation();  // prevent fancytree activate for this row
     });
 });
