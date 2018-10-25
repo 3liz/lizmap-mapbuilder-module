@@ -59,11 +59,22 @@ $(function() {
     $('#layerSelection').fancytree({
         selectMode: 3,
         source: mapBuilder.layerSelectionTree,
-        extensions: ["table"],
+        extensions: ["table", "glyph"],
         table: {
           indentation: 20,      // indent 20px per node level
           nodeColumnIdx: 0     // render the node title into the first column
         },
+        glyph: {
+            // The preset defines defaults for all supported icon types.
+            // It also defines a common class name that is prepended (in this case 'fa ')
+            preset: "awesome5",
+            map: {
+              doc: "fas fa-globe-africa",
+              docOpen: "fas fa-globe-africa",
+              folder: "fas fa-folder",
+              folderOpen: "fas fa-folder-open"
+            }
+          },
         lazyLoad: function(event, data) {
             //https://github.com/mar10/fancytree/wiki/TutorialLoadData
             var repositoryId = data.node.data.repository;

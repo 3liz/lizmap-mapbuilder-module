@@ -18,13 +18,18 @@ class defaultCtrl extends jController {
         $rep->title = "Map Builder";
         // Assets
         $rep->addCSSLinkModule('mapBuilder','css/ol-5.2.0.css');
-        $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/skin-win8/ui.fancytree.css');
+        $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/fontawesome-free-5.4.1-web/css/all.css');
+        $rep->addCSSLink('https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css');
+        $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/skin-awesome/ui.fancytree.css');
 
         $rep->addStyle('.map', 'height: 400px;width: 100%;');
 
         $rep->addJSLinkModule('mapBuilder','js/ol-5.2.0.min.js');
         $rep->addJSLinkModule('mapBuilder','js/jquery-3.3.1.min.js');
         $rep->addJSLinkModule('mapBuilder','js/jquery.fancytree-all-deps.min.js');
+
+        $rep->addJSLink('https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js');
+
         $rep->addJSLinkModule('mapBuilder','js/main.js');
 
         $nestedTree = array();
@@ -41,6 +46,7 @@ class defaultCtrl extends jController {
         	foreach ($projects as $project) {
         		$projectArray[] = [
         			"title" => $project->getData('title'),
+        			"folder" => true,
         			"lazy" => true,
         			"repository" => $repositoryName,
         			"project" => $project->getKey()
@@ -49,6 +55,7 @@ class defaultCtrl extends jController {
 
         	$nestedTree[] = [
         		"title" => $repository->getData('label'),
+        		"folder" => true,
         		"children" => $projectArray
         	];
         }
