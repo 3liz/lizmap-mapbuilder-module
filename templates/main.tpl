@@ -25,7 +25,26 @@
     </tbody>
 </table>
 <h2>Couches sélectionnées</h2>
-<aside id="layerSelected">
-    <ul></ul>
-</aside>
+<table id="layerSelected">
+    <colgroup>
+        <col>
+        </col>
+        <col width="70px">
+        </col>
+    </colgroup>
+    <thead>
+        <tr>
+            <th>Couche</th>
+            <th>Style</th>
+        </tr>
+    </thead>
+    <!-- Otionally define a row that serves as template, when new nodes are created: -->
+    <tbody>
+        <tr>
+            <td></td>
+            <td class="layerSelectedStyles"></td>
+        </tr>
+    </tbody>
+</table>
+
 <div id="map" class="map"></div>

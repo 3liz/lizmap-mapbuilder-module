@@ -27,7 +27,11 @@ $(function() {
     function refreshLayerSelected() {
         var layerTree = [];
         map.getLayers().forEach(function(layer) {
-            layerTree.push({ title: layer.getProperties().title, ol_uid: layer.ol_uid });
+            layerTree.push({
+              title: layer.getProperties().title,
+              styles: layer.getSource().getParams().STYLES,
+              ol_uid: layer.ol_uid
+            });
         });
 
         // Reverse to show top layers at top of the tree
@@ -59,27 +63,6 @@ $(function() {
         table: {
           indentation: 20,      // indent 20px per node level
           nodeColumnIdx: 0     // render the node title into the first column
-        },
-        select: function(event, data) {
-            var node = data.node;
-            var parentList = node.getParentList();
-            // We get repositoryId and projectId from parents node in the tree
-            var repositoryId = parentList[1].data.repository;
-            var projectId = parentList[1].data.project;
-
-            if (node.selected) {
-                var layer = new ol.layer.Image({
-                    title: node.title,
-                    repositoryId: repositoryId,
-                    projectId: projectId,
-                    source: new ol.source.ImageWMS({
-                        url: '/index.php/lizmap/service/?repository=' + repositoryId + '&project=' + projectId,
-                        params: { 'LAYERS': node.title }
-                    })
-                });
-                map.addLayer(layer);
-                refreshLayerSelected();
-            }
         },
         lazyLoad: function(event, data) {
             //https://github.com/mar10/fancytree/wiki/TutorialLoadData
@@ -145,12 +128,15 @@ $(function() {
       map.addLayer(layer);
       refreshLayerSelected();
       
-
       e.stopPropagation();  // prevent fancytree activate for this row
     });
 
     $('#layerSelected').fancytree({
-        extensions: ["dnd5"],
+        extensions: ["dnd5", "table"],
+        table: {
+          indentation: 20,      // indent 20px per node level
+          nodeColumnIdx: 0     // render the node title into the first column
+        },
         dnd5: {
             dragStart: function(node, data) {
                 return true;
@@ -176,6 +162,10 @@ $(function() {
                 // allow changing the order:
                 return ["before", "after"];
             }
+        },
+        renderColumns: function(event, data) {
+          var node = data.node;
+          $(node.tr).find(".layerSelectedStyles").text(node.data.styles);
         }
     });
 });
