@@ -18,6 +18,8 @@ class defaultCtrl extends jController {
 
         $title = "Map Builder";
         $rep->title = $title;
+
+        $rep->metaViewport = 'initial-scale=1.0, user-scalable=no, width=device-width';
         // Assets
         $rep->addCSSLink(jApp::urlBasePath().'css/main.css');
         $rep->addCSSLinkModule('mapBuilder','css/ol-5.2.0.css');
@@ -26,7 +28,7 @@ class defaultCtrl extends jController {
         $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/skin-awesome/ui.fancytree.css');
         $rep->addCSSLinkModule('mapBuilder','css/main.css');
 
-        $rep->addStyle('.map', 'height: 400px;width: 100%;');
+        $rep->addStyle('html, body, .map', 'height: 100%;width: 100%;margin: 0;padding: 0');
 
         $rep->addJSLinkModule('mapBuilder','js/ol-5.2.0.min.js');
         $rep->addJSLinkModule('mapBuilder','js/jquery-3.3.1.min.js');
@@ -63,7 +65,7 @@ class defaultCtrl extends jController {
         }
 
         // Write tree as JSON
-        $rep->addJSCode('var mapBuilder = {}; mapBuilder.layerSelectionTree = '.json_encode($nestedTree).';');
+        $rep->addJSCode('var mapBuilder = {}; mapBuilder.layerStoreTree = '.json_encode($nestedTree).';');
 
         $rep->body->assign('repositoryLabel', $title);
         $rep->body->assign('isConnected', jAuth::isConnected());

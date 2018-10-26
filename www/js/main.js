@@ -27,11 +27,14 @@ $(function() {
     function refreshLayerSelected() {
         var layerTree = [];
         map.getLayers().forEach(function(layer) {
-          layerTree[layer.getZIndex()] = {
-              title: layer.getProperties().title,
-              styles: layer.getSource().getParams().STYLES,
-              ol_uid: layer.ol_uid
-            };
+          // Don't add OSM
+          if(layer.values_.title != "OSM"){
+            layerTree[layer.getZIndex()] = {
+                title: layer.getProperties().title,
+                styles: layer.getSource().getParams().STYLES,
+                ol_uid: layer.ol_uid
+              };
+          }
         });
 
         // Reverse to show top layers at top of the tree
@@ -46,21 +49,21 @@ $(function() {
 
     map = new ol.Map({
         target: 'map',
-        // layers: [
-        //   new ol.layer.Tile({
-        //     title: "OSM",
-        //     source: new ol.source.OSM()
-        //   })
-        // ],
+        layers: [
+          new ol.layer.Tile({
+            title: "OSM",
+            source: new ol.source.OSM()
+          })
+        ],
         view: new ol.View({
             center: [430645.4279553129, 5404295.196391977],
             zoom: 12
         })
     });
 
-    $('#layerSelection').fancytree({
+    $('#layerStore').fancytree({
         selectMode: 3,
-        source: mapBuilder.layerSelectionTree,
+        source: mapBuilder.layerStoreTree,
         extensions: ["table", "glyph"],
         table: {
           indentation: 20,      // indent 20px per node level
@@ -117,7 +120,7 @@ $(function() {
     });
 
     /* Handle custom addLayerButton clicks (http://wwwendt.de/tech/fancytree/demo/#sample-ext-table.html) */
-    $('#layerSelection').on("click", ".addLayerButton", function(e){
+    $('#layerStore').on("click", ".addLayerButton", function(e){
       var node = $.ui.fancytree.getNode(e);
 
       var parentList = node.getParentList();

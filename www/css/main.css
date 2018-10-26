@@ -1,2 +1,8 @@
-#headermenu {padding:0}
+#headermenu {padding:0;top:40px;}
 #auth {width: 100%}
+
+#mapBuilder{
+	margin-top: 75px;
+	position: absolute;
+	z-index: 1;
+}
