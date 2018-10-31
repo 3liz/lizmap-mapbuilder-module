@@ -2,26 +2,39 @@ var map = null;
 
 $(function() {
 
-    function buildLayerTree(layer) {
-        var myArray = [];
-        if (Array.isArray(layer)) {
-            layer.forEach(function(sublayer) {
-                myArray = myArray.concat(buildLayerTree(sublayer));
-            });
-            return myArray;
-        }
+    function buildLayerTree(layer, cfg) {
+      // Filter layers in Hidden directory
+      if(layer.hasOwnProperty('Title') && layer.Title.toLowerCase() == 'hidden'){
+        return;
+      }
+      // Filter layers not visible in legend or without geometry
+      if(layer.hasOwnProperty('Name') && cfg.layers.hasOwnProperty(layer.Name)){
+        if(cfg.layers[layer.Name].displayInLegend == 'False' || cfg.layers[layer.Name].geometryType == 'none')
+        return;
+      }
 
-        var myObj = { title: layer.Title};
-        if(layer.hasOwnProperty('Style')){
-          myObj.style = layer.Style;
-        }
+      var myArray = [];
+      if (Array.isArray(layer)) {
+          layer.forEach(function(sublayer) {
+            var layers = buildLayerTree(sublayer, cfg);
+            if(layers !== undefined){
+              myArray = myArray.concat(layers);
+            }
+          });
+          return myArray;
+      }
 
-        myArray.push(myObj);
-        if (layer.hasOwnProperty('Layer')) {
-            myObj.folder = true;
-            myObj.children = buildLayerTree(layer.Layer);
-        }
-        return myArray;
+      var myObj = { title: cfg.layers[layer.Name].title, name : layer.Name};
+      if(layer.hasOwnProperty('Style')){
+        myObj.style = layer.Style;
+      }
+
+      myArray.push(myObj);
+      if (layer.hasOwnProperty('Layer')) {
+          myObj.folder = true;
+          myObj.children = buildLayerTree(layer.Layer, cfg);
+      }
+      return myArray;
     }
 
     function refreshLayerSelected() {
@@ -84,21 +97,32 @@ $(function() {
             //https://github.com/mar10/fancytree/wiki/TutorialLoadData
             var repositoryId = data.node.data.repository;
             var projectId = data.node.data.project;
-            var url = "/index.php/lizmap/service/?repository=" + repositoryId + "&project=" + projectId + "&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
+            var url = lizUrls.wms+"?repository=" + repositoryId + "&project=" + projectId + "&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
             var parser = new ol.format.WMSCapabilities();
 
-            var dfd = new $.Deferred();
-            data.result = dfd.promise();
+            const promises = [
+              new Promise(resolve => 
+                $.get(url, function(capabilities) {
+                    var result = parser.read(capabilities);
 
-            $.get(url, function(capabilities) {
-                var result = parser.read(capabilities);
+                    var node = result.Capability;
 
-                var node = result.Capability;
+                    // First layer is in fact project
+                    if (node.hasOwnProperty('Layer')) {
+                        resolve(node.Layer.Layer);
+                    }
+                })
+              ),
+              new Promise(resolve => 
+                $.getJSON(lizUrls.config,{"repository":repositoryId,"project":projectId},function(cfgData) {
+                  resolve(cfgData);
+                })
+              )
+            ];
 
-                // First layer is in fact project
-                if (node.hasOwnProperty('Layer')) {
-                    dfd.resolve(buildLayerTree(node.Layer.Layer));
-                }
+            data.result = Promise.all(promises).then(results => {
+              var tt = buildLayerTree(results[0], results[1]);
+              return tt;
             });
         },
         renderColumns: function(event, data) {
@@ -135,7 +159,7 @@ $(function() {
           source: new ol.source.ImageWMS({
               url: '/index.php/lizmap/service/?repository=' + repositoryId + '&project=' + projectId,
               params: {
-                'LAYERS': node.title,
+                'LAYERS': node.data.name,
                 'STYLES': $(node.tr).find(">td .layerStyles :selected").text()
               }
           })

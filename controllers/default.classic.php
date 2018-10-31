@@ -30,11 +30,20 @@ class defaultCtrl extends jController {
 
         $rep->addStyle('html, body, .map', 'height: 100%;width: 100%;margin: 0;padding: 0');
 
+        $rep->addJSLinkModule('mapBuilder','js/es6-promise.auto.min.js');
         $rep->addJSLinkModule('mapBuilder','js/ol-5.2.0.min.js');
         $rep->addJSLinkModule('mapBuilder','js/jquery-3.3.1.min.js');
         $rep->addJSLinkModule('mapBuilder','js/jquery.fancytree-all-deps.min.js');
         $rep->addJSLinkModule('mapBuilder','js/bootstrap.min.js');
         $rep->addJSLinkModule('mapBuilder','js/main.js');
+
+        // Pass some configuration options to the web page through javascript var
+        $lizUrls = array(
+          "config" => jUrl::get('lizmap~service:getProjectConfig'),
+          "wms" => jUrl::get('lizmap~service:index')
+        );
+
+        $rep->addJSCode("var lizUrls = ".json_encode($lizUrls).";");
 
         $nestedTree = array();
         
@@ -65,7 +74,7 @@ class defaultCtrl extends jController {
         }
 
         // Write tree as JSON
-        $rep->addJSCode('var mapBuilder = {}; mapBuilder.layerStoreTree = '.json_encode($nestedTree).';');
+        $rep->addJSCode('var mapBuilder = {"layerStoreTree": '.json_encode($nestedTree).'}');
 
         $rep->body->assign('repositoryLabel', $title);
         $rep->body->assign('isConnected', jAuth::isConnected());
