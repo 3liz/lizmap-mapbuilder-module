@@ -1,9 +1,13 @@
 #headermenu {padding:0;top:40px;}
 #auth {width: 100%}
 
+#map{margin-top: 75px;}
+
 #mapBuilder{
-	margin-top: 75px;
 	position: absolute;
 	z-index: 1;
 	padding: 2px;
 }
+
+/* Controls OL */
+.ol-zoom{left: unset;right: .5em;}

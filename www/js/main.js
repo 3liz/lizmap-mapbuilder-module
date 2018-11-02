@@ -59,12 +59,17 @@ $(function() {
 
     map = new ol.Map({
         target: 'map',
-        // layers: [
-        //   new ol.layer.Tile({
-        //     title: "OSM",
-        //     source: new ol.source.OSM()
-        //   })
-        // ],
+        controls: ol.control.defaults({
+          attributionOptions: {
+            collapsible: false
+          }
+        }),
+        layers: [
+          new ol.layer.Tile({
+            title: "OSM",
+            source: new ol.source.OSM()
+          })
+        ],
         view: new ol.View({
             center: [430645.4279553129, 5404295.196391977],
             zoom: 12
