@@ -3,23 +3,20 @@ var map = null;
 $(function() {
 
     function buildLayerTree(layer, cfg) {
-      // Filter layers in Hidden directory
-      if(layer.hasOwnProperty('Title') && layer.Title.toLowerCase() == 'hidden'){
-        return;
-      }
-      // Filter layers not visible in legend or without geometry
-      if(layer.hasOwnProperty('Name') && cfg.layers.hasOwnProperty(layer.Name)){
-        if(cfg.layers[layer.Name].displayInLegend == 'False' || cfg.layers[layer.Name].geometryType == 'none')
-        return;
-      }
-
       var myArray = [];
       if (Array.isArray(layer)) {
           layer.forEach(function(sublayer) {
-            var layers = buildLayerTree(sublayer, cfg);
-            if(layers !== undefined){
-              myArray = myArray.concat(layers);
+            // Filter layers in Hidden directory
+            if(sublayer.hasOwnProperty('Title') && sublayer.Title.toLowerCase() == 'hidden'){
+              return;
             }
+            // Filter layers not visible in legend or without geometry
+            if(sublayer.hasOwnProperty('Name') && cfg.layers.hasOwnProperty(sublayer.Name)
+              && (cfg.layers[sublayer.Name].displayInLegend == 'False' || cfg.layers[sublayer.Name].geometryType == 'none')){
+                return;
+            }
+            var layers = buildLayerTree(sublayer, cfg);
+            myArray = myArray.concat(layers);
           });
           return myArray;
       }
