@@ -135,7 +135,7 @@ $(function() {
           }
           // Add button for layers (level 1 => repositories, 2 => projects)
           if(node.getLevel() > 2 && node.children == null){
-            $tdList.eq(2).html("<button class='addLayerButton'>+</button>");
+            $tdList.eq(2).html("<button type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>");
           }
         }
     });
@@ -218,7 +218,7 @@ $(function() {
           var node = data.node;
           $(node.tr).find(".layerSelectedStyles").text(node.data.styles);
 
-          $(node.tr).find(">td").eq(2).html("<button class='deleteLayerButton'>-</button>");
+          $(node.tr).find(">td").eq(2).html("<button class='deleteLayerButton btn btn-sm'><i class='fas fa-minus'></i></button>");
         }
     });
 
