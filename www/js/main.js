@@ -6,8 +6,8 @@ $(function() {
       var myArray = [];
       if (Array.isArray(layer)) {
           layer.forEach(function(sublayer) {
-            // Filter layers in Hidden directory
-            if(sublayer.hasOwnProperty('Title') && sublayer.Title.toLowerCase() == 'hidden'){
+            // Filter layers in Hidden and Overview directory
+            if(sublayer.hasOwnProperty('Title') && (sublayer.Title.toLowerCase() == 'hidden' || sublayer.Title.toLowerCase() == 'overview')){
               return;
             }
             // Filter layers not visible in legend or without geometry
@@ -25,9 +25,9 @@ $(function() {
       if(layer.hasOwnProperty('Style')){
         myObj.style = layer.Style;
       }
-
       myArray.push(myObj);
-      if (layer.hasOwnProperty('Layer')) {
+      // Layer has children and is not a group as layer => folder
+      if (layer.hasOwnProperty('Layer') && cfg.layers[layer.Name].groupAsLayer == 'False') {
           myObj.folder = true;
           myObj.children = buildLayerTree(layer.Layer, cfg);
       }
@@ -59,12 +59,12 @@ $(function() {
 
     map = new ol.Map({
         target: 'map',
-        layers: [
-          new ol.layer.Tile({
-            title: "OSM",
-            source: new ol.source.OSM()
-          })
-        ],
+        // layers: [
+        //   new ol.layer.Tile({
+        //     title: "OSM",
+        //     source: new ol.source.OSM()
+        //   })
+        // ],
         view: new ol.View({
             center: [430645.4279553129, 5404295.196391977],
             zoom: 12
@@ -134,7 +134,7 @@ $(function() {
             $tdList.eq(1).html("<select class='layerStyles'>"+styleOption+"</select>");
           }
           // Add button for layers (level 1 => repositories, 2 => projects)
-          if(node.getLevel() > 2){
+          if(node.getLevel() > 2 && node.children == null){
             $tdList.eq(2).html("<button class='addLayerButton'>+</button>");
           }
         }
