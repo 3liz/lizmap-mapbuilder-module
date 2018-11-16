@@ -22,7 +22,7 @@ class defaultCtrl extends jController {
         $rep->metaViewport = 'initial-scale=1.0, user-scalable=no, width=device-width';
         // Assets
         $rep->addCSSLink(jApp::urlBasePath().'css/main.css');
-        $rep->addCSSLinkModule('mapBuilder','css/ol-5.2.0.css');
+        $rep->addCSSLinkModule('mapBuilder','css/ol-5.3.0.css');
         $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/fontawesome-free-5.4.1-web/css/all.css');
         $rep->addCSSLinkModule('mapBuilder','css/bootstrap.min.css');
         $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/skin-awesome/ui.fancytree.css');
@@ -31,11 +31,10 @@ class defaultCtrl extends jController {
         $rep->addStyle('html, body, .map', 'height: 100%;width: 100%;margin: 0;padding: 0');
 
         $rep->addJSLinkModule('mapBuilder','js/es6-promise.auto.min.js');
-        $rep->addJSLinkModule('mapBuilder','js/ol-5.2.0.min.js');
         $rep->addJSLinkModule('mapBuilder','js/jquery-3.3.1.min.js');
         $rep->addJSLinkModule('mapBuilder','js/jquery.fancytree-all-deps.min.js');
         $rep->addJSLinkModule('mapBuilder','js/bootstrap.min.js');
-        $rep->addJSLinkModule('mapBuilder','js/main.js');
+        $rep->addJSLinkModule('mapBuilder','js/mapbuilder.js');
 
         // Pass some configuration options to the web page through javascript var
         $lizUrls = array(

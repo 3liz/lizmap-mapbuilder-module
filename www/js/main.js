@@ -1,3 +1,13 @@
+import $ from 'jquery';
+
+import Map from 'ol/Map.js';
+import View from 'ol/View.js';
+import {defaults as defaultControls, Control} from 'ol/control.js';
+import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
+import OSM from 'ol/source/OSM.js';
+import WMSCapabilities from 'ol/format/WMSCapabilities.js';
+import ImageWMS from 'ol/source/ImageWMS.js';
+
 var map = null;
 
 $(function() {
@@ -57,20 +67,20 @@ $(function() {
         }
     }
 
-    map = new ol.Map({
+    map = new Map({
         target: 'map',
-        controls: ol.control.defaults({
+        controls: defaultControls({
           attributionOptions: {
             collapsible: false
           }
         }),
         layers: [
-          new ol.layer.Tile({
+          new TileLayer({
             title: "OSM",
-            source: new ol.source.OSM()
+            source: new OSM()
           })
         ],
-        view: new ol.View({
+        view: new View({
             center: [430645.4279553129, 5404295.196391977],
             zoom: 12
         })
@@ -100,7 +110,7 @@ $(function() {
             var repositoryId = data.node.data.repository;
             var projectId = data.node.data.project;
             var url = lizUrls.wms+"?repository=" + repositoryId + "&project=" + projectId + "&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
-            var parser = new ol.format.WMSCapabilities();
+            var parser = new WMSCapabilities();
 
             const promises = [
               new Promise(resolve => 
@@ -154,11 +164,11 @@ $(function() {
       var repositoryId = parentList[1].data.repository;
       var projectId = parentList[1].data.project;
 
-      var newLayer = new ol.layer.Image({
+      var newLayer = new ImageLayer({
           title: node.title,
           repositoryId: repositoryId,
           projectId: projectId,
-          source: new ol.source.ImageWMS({
+          source: new ImageWMS({
               url: '/index.php/lizmap/service/?repository=' + repositoryId + '&project=' + projectId,
               params: {
                 'LAYERS': node.data.name,

@@ -1,0 +1,16 @@
+{
+  "name": "ol-webpack",
+  "version": "1.0.0",
+  "description": "OpenLayers with Webpack",
+  "scripts": {
+    "build": "webpack --config webpack.config.js --mode production"
+  },
+  "devDependencies": {
+    "webpack": "^4.12.1",
+    "webpack-command": "^0.3.0"
+  },
+  "dependencies": {
+    "ol": "^5.3.0"
+  }
+}
+
