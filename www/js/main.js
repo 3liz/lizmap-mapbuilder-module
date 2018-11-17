@@ -8,6 +8,9 @@ import OSM from 'ol/source/OSM.js';
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
 import ImageWMS from 'ol/source/ImageWMS.js';
 
+import {defaults as defaultInteractions, DragZoom} from 'ol/interaction.js';
+import {always as alwaysCondition} from 'ol/events/condition.js';
+
 var map = null;
 
 $(function() {
@@ -67,13 +70,58 @@ $(function() {
         }
     }
 
+    var RotateNorthControl = (function (Control) {
+      function RotateNorthControl(opt_options) {
+        var options = opt_options || {};
+
+        var button = document.createElement('button');
+        button.className = 'fa-stack';
+
+        var iSquare = document.createElement('i');
+        iSquare.className = 'fas fa-square fa-stack-1x';
+
+        var iPlus = document.createElement('i');
+        iPlus.className = 'fas fa-plus fa-stack-1x';
+        iPlus.style = 'color: Dodgerblue';
+
+        button.appendChild(iSquare);
+        button.appendChild(iPlus);
+
+        var element = document.createElement('div');
+        element.className = 'rotate-north ol-unselectable ol-control';
+        element.appendChild(button);
+
+        Control.call(this, {
+          element: element,
+          target: options.target
+        });
+
+        button.addEventListener('click', this.handleRotateNorth.bind(this), false);
+      }
+
+      if ( Control ) RotateNorthControl.__proto__ = Control;
+      RotateNorthControl.prototype = Object.create( Control && Control.prototype );
+      RotateNorthControl.prototype.constructor = RotateNorthControl;
+
+      RotateNorthControl.prototype.handleRotateNorth = function handleRotateNorth () {
+        // this.getMap().getView().setRotation(0);
+        this.getMap().getInteractions().array_[8].condition_(alwaysCondition);
+
+        // TODO : Voir https://gis.stackexchange.com/questions/207766/how-to-change-the-condition-of-an-interaction
+      };
+
+      return RotateNorthControl;
+    }(Control));
+
     map = new Map({
         target: 'map',
         controls: defaultControls({
           attributionOptions: {
             collapsible: false
           }
-        }),
+        }).extend([
+          new RotateNorthControl()
+        ]),
         layers: [
           new TileLayer({
             title: "OSM",

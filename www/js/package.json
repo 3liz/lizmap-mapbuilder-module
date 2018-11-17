@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "OpenLayers with Webpack",
   "scripts": {
-    "build": "webpack --config webpack.config.js --mode production"
+    "build": "webpack --config webpack.config.js",
+    "watch": "webpack --watch"
   },
   "devDependencies": {
     "webpack": "^4.12.1",
