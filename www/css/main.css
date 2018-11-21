@@ -12,10 +12,14 @@
 /* Controls OL */
 .ol-zoom{left: unset;right: .5em;}
 
-.rotate-north {
+.ol-drag-zoom {
 	top: 65px;
 	right: .5em;
 }
-.ol-touch .rotate-north {
+.ol-touch .ol-drag-zoom {
 	top: 80px;
+}
+
+.ol-control.active{
+	background-color: black;
 }
