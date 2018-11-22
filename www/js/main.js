@@ -1,5 +1,7 @@
 import $ from 'jquery';
 
+import * as jsPDF from 'jspdf'
+
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import {defaults as defaultControls, Control} from 'ol/control.js';
@@ -106,10 +108,47 @@ $(function() {
       return dragZoomControl;
     }(Control));
 
+    var exportPDFControl = (function (Control) {
+      function exportPDFControl(opt_options) {
+        var options = opt_options || {};
+
+        var button = document.createElement('button');
+        button.className = 'fas fa-file-pdf';
+
+        var element = document.createElement('div');
+        element.className = 'ol-export-pdf ol-unselectable ol-control';
+        element.appendChild(button);
+
+        Control.call(this, {
+          element: element,
+          target: options.target
+        });
+
+        button.addEventListener('click', this.handleExportPDF.bind(this), false);
+      }
+
+      if ( Control ) exportPDFControl.__proto__ = Control;
+      exportPDFControl.prototype = Object.create( Control && Control.prototype );
+      exportPDFControl.prototype.constructor = exportPDFControl;
+
+      exportPDFControl.prototype.handleExportPDF = function handleExportPDF () {
+        document.body.style.cursor = 'progress';
+        var canvas = $('#map canvas');
+        var data = canvas[0].toDataURL('image/jpeg');
+        var pdf = new jsPDF('landscape');
+        pdf.addImage(data, 'JPEG', 0, 0);
+        pdf.save('map.pdf');
+        document.body.style.cursor = 'auto';
+      };
+
+      return exportPDFControl;
+    }(Control));
+
     map = new Map({
         target: 'map',
         controls: defaultControls().extend([
-          new dragZoomControl()
+          new dragZoomControl(),
+          new exportPDFControl()
         ]),
         layers: [
           new TileLayer({
@@ -133,7 +172,6 @@ $(function() {
           }
         });
       }
-      
     }
 
     map.on('moveend', onMoveEnd);

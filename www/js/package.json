@@ -11,7 +11,7 @@
     "webpack-command": "^0.3.0"
   },
   "dependencies": {
+    "jspdf": "^1.4.1",
     "ol": "^5.3.0"
   }
 }
-

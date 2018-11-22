@@ -20,6 +20,14 @@
 	top: 80px;
 }
 
+.ol-export-pdf {
+	top: 95px;
+	right: .5em;
+}
+.ol-touch .ol-export-pdf {
+	top: 110px;
+}
+
 .ol-control.active{
 	background-color: black;
 }
