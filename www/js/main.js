@@ -9,6 +9,7 @@ import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
 import OSM from 'ol/source/OSM.js';
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
 import ImageWMS from 'ol/source/ImageWMS.js';
+import {transformExtent,Projection} from 'ol/proj.js';
 
 import {defaults as defaultInteractions, DragZoom} from 'ol/interaction.js';
 import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from 'ol/events/condition.js';
@@ -43,6 +44,9 @@ $(function() {
       var myObj = { title: cfg.layers[layer.Name].title, name : layer.Name};
       if(layer.hasOwnProperty('Style')){
         myObj.style = layer.Style;
+      }
+      if(layer.hasOwnProperty('EX_GeographicBoundingBox')){
+        myObj.bbox = layer.EX_GeographicBoundingBox;
       }
       myArray.push(myObj);
       // Layer has children and is not a group as layer => folder
@@ -262,8 +266,7 @@ $(function() {
             ];
 
             data.result = Promise.all(promises).then(results => {
-              var tt = buildLayerTree(results[0], results[1]);
-              return tt;
+              return buildLayerTree(results[0], results[1]);
             });
         },
         renderColumns: function(event, data) {
@@ -297,6 +300,7 @@ $(function() {
           title: node.title,
           repositoryId: repositoryId,
           projectId: projectId,
+          bbox: node.data.bbox,
           source: new ImageWMS({
               url: '/index.php/lizmap/service/?repository=' + repositoryId + '&project=' + projectId,
               params: {
@@ -363,6 +367,7 @@ $(function() {
           $(node.tr).find(".layerSelectedStyles").text(node.data.styles);
 
           $(node.tr).find(">td").eq(2).html("<button class='deleteLayerButton btn btn-sm'><i class='fas fa-minus'></i></button>");
+          $(node.tr).find(">td").eq(3).html("<button class='zoomToExtentButton btn btn-sm'><i class='fas fa-search-plus'></i></button>");
         }
     });
 
@@ -376,6 +381,18 @@ $(function() {
         }
       }
       refreshLayerSelected();
+      e.stopPropagation();  // prevent fancytree activate for this row
+    });
+
+    $('#layerSelected').on("click", ".zoomToExtentButton", function(e){
+      var node = $.ui.fancytree.getNode(e);
+
+      var layers = map.getLayers().getArray();
+      for (var i = 0; i < layers.length; i++) {
+        if(layers[i].ol_uid == node.data.ol_uid){
+          map.getView().fit(transformExtent(layers[i].values_.bbox, 'EPSG:4326', map.getView().projection_));
+        }
+      }
       e.stopPropagation();  // prevent fancytree activate for this row
     });
 });
