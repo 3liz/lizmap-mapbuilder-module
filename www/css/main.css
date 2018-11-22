@@ -20,12 +20,20 @@
 	top: 80px;
 }
 
-.ol-export-pdf {
+.ol-zoom-origin {
 	top: 95px;
 	right: .5em;
 }
-.ol-touch .ol-export-pdf {
+.ol-touch .ol-zoom-origin {
 	top: 110px;
+}
+
+.ol-export-pdf {
+	top: 125px;
+	right: .5em;
+}
+.ol-touch .ol-export-pdf {
+	top: 140px;
 }
 
 .ol-control.active{

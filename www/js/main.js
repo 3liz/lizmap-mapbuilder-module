@@ -15,6 +15,10 @@ import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from '
 
 var map = null;
 
+// TODO : récupérer ses valeurs depuis un fichier de conf 
+var originalCenter = [430645.4279553129, 5404295.196391977];
+var originalZoom = 12;
+
 $(function() {
 
     function buildLayerTree(layer, cfg) {
@@ -78,6 +82,7 @@ $(function() {
 
         var button = document.createElement('button');
         button.className = 'fas fa-square';
+        button.title = 'Zoomer par rectangle';
 
         var element = document.createElement('div');
         element.className = 'ol-drag-zoom ol-unselectable ol-control';
@@ -114,6 +119,7 @@ $(function() {
 
         var button = document.createElement('button');
         button.className = 'fas fa-file-pdf';
+        button.title = 'Impression PDF';
 
         var element = document.createElement('div');
         element.className = 'ol-export-pdf ol-unselectable ol-control';
@@ -144,11 +150,44 @@ $(function() {
       return exportPDFControl;
     }(Control));
 
+    var zoomToOriginControl = (function (Control) {
+      function zoomToOriginControl(opt_options) {
+        var options = opt_options || {};
+
+        var button = document.createElement('button');
+        button.className = 'fas fa-expand-arrows-alt';
+        button.title = 'Zoomer sur l\'étendue initiale';
+
+        var element = document.createElement('div');
+        element.className = 'ol-zoom-origin ol-unselectable ol-control';
+        element.appendChild(button);
+
+        Control.call(this, {
+          element: element,
+          target: options.target
+        });
+
+        button.addEventListener('click', this.handleZoomToOrigin.bind(this), false);
+      }
+
+      if ( Control ) zoomToOriginControl.__proto__ = Control;
+      zoomToOriginControl.prototype = Object.create( Control && Control.prototype );
+      zoomToOriginControl.prototype.constructor = zoomToOriginControl;
+
+      zoomToOriginControl.prototype.handleZoomToOrigin = function handleZoomToOrigin () {
+        this.getMap().getView().setCenter(originalCenter);
+        this.getMap().getView().setZoom(originalZoom);
+      };
+
+      return zoomToOriginControl;
+    }(Control));
+
     map = new Map({
         target: 'map',
         controls: defaultControls().extend([
           new dragZoomControl(),
-          new exportPDFControl()
+          new exportPDFControl(),
+          new zoomToOriginControl()
         ]),
         layers: [
           new TileLayer({
@@ -157,8 +196,8 @@ $(function() {
           })
         ],
         view: new View({
-            center: [430645.4279553129, 5404295.196391977],
-            zoom: 12
+            center: originalCenter,
+            zoom: originalZoom
         })
     });
 
