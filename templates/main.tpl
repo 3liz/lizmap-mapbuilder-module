@@ -95,6 +95,8 @@
               </col>
               <col>
               </col>
+              <col>
+              </col>
           </colgroup>
           <thead>
               <tr>
@@ -102,6 +104,7 @@
                   <th>Style</th>
                   <th>Suppression</th>
                   <th>Zoomer sur la couche</th>
+                  <th>Opacité</th>
               </tr>
           </thead>
           <!-- Otionally define a row that serves as template, when new nodes are created: -->
@@ -109,6 +112,7 @@
               <tr>
                   <td></td>
                   <td class="layerSelectedStyles"></td>
+                  <td></td>
                   <td></td>
                   <td></td>
               </tr>

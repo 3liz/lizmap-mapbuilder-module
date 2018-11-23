@@ -19,7 +19,7 @@ class defaultCtrl extends jController {
         $title = "Map Builder";
         $rep->title = $title;
 
-        $rep->metaViewport = 'initial-scale=1.0, user-scalable=no, width=device-width';
+        $rep->metaViewport = 'initial-scale=1.0, user-scalable=no, width=device-width, shrink-to-fit=no';
         // Assets
         $rep->addCSSLink(jApp::urlBasePath().'css/main.css');
         $rep->addCSSLinkModule('mapBuilder','css/ol-5.3.0.css');

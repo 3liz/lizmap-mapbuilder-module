@@ -368,6 +368,15 @@ $(function() {
 
           $(node.tr).find(">td").eq(2).html("<button class='deleteLayerButton btn btn-sm'><i class='fas fa-minus'></i></button>");
           $(node.tr).find(">td").eq(3).html("<button class='zoomToExtentButton btn btn-sm'><i class='fas fa-search-plus'></i></button>");
+          $(node.tr).find(">td").eq(4).html('\
+            <div class="btn-group btn-group-sm" role="group" aria-label="Opacity">\
+              <button type="button" class="btn btn-secondary">20</button>\
+              <button type="button" class="btn btn-secondary">40</button>\
+              <button type="button" class="btn btn-secondary">60</button>\
+              <button type="button" class="btn btn-secondary">80</button>\
+              <button type="button" class="btn btn-secondary">100</button>\
+            </div>\
+            ');
         }
     });
 
