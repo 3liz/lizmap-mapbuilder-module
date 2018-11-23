@@ -9,6 +9,11 @@
 	padding: 2px;
 }
 
+/* Fancytree */
+table.fancytree-ext-table tbody tr.fancytree-active {
+    background-color: inherit;
+}
+
 /* Controls OL */
 .ol-zoom{left: unset;right: .5em;}
 

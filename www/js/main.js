@@ -370,11 +370,11 @@ $(function() {
           $(node.tr).find(">td").eq(3).html("<button class='zoomToExtentButton btn btn-sm'><i class='fas fa-search-plus'></i></button>");
           $(node.tr).find(">td").eq(4).html('\
             <div class="btn-group btn-group-sm" role="group" aria-label="Opacity">\
-              <button type="button" class="btn btn-secondary">20</button>\
-              <button type="button" class="btn btn-secondary">40</button>\
-              <button type="button" class="btn btn-secondary">60</button>\
-              <button type="button" class="btn btn-secondary">80</button>\
-              <button type="button" class="btn btn-secondary">100</button>\
+              <button type="button" class="btn changeOpacityButton" style="background-color: rgba(0, 0, 0, 0);border-color: #343a40;">20</button>\
+              <button type="button" class="btn changeOpacityButton" style="background-color: rgba(0, 0, 0, 0.1);border-color: #343a40;">40</button>\
+              <button type="button" class="btn changeOpacityButton" style="background-color: rgba(0, 0, 0, 0.3);border-color: #343a40;">60</button>\
+              <button type="button" class="btn changeOpacityButton" style="background-color: rgba(0, 0, 0, 0.5);border-color: #343a40;color: lightgrey;">80</button>\
+              <button type="button" class="btn changeOpacityButton" style="background-color: rgba(0, 0, 0, 0.7);border-color: #343a40;color: lightgrey;">100</button>\
             </div>\
             ');
         }
@@ -400,6 +400,19 @@ $(function() {
       for (var i = 0; i < layers.length; i++) {
         if(layers[i].ol_uid == node.data.ol_uid){
           map.getView().fit(transformExtent(layers[i].values_.bbox, 'EPSG:4326', map.getView().projection_));
+        }
+      }
+      e.stopPropagation();  // prevent fancytree activate for this row
+    });
+
+    $('#layerSelected').on("click", ".changeOpacityButton", function(e){
+      var node = $.ui.fancytree.getNode(e);
+      var opacity = e.target.textContent;
+
+      var layers = map.getLayers().getArray();
+      for (var i = 0; i < layers.length; i++) {
+        if(layers[i].ol_uid == node.data.ol_uid){
+          layers[i].setOpacity(opacity/100);
         }
       }
       e.stopPropagation();  // prevent fancytree activate for this row
