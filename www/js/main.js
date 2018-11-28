@@ -4,7 +4,7 @@ import * as jsPDF from 'jspdf'
 
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
-import {defaults as defaultControls, Control} from 'ol/control.js';
+import {defaults as defaultControls, Control, ScaleLine} from 'ol/control.js';
 import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
 import OSM from 'ol/source/OSM.js';
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
@@ -13,8 +13,6 @@ import {transformExtent,Projection} from 'ol/proj.js';
 
 import {defaults as defaultInteractions, DragZoom} from 'ol/interaction.js';
 import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from 'ol/events/condition.js';
-
-var map = null;
 
 // TODO : récupérer ses valeurs depuis un fichier de conf 
 var originalCenter = [430645.4279553129, 5404295.196391977];
@@ -48,6 +46,12 @@ $(function() {
       if(layer.hasOwnProperty('EX_GeographicBoundingBox')){
         myObj.bbox = layer.EX_GeographicBoundingBox;
       }
+      if(layer.hasOwnProperty('MinScaleDenominator') && layer.MinScaleDenominator !== undefined){
+        myObj.minScale = layer.MinScaleDenominator;
+      }
+      if(layer.hasOwnProperty('MaxScaleDenominator') && layer.MaxScaleDenominator !== undefined){
+        myObj.maxScale = layer.MaxScaleDenominator;
+      }
       myArray.push(myObj);
       // Layer has children and is not a group as layer => folder
       if (layer.hasOwnProperty('Layer') && cfg.layers[layer.Name].groupAsLayer == 'False') {
@@ -59,7 +63,7 @@ $(function() {
 
     function refreshLayerSelected() {
         var layerTree = [];
-        map.getLayers().forEach(function(layer) {
+        mapBuilder.map.getLayers().forEach(function(layer) {
           // Don't add OSM
           if(layer.values_.title != "OSM"){
             layerTree[layer.getZIndex()] = {
@@ -186,9 +190,10 @@ $(function() {
       return zoomToOriginControl;
     }(Control));
 
-    map = new Map({
+    mapBuilder.map = new Map({
         target: 'map',
         controls: defaultControls().extend([
+          new ScaleLine(),
           new dragZoomControl(),
           new exportPDFControl(),
           new zoomToOriginControl()
@@ -217,7 +222,7 @@ $(function() {
       }
     }
 
-    map.on('moveend', onMoveEnd);
+    mapBuilder.map.on('moveend', onMoveEnd);
 
     $('#layerStore').fancytree({
         selectMode: 3,
@@ -272,17 +277,26 @@ $(function() {
         renderColumns: function(event, data) {
           var node = data.node,
           $tdList = $(node.tr).find(">td");
+
+          // Disable buttons if current scale not between minScale et maxScale
+          var disabled = '';
+
+          // Min/max Scale
+          // if(node.data.hasOwnProperty('minScale')){
+          //   disabled = 'disabled';
+          // }
+
           // Style list
           if(node.data.hasOwnProperty('style')){
             var styleOption = "";
             node.data.style.forEach(function(style) {
               styleOption += "<option>"+style.Name+"</option>";
             });
-            $tdList.eq(1).html("<select class='layerStyles'>"+styleOption+"</select>");
+            $tdList.eq(1).html("<select "+disabled+" class='layerStyles'>"+styleOption+"</select>");
           }
           // Add button for layers (level 1 => repositories, 2 => projects)
           if(node.getLevel() > 2 && node.children == null){
-            $tdList.eq(2).html("<button type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>");
+            $tdList.eq(2).html("<button "+disabled+" type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>");
           }
         }
     });
@@ -312,7 +326,7 @@ $(function() {
 
       var maxZindex = -1;
       // Get maximum Z-index to put new layer at top of the stack
-      map.getLayers().forEach(function(layer) {
+      mapBuilder.map.getLayers().forEach(function(layer) {
         var zIndex = layer.getZIndex();
         if(zIndex !== undefined && zIndex > maxZindex){
           maxZindex = zIndex;
@@ -325,7 +339,7 @@ $(function() {
         newLayer.setZIndex(0);
       }
 
-      map.addLayer(newLayer);
+      mapBuilder.map.addLayer(newLayer);
       refreshLayerSelected();
       e.stopPropagation();  // prevent fancytree activate for this row
     });
@@ -348,7 +362,7 @@ $(function() {
                 var allNodes = node.parent.children;
 
                 for (var i = 0; i < allNodes.length; i++) {
-                    var layers = map.getLayers().getArray();
+                    var layers = mapBuilder.map.getLayers().getArray();
                     for (var j = 0; j < layers.length; j++) {
                         if (allNodes[i].data.ol_uid == layers[j].ol_uid) {
                             layers[j].setZIndex(allNodes.length - i);
@@ -366,50 +380,76 @@ $(function() {
           var node = data.node;
           $(node.tr).find(".layerSelectedStyles").text(node.data.styles);
 
-          $(node.tr).find(">td").eq(2).html("<button class='deleteLayerButton btn btn-sm'><i class='fas fa-minus'></i></button>");
-          $(node.tr).find(">td").eq(3).html("<button class='zoomToExtentButton btn btn-sm'><i class='fas fa-search-plus'></i></button>");
-          $(node.tr).find(">td").eq(4).html('\
+          var getLegendURL = "";
+
+          var layers = mapBuilder.map.getLayers().getArray();
+          for (var i = 0; i < layers.length; i++) {
+            if(layers[i].ol_uid == node.data.ol_uid){
+              // console.log(layers[i]);
+              getLegendURL = layers[i].values_.source.url_+'&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER='+layers[i].values_.source.params_.LAYERS+'&STYLE='+layers[i].values_.source.params_.STYLES+'&FORMAT=image/png';
+            }
+          }
+
+          $(node.tr).find(".toggleLegend").html("<i class='fas fa-caret-right'></i><img src='"+getLegendURL+"'>");
+
+          $(node.tr).find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-minus'></i></button>");
+          $(node.tr).find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
+          $(node.tr).find(".changeOpacityButton").html('\
             <div class="btn-group btn-group-sm" role="group" aria-label="Opacity">\
-              <button type="button" class="btn changeOpacityButton" style="background-color: rgba(0, 0, 0, 0);border-color: #343a40;">20</button>\
-              <button type="button" class="btn changeOpacityButton" style="background-color: rgba(0, 0, 0, 0.1);border-color: #343a40;">40</button>\
-              <button type="button" class="btn changeOpacityButton" style="background-color: rgba(0, 0, 0, 0.3);border-color: #343a40;">60</button>\
-              <button type="button" class="btn changeOpacityButton" style="background-color: rgba(0, 0, 0, 0.5);border-color: #343a40;color: lightgrey;">80</button>\
-              <button type="button" class="btn changeOpacityButton" style="background-color: rgba(0, 0, 0, 0.7);border-color: #343a40;color: lightgrey;">100</button>\
+              <button type="button" class="btn" style="background-color: rgba(0, 0, 0, 0);border-color: #343a40;">20</button>\
+              <button type="button" class="btn" style="background-color: rgba(0, 0, 0, 0.1);border-color: #343a40;">40</button>\
+              <button type="button" class="btn" style="background-color: rgba(0, 0, 0, 0.3);border-color: #343a40;">60</button>\
+              <button type="button" class="btn" style="background-color: rgba(0, 0, 0, 0.5);border-color: #343a40;color: lightgrey;">80</button>\
+              <button type="button" class="btn" style="background-color: rgba(0, 0, 0, 0.7);border-color: #343a40;color: lightgrey;">100</button>\
             </div>\
             ');
+
+          $(node.tr).find(".changeOrder").html("<div class='fas fa-caret-up'></div><div class='fas fa-caret-down'></div>");
         }
     });
 
-    $('#layerSelected').on("click", ".deleteLayerButton", function(e){
+    $('#layerSelected').on("click", ".toggleLegend i", function(e){
+      $(this).next().toggle();
+      if($(this).hasClass('fa-caret-right')){
+        $(this).removeClass('fa-caret-right');
+        $(this).addClass('fa-caret-down');
+      }else{
+        $(this).removeClass('fa-caret-down');
+        $(this).addClass('fa-caret-right');
+      }
+      e.stopPropagation();  // prevent fancytree activate for this row
+    });
+
+    $('#layerSelected').on("click", ".deleteLayerButton button", function(e){
       var node = $.ui.fancytree.getNode(e);
 
-      var layers = map.getLayers().getArray();
+      var layers = mapBuilder.map.getLayers().getArray();
       for (var i = 0; i < layers.length; i++) {
         if(layers[i].ol_uid == node.data.ol_uid){
-          map.removeLayer(layers[i]);
+          mapBuilder.map.removeLayer(layers[i]);
         }
       }
       refreshLayerSelected();
       e.stopPropagation();  // prevent fancytree activate for this row
     });
 
-    $('#layerSelected').on("click", ".zoomToExtentButton", function(e){
+    $('#layerSelected').on("click", ".zoomToExtentButton button", function(e){
       var node = $.ui.fancytree.getNode(e);
 
-      var layers = map.getLayers().getArray();
+      var layers = mapBuilder.map.getLayers().getArray();
       for (var i = 0; i < layers.length; i++) {
         if(layers[i].ol_uid == node.data.ol_uid){
-          map.getView().fit(transformExtent(layers[i].values_.bbox, 'EPSG:4326', map.getView().projection_));
+          mapBuilder.map.getView().fit(transformExtent(layers[i].values_.bbox, 'EPSG:4326', mapBuilder.map.getView().projection_));
         }
       }
       e.stopPropagation();  // prevent fancytree activate for this row
     });
 
-    $('#layerSelected').on("click", ".changeOpacityButton", function(e){
+    $('#layerSelected').on("click", ".changeOpacityButton div button", function(e){
       var node = $.ui.fancytree.getNode(e);
       var opacity = e.target.textContent;
 
-      var layers = map.getLayers().getArray();
+      var layers = mapBuilder.map.getLayers().getArray();
       for (var i = 0; i < layers.length; i++) {
         if(layers[i].ol_uid == node.data.ol_uid){
           layers[i].setOpacity(opacity/100);

@@ -9,6 +9,9 @@
 	padding: 2px;
 }
 
+.toggleLegend {cursor: pointer;}
+.toggleLegend ~ img {display: none;}
+
 /* Fancytree */
 table.fancytree-ext-table tbody tr.fancytree-active {
     background-color: inherit;
