@@ -61,6 +61,7 @@ $(function() {
       return myArray;
     }
 
+    // refresh #layerSelected tree to reflect OL layer's state
     function refreshLayerSelected() {
         var layerTree = [];
         mapBuilder.map.getLayers().forEach(function(layer) {
@@ -404,7 +405,7 @@ $(function() {
             </div>\
             ');
 
-          $(node.tr).find(".changeOrder").html("<div class='fas fa-caret-up'></div><div class='fas fa-caret-down'></div>");
+          $(node.tr).find(".changeOrder").html("<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>");
         }
     });
 
@@ -455,6 +456,39 @@ $(function() {
           layers[i].setOpacity(opacity/100);
         }
       }
+      e.stopPropagation();  // prevent fancytree activate for this row
+    });
+
+    // Handle zIndex up and down events
+    $('#layerSelected').on("click", ".changeOrder", function(e){
+      var node = $.ui.fancytree.getNode(e);
+      var siblingNode = $(this).hasClass("changeOrderUp") ? node.getPrevSibling() : node.getNextSibling();
+
+      var nodeLayerZIndex = -1;
+      var siblingNodeLayerZIndex = -1;
+
+      var layers = mapBuilder.map.getLayers().getArray();
+
+      for (var i = 0; i < layers.length; i++) {
+        if(layers[i].ol_uid == node.data.ol_uid){
+          nodeLayerZIndex = layers[i].getZIndex();
+        }
+        if(layers[i].ol_uid == siblingNode.data.ol_uid){
+          siblingNodeLayerZIndex = layers[i].getZIndex();
+        }
+      }
+
+      // Swap zIndex
+      for (var i = 0; i < layers.length; i++) {
+        if(layers[i].ol_uid == node.data.ol_uid){
+          layers[i].setZIndex(siblingNodeLayerZIndex);
+        }
+        if(layers[i].ol_uid == siblingNode.data.ol_uid){
+          layers[i].setZIndex(nodeLayerZIndex);
+        }
+      }
+
+      refreshLayerSelected();
       e.stopPropagation();  // prevent fancytree activate for this row
     });
 });

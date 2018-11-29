@@ -9,8 +9,11 @@
 	padding: 2px;
 }
 
-.toggleLegend {cursor: pointer;}
+.toggleLegend, .changeOrder {cursor: pointer;}
 .toggleLegend ~ img {display: none;}
+
+.changeOrder > div {display: block;text-align: center;}
+#layerSelected tr:first-child div.changeOrderUp, #layerSelected tr:last-child div.changeOrderDown {visibility: hidden;}
 
 /* Fancytree */
 table.fancytree-ext-table tbody tr.fancytree-active {
