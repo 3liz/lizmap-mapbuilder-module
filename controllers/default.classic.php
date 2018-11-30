@@ -53,9 +53,8 @@ class defaultCtrl extends jController {
 
         // Build repository + project tree for FancyTree 
         foreach ($repositories as $key => $repositoryName) {
-            if( jAcl2::check('lizmap.repositories.view', $repository )){
-                $repository = lizmap::getRepository($repositoryName);
-
+            $repository = lizmap::getRepository($repositoryName);
+            if( jAcl2::check('lizmap.repositories.view', $repository->getKey() )){
                 $projects = $repository->getProjects();
 
                 $projectArray = array();
@@ -84,6 +83,11 @@ class defaultCtrl extends jController {
         $rep->body->assign('isConnected', jAuth::isConnected());
         $rep->body->assign('user', jAuth::getUserSession());
         $rep->body->assign('allowUserAccountRequests', $services->allowUserAccountRequests);
+
+        // Add Google Analytics ID
+        if($services->googleAnalyticsID != '' && preg_match("/^UA-\d+-\d+$/", $services->googleAnalyticsID) == 1 ) {
+            $rep->body->assign('googleAnalyticsID', $services->googleAnalyticsID);
+        }
 
         $rep->bodyTpl = 'mapBuilder~main';
 

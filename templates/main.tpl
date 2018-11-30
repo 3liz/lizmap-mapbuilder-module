@@ -134,11 +134,11 @@
 
 <footer class="footer">
   <p class="pull-right">
-    {image $j_themepath.'css/img/logo_footer.png'}
+    <img src="{$j_themepath.'css/img/logo_footer.png'}" alt=""/>
   </p>
 </footer>
 
-{if $googleAnalyticsID && $googleAnalyticsID != ''}
+{if isset($googleAnalyticsID) && $googleAnalyticsID != ''}
 <!-- Google Analytics -->
 <script type="text/javascript">
 {literal}
