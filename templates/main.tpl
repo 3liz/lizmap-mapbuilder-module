@@ -50,10 +50,10 @@
 <div id="mapBuilder" class="bg-white">
   <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Catalogue de couches</a>
+      <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Couches</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Couches sélectionnées</a>
+      <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Sélection</a>
     </li>
   </ul>
   <div class="tab-content" id="pills-tabContent">
@@ -88,7 +88,7 @@
       <table id="layerSelected">
           <colgroup>
             <col>
-            <col width="70px">
+            <col>
             <col>
             <col>
             <col>
@@ -97,9 +97,9 @@
           <thead>
             <tr>
               <th>Couche</th>
-              <th>Suppression</th>
-              <th>Zoomer sur la couche</th>
-              <th>Ordre</th>
+              <th></th>
+              <th></th>
+              <th></th>
               <th>Infos</th>
               <th class="hide">Style</th>
               <th class="hide">Légende</th>
