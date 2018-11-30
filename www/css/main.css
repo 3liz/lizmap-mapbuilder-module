@@ -10,7 +10,7 @@
 }
 
 .toggleLegend, .changeOrder {cursor: pointer;}
-.toggleLegend ~ img {display: none;}
+.toggleLegend > img {display: none;}
 
 .changeOrder > div {display: block;text-align: center;}
 #layerSelected tr:first-child div.changeOrderUp, #layerSelected tr:last-child div.changeOrderDown {visibility: hidden;}
@@ -18,6 +18,8 @@
 .navbar .nav > li > a {
 	display: block;
 }
+
+.hide{display: none;}
 
 /* Fancytree */
 #layerSelected span.fancytree-expander, #layerSelected span.fancytree-icon{display: none;}

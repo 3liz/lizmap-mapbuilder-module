@@ -82,6 +82,12 @@ $(function() {
 
         if ($.ui.fancytree.getTree("#layerSelected") !== null) {
             $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
+
+            if($(".layerSelectedStyles:visible").length > 0){
+              $("#layerSelected th.hide").show();
+            }else{
+              $("#layerSelected th.hide").hide();
+            }
         }
     }
 
@@ -396,15 +402,16 @@ $(function() {
           var layers = mapBuilder.map.getLayers().getArray();
           for (var i = 0; i < layers.length; i++) {
             if(layers[i].ol_uid == node.data.ol_uid){
-              // console.log(layers[i]);
               getLegendURL = layers[i].values_.source.url_+'&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER='+layers[i].values_.source.params_.LAYERS+'&STYLE='+layers[i].values_.source.params_.STYLES+'&FORMAT=image/png';
             }
           }
 
-          $(node.tr).find(".toggleLegend").html("<i class='fas fa-caret-right'></i><img src='"+getLegendURL+"'>");
+          $(node.tr).find(".toggleLegend").html("<button class='btn btn-sm'><i class='fas fa-image'></i></button><img src='"+getLegendURL+"'>");
 
           $(node.tr).find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-trash'></i></button>");
           $(node.tr).find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
+          $(node.tr).find(".changeOrder").html("<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>");
+          $(node.tr).find(".toggleInfos").html("<button class='btn btn-sm'><i class='fas fa-info'></i></button>");
           $(node.tr).find(".changeOpacityButton").html('\
             <div class="btn-group btn-group-sm" role="group" aria-label="Opacity">\
               <button type="button" class="btn" style="background-color: rgba(0, 0, 0, 0);border-color: #343a40;">20</button>\
@@ -414,20 +421,11 @@ $(function() {
               <button type="button" class="btn" style="background-color: rgba(0, 0, 0, 0.7);border-color: #343a40;color: lightgrey;">100</button>\
             </div>\
             ');
-
-          $(node.tr).find(".changeOrder").html("<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>");
         }
     });
 
-    $('#layerSelected').on("click", ".toggleLegend i", function(e){
+    $('#layerSelected').on("click", ".toggleLegend button", function(e){
       $(this).next().toggle();
-      if($(this).hasClass('fa-caret-right')){
-        $(this).removeClass('fa-caret-right');
-        $(this).addClass('fa-caret-down');
-      }else{
-        $(this).removeClass('fa-caret-down');
-        $(this).addClass('fa-caret-right');
-      }
       e.stopPropagation();  // prevent fancytree activate for this row
     });
 
@@ -453,6 +451,18 @@ $(function() {
           mapBuilder.map.getView().fit(transformExtent(layers[i].values_.bbox, 'EPSG:4326', mapBuilder.map.getView().projection_));
         }
       }
+      e.stopPropagation();  // prevent fancytree activate for this row
+    });
+
+    $('#layerSelected').on("click", ".toggleInfos button", function(e){
+      $(this).parent().nextAll().toggle();
+
+      if($(".layerSelectedStyles:visible").length > 0){
+        $("#layerSelected th.hide").show();
+      }else{
+        $("#layerSelected th.hide").hide();
+      }
+
       e.stopPropagation();  // prevent fancytree activate for this row
     });
 

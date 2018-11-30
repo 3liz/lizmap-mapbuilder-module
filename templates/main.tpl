@@ -87,43 +87,36 @@
     <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
       <table id="layerSelected">
           <colgroup>
-              <col>
-              </col>
-              <col width="70px">
-              </col>
-              <col>
-              </col>
-              <col>
-              </col>
-              <col>
-              </col>
-              <col>
-              </col>
-              <col>
-              </col>
+            <col>
+            <col width="70px">
+            <col>
+            <col>
+            <col>
+            <col span="3">
           </colgroup>
           <thead>
-              <tr>
-                  <th>Couche</th>
-                  <th>Suppression</th>
-                  <th>Zoomer sur la couche</th>
-                  <th>Ordre</th>
-                  <th>Style</th>
-                  <th>Légende</th>
-                  <th>Opacité</th>
-              </tr>
+            <tr>
+              <th>Couche</th>
+              <th>Suppression</th>
+              <th>Zoomer sur la couche</th>
+              <th>Ordre</th>
+              <th>Infos</th>
+              <th class="hide">Style</th>
+              <th class="hide">Légende</th>
+              <th class="hide">Opacité</th>
+            </tr>
           </thead>
-          <!-- Otionally define a row that serves as template, when new nodes are created: -->
           <tbody>
-              <tr>
-                  <td></td>
-                  <td class="deleteLayerButton"></td>
-                  <td class="zoomToExtentButton"></td>
-                  <td class="changeOrder"></td>
-                  <td class="layerSelectedStyles"></td>
-                  <td class="toggleLegend"></td>
-                  <td class="changeOpacityButton"></td>
-              </tr>
+            <tr>
+              <td></td>
+              <td class="deleteLayerButton"></td>
+              <td class="zoomToExtentButton"></td>
+              <td class="changeOrder"></td>
+              <td class="toggleInfos"></td>
+              <td class="layerSelectedStyles hide"></td>
+              <td class="toggleLegend hide"></td>
+              <td class="changeOpacityButton hide"></td>
+            </tr>
           </tbody>
       </table>
     </div>
