@@ -68,10 +68,10 @@ $(function() {
           // Don't add OSM
           if(layer.values_.title != "OSM"){
             layerTree[layer.getZIndex()] = {
-                title: layer.getProperties().title,
-                styles: layer.getSource().getParams().STYLES,
-                ol_uid: layer.ol_uid
-              };
+              title: layer.getProperties().title,
+              styles: layer.getSource().getParams().STYLES,
+              ol_uid: layer.ol_uid
+            };
           }
         });
 
@@ -81,13 +81,13 @@ $(function() {
         layerTree = layerTree.filter(n => n);
 
         if ($.ui.fancytree.getTree("#layerSelected") !== null) {
-            $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
+          $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
 
-            if($(".layerSelectedStyles:visible").length > 0){
-              $("#layerSelected th.hide").show();
-            }else{
-              $("#layerSelected th.hide").hide();
-            }
+          // if($(".layerSelectedStyles:visible").length > 0){
+          //   $("#layerSelected th.hide").show();
+          // }else{
+          //   $("#layerSelected th.hide").hide();
+          // }
         }
     }
 
@@ -398,11 +398,13 @@ $(function() {
           $(node.tr).find(".layerSelectedStyles").text(node.data.styles);
 
           var getLegendURL = "";
+          var opacity = 0;
 
           var layers = mapBuilder.map.getLayers().getArray();
           for (var i = 0; i < layers.length; i++) {
             if(layers[i].ol_uid == node.data.ol_uid){
               getLegendURL = layers[i].values_.source.url_+'&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER='+layers[i].values_.source.params_.LAYERS+'&STYLE='+layers[i].values_.source.params_.STYLES+'&FORMAT=image/png';
+              opacity = layers[i].getOpacity();
             }
           }
 
@@ -412,15 +414,20 @@ $(function() {
           $(node.tr).find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
           $(node.tr).find(".changeOrder").html("<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>");
           $(node.tr).find(".toggleInfos").html("<button class='btn btn-sm'><i class='fas fa-info'></i></button>");
-          $(node.tr).find(".changeOpacityButton").html('\
-            <div class="btn-group btn-group-sm" role="group" aria-label="Opacity">\
-              <button type="button" class="btn" style="background-color: rgba(0, 0, 0, 0);border-color: #343a40;">20</button>\
-              <button type="button" class="btn" style="background-color: rgba(0, 0, 0, 0.1);border-color: #343a40;">40</button>\
-              <button type="button" class="btn" style="background-color: rgba(0, 0, 0, 0.3);border-color: #343a40;">60</button>\
-              <button type="button" class="btn" style="background-color: rgba(0, 0, 0, 0.5);border-color: #343a40;color: lightgrey;">80</button>\
-              <button type="button" class="btn" style="background-color: rgba(0, 0, 0, 0.7);border-color: #343a40;color: lightgrey;">100</button>\
-            </div>\
-            ');
+
+          var buttons = "";
+          for (var i = 1; i < 6; i++) {
+            var active = opacity == (i*20)/100 ? "active" : "";
+            buttons += "<button type='button' class='btn "+active+"'>"+(i*20)+"</button>";
+          }
+
+          $(node.tr).find(".changeOpacityButton").html('<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>');
+
+          if($(".layerSelectedStyles:visible").length > 0){
+            $("#layerSelected th.hide").show();
+          }else{
+            $("#layerSelected th.hide").hide();
+          }
         }
     });
 
@@ -476,6 +483,9 @@ $(function() {
           layers[i].setOpacity(opacity/100);
         }
       }
+      // UI
+      $(this).siblings().removeClass("active");
+      $(this).addClass("active");
       e.stopPropagation();  // prevent fancytree activate for this row
     });
 

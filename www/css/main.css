@@ -15,6 +15,18 @@
 .changeOrder > div {display: block;text-align: center;}
 #layerSelected tr:first-child div.changeOrderUp, #layerSelected tr:last-child div.changeOrderDown {visibility: hidden;}
 
+.changeOpacityButton button{border-color: #343a40;}
+.changeOpacityButton button:nth-child(1){background-color: rgba(0, 0, 0, 0);}
+.changeOpacityButton button:nth-child(2){background-color: rgba(0, 0, 0, 0.1);}
+.changeOpacityButton button:nth-child(3){background-color: rgba(0, 0, 0, 0.3);}
+.changeOpacityButton button:nth-child(4){background-color: rgba(0, 0, 0, 0.5);color: lightgrey;}
+.changeOpacityButton button:nth-child(5){background-color: rgba(0, 0, 0, 0.7);color: lightgrey;}
+
+.changeOpacityButton button.active{
+	background-color: #0094d6 !important;
+	color: white !important;
+}
+
 .navbar .nav > li > a {
 	display: block;
 }
