@@ -1,13 +1,16 @@
 #headermenu {padding:0;top:40px;}
 #auth {width: 100%}
 
-#map{margin-top: 75px;}
+#map{padding-top: 75px;}
 
 #mapBuilder{
 	position: absolute;
 	z-index: 1;
-	padding: 2px;
+	padding: 3px;
+	top: 75px;
 }
+
+.footer{position: absolute;bottom: 5px;right: 2px;width: 100%}
 
 .toggleLegend, .changeOrder {cursor: pointer;}
 .toggleLegend > img {display: none;}

@@ -61,11 +61,8 @@
       <table id="layerStore">
           <colgroup>
               <col>
-              </col>
               <col width="70px">
-              </col>
               <col>
-              </col>
           </colgroup>
           <thead>
               <tr>
@@ -109,9 +106,9 @@
           <tbody>
             <tr>
               <td></td>
+              <td class="changeOrder"></td>
               <td class="deleteLayerButton"></td>
               <td class="zoomToExtentButton"></td>
-              <td class="changeOrder"></td>
               <td class="toggleInfos"></td>
               <td class="layerSelectedStyles hide"></td>
               <td class="toggleLegend hide"></td>
@@ -126,7 +123,7 @@
 <div id="map" class="map"></div>
 
 <footer class="footer">
-  <p class="pull-right">
+  <p class="float-right">
     <img src="{$j_themepath.'css/img/logo_footer.png'}" alt=""/>
   </p>
 </footer>
