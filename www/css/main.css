@@ -15,6 +15,10 @@
 .changeOrder > div {display: block;text-align: center;}
 #layerSelected tr:first-child div.changeOrderUp, #layerSelected tr:last-child div.changeOrderDown {visibility: hidden;}
 
+.navbar .nav > li > a {
+	display: block;
+}
+
 /* Fancytree */
 #layerSelected span.fancytree-expander, #layerSelected span.fancytree-icon{display: none;}
 table.fancytree-ext-table tbody tr.fancytree-active {

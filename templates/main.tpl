@@ -30,14 +30,14 @@
         <li class="login">
           <a href="{jurl 'jcommunity~login:index', array('auth_url_return'=>$auth_url_return)}">
             <span class="icon"></span>
-            <span class="text">{@view~default.header.connect@}</span>
+            <span class="text text-secondary">{@view~default.header.connect@}</span>
           </a>
         </li>
           {if isset($allowUserAccountRequests) and $allowUserAccountRequests == '1'}
           <li class="registered">
             <a href="{jurl 'jcommunity~registration:index'}">
               <span class="icon"></span>
-              <span class="text">{@view~default.header.createAccount@}</span>
+              <span class="text text-secondary">{@view~default.header.createAccount@}</span>
             </a>
           </li>
           {/if}

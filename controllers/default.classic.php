@@ -16,6 +16,9 @@ class defaultCtrl extends jController {
 
         $rep = $this->getResponse('html', true);// true désactive le template général
 
+        // Get lizmap services
+        $services = lizmap::getServices();
+
         $title = "Map Builder";
         $rep->title = $title;
 
@@ -50,26 +53,28 @@ class defaultCtrl extends jController {
 
         // Build repository + project tree for FancyTree 
         foreach ($repositories as $key => $repositoryName) {
-        	$repository = lizmap::getRepository($repositoryName);
+            if( jAcl2::check('lizmap.repositories.view', $repository )){
+                $repository = lizmap::getRepository($repositoryName);
 
-        	$projects = $repository->getProjects();
+                $projects = $repository->getProjects();
 
-        	$projectArray = array();
-        	foreach ($projects as $project) {
-        		$projectArray[] = [
-        			"title" => $project->getData('title'),
-        			"folder" => true,
-        			"lazy" => true,
-        			"repository" => $repositoryName,
-        			"project" => $project->getKey()
-        		];
-        	}
+                $projectArray = array();
+                foreach ($projects as $project) {
+                    $projectArray[] = [
+                        "title" => $project->getData('title'),
+                        "folder" => true,
+                        "lazy" => true,
+                        "repository" => $repositoryName,
+                        "project" => $project->getKey()
+                    ];
+                }
 
-        	$nestedTree[] = [
-        		"title" => $repository->getData('label'),
-        		"folder" => true,
-        		"children" => $projectArray
-        	];
+                $nestedTree[] = [
+                    "title" => $repository->getData('label'),
+                    "folder" => true,
+                    "children" => $projectArray
+                ];
+            }
         }
 
         // Write tree as JSON
