@@ -110,13 +110,23 @@ $(function() {
       dragZoomControl.prototype.constructor = dragZoomControl;
 
       dragZoomControl.prototype.handleDragZoom = function handleDragZoom () {
-        $(this.element).addClass('active');
+        if($(this.element).hasClass('active')){
+          $(this.element).removeClass('active');
 
-        this.getMap().getInteractions().forEach(function(interaction) {
-          if(interaction.constructor.name === "DragZoom"){
-            interaction.condition_ = alwaysCondition;
-          }
-        });
+          this.getMap().getInteractions().forEach(function(interaction) {
+            if(interaction.constructor.name === "DragZoom"){
+              interaction.condition_ = shiftKeyOnlyCondition;
+            }
+          });
+        }else{
+          $(this.element).addClass('active');
+
+          this.getMap().getInteractions().forEach(function(interaction) {
+            if(interaction.constructor.name === "DragZoom"){
+              interaction.condition_ = alwaysCondition;
+            }
+          });
+        }
       };
 
       return dragZoomControl;
@@ -393,7 +403,7 @@ $(function() {
 
           $(node.tr).find(".toggleLegend").html("<i class='fas fa-caret-right'></i><img src='"+getLegendURL+"'>");
 
-          $(node.tr).find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-minus'></i></button>");
+          $(node.tr).find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-trash'></i></button>");
           $(node.tr).find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
           $(node.tr).find(".changeOpacityButton").html('\
             <div class="btn-group btn-group-sm" role="group" aria-label="Opacity">\

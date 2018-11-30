@@ -105,24 +105,24 @@
           <thead>
               <tr>
                   <th>Couche</th>
-                  <th>Style</th>
-                  <th>Légende</th>
                   <th>Suppression</th>
                   <th>Zoomer sur la couche</th>
-                  <th>Opacité</th>
                   <th>Ordre</th>
+                  <th>Style</th>
+                  <th>Légende</th>
+                  <th>Opacité</th>
               </tr>
           </thead>
           <!-- Otionally define a row that serves as template, when new nodes are created: -->
           <tbody>
               <tr>
                   <td></td>
-                  <td class="layerSelectedStyles"></td>
-                  <td class="toggleLegend"></td>
                   <td class="deleteLayerButton"></td>
                   <td class="zoomToExtentButton"></td>
-                  <td class="changeOpacityButton"></td>
                   <td class="changeOrder"></td>
+                  <td class="layerSelectedStyles"></td>
+                  <td class="toggleLegend"></td>
+                  <td class="changeOpacityButton"></td>
               </tr>
           </tbody>
       </table>

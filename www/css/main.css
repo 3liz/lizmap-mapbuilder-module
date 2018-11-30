@@ -16,6 +16,7 @@
 #layerSelected tr:first-child div.changeOrderUp, #layerSelected tr:last-child div.changeOrderDown {visibility: hidden;}
 
 /* Fancytree */
+#layerSelected span.fancytree-expander, #layerSelected span.fancytree-icon{display: none;}
 table.fancytree-ext-table tbody tr.fancytree-active {
     background-color: inherit;
 }
