@@ -3,12 +3,35 @@
 
 #map{padding-top: 75px;}
 
-#mapBuilder, #getFeatureInfos{
+#mapmenu {
+    position: absolute;
+    left: 0px;
+    top: 75px;
+    height: 100%;
+    width: 30px;
+    z-index: 1030;
+    background: #4A4A4A;
+    background: rgba(0,0,0,0.7);
+}
+
+#mapmenu .nav-link{padding: 0;text-align: center;color: white}
+#mapmenu .nav-link.active{color: initial;}
+
+#dock {
+    position: absolute;
+    left: 30px;
+    top: 75px;
+    z-index: 1;
+    padding: 5px;
+}
+
+/*#mapBuilder{
 	position: absolute;
-	z-index: 1;
+	
 	padding: 3px;
 	top: 75px;
-}
+	left: 40px;
+}*/
 
 .footer{position: absolute;bottom: 5px;right: 2px;width: 100%}
 

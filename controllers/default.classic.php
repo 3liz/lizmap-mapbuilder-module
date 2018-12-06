@@ -36,6 +36,7 @@ class defaultCtrl extends jController {
         $rep->addJSLinkModule('mapBuilder','js/es6-promise.auto.min.js');
         $rep->addJSLinkModule('mapBuilder','js/jquery-3.3.1.min.js');
         $rep->addJSLinkModule('mapBuilder','js/jquery.fancytree-all-deps.min.js');
+        $rep->addJSLinkModule('mapBuilder','js/popper.min.js');
         $rep->addJSLinkModule('mapBuilder','js/bootstrap.min.js');
         $rep->addJSLinkModule('mapBuilder','js/mapbuilder.js');
 

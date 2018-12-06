@@ -47,81 +47,90 @@
   </nav>
 </div>
 
-<div id="mapBuilder" class="bg-white">
-  <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-    <li class="nav-item">
-      <a class="nav-link active" id="pills-layers-tab" data-toggle="pill" href="#pills-layers" role="tab" aria-controls="pills-layers" aria-selected="true">Couches</a>
+<div id="mapmenu" style="">
+  <ul class="nav nav-tabs flex-column">
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Couches">
+      <a id="layerswitcher-tab" class="nav-link active" data-toggle="tab" href="#layerswitcher" role="tab" aria-controls="layerswitcher">
+        <i class="fas fa-layer-group"></i>
+      </a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" id="pills-selection-tab" data-toggle="pill" href="#pills-selection" role="tab" aria-controls="pills-selection" aria-selected="false">Sélection</a>
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Couches sélectionnées">
+      <a id="layerselection-tab" class="nav-link" data-toggle="tab" href="#layerselection" role="tab" aria-controls="layerselection">
+      <i class="fas fa-clipboard-list"></i>
+      </a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" id="pills-popup-tab" data-toggle="pill" href="#pills-popup" role="tab" aria-controls="pills-popup" aria-selected="false">Popup</a>
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Popup">
+      <a id="popupcontent-tab" class="nav-link" data-toggle="tab" href="#popupcontent" role="tab" aria-controls="popupcontent">
+      <i class="fas fa-comment-alt"></i>
+      </a>
     </li>
   </ul>
-  <div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade show active" id="pills-layers" role="tabpanel" aria-labelledby="pills-layers-tab">
-      <table id="layerStore">
-          <colgroup>
+</div>
+
+<div id="dock" class="bg-white">
+  <div id="mapBuilder" class="tab-content">
+      <div class="tab-pane fade show active" id="layerswitcher" role="tabpanel" aria-labelledby="switcher-tab">
+        <table id="layerStore">
+            <colgroup>
+                <col>
+                <col width="70px">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Couche</th>
+                    <th>Style</th>
+                    <th>Ajout</th>
+                </tr>
+            </thead>
+            <!-- Otionally define a row that serves as template, when new nodes are created: -->
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+      <div class="tab-pane fade" id="layerselection" role="tabpanel" aria-labelledby="pills-selection-tab">
+        <table id="layerSelected">
+            <colgroup>
               <col>
-              <col width="70px">
               <col>
-          </colgroup>
-          <thead>
+              <col>
+              <col>
+              <col>
+              <col span="3">
+            </colgroup>
+            <thead>
               <tr>
-                  <th>Couche</th>
-                  <th>Style</th>
-                  <th>Ajout</th>
+                <th>Couche</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Infos</th>
+                <th class="hide">Style</th>
+                <th class="hide">Légende</th>
+                <th class="hide">Opacité</th>
               </tr>
-          </thead>
-          <!-- Otionally define a row that serves as template, when new nodes are created: -->
-          <tbody>
+            </thead>
+            <tbody>
               <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                <td></td>
+                <td class="changeOrder"></td>
+                <td class="deleteLayerButton"></td>
+                <td class="zoomToExtentButton"></td>
+                <td class="toggleInfos"></td>
+                <td class="layerSelectedStyles hide"></td>
+                <td class="toggleLegend hide"></td>
+                <td class="changeOpacityButton hide"></td>
               </tr>
-          </tbody>
-      </table>
-    </div>
-    <div class="tab-pane fade" id="pills-selection" role="tabpanel" aria-labelledby="pills-selection-tab">
-      <table id="layerSelected">
-          <colgroup>
-            <col>
-            <col>
-            <col>
-            <col>
-            <col>
-            <col span="3">
-          </colgroup>
-          <thead>
-            <tr>
-              <th>Couche</th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th>Infos</th>
-              <th class="hide">Style</th>
-              <th class="hide">Légende</th>
-              <th class="hide">Opacité</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td></td>
-              <td class="changeOrder"></td>
-              <td class="deleteLayerButton"></td>
-              <td class="zoomToExtentButton"></td>
-              <td class="toggleInfos"></td>
-              <td class="layerSelectedStyles hide"></td>
-              <td class="toggleLegend hide"></td>
-              <td class="changeOpacityButton hide"></td>
-            </tr>
-          </tbody>
-      </table>
-    </div>
-    <div class="tab-pane fade" id="pills-popup" role="tabpanel" aria-labelledby="pills-popup-tab">
-    </div>
+            </tbody>
+        </table>
+      </div>
+      <div class="tab-pane fade" id="popupcontent" role="tabpanel" aria-labelledby="popupcontent-tab">
+      </div>
   </div>
 </div>
 
