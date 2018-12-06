@@ -39,7 +39,7 @@ $(function() {
           return myArray;
       }
 
-      var myObj = { title: cfg.layers[layer.Name].title, name : layer.Name};
+      var myObj = { title: cfg.layers[layer.Name].title, name : layer.Name, popup : cfg.layers[layer.Name].popup};
       if(layer.hasOwnProperty('Style')){
         myObj.style = layer.Style;
       }
@@ -82,12 +82,6 @@ $(function() {
 
         if ($.ui.fancytree.getTree("#layerSelected") !== null) {
           $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
-
-          // if($(".layerSelectedStyles:visible").length > 0){
-          //   $("#layerSelected th.hide").show();
-          // }else{
-          //   $("#layerSelected th.hide").hide();
-          // }
         }
     }
 
@@ -241,6 +235,37 @@ $(function() {
 
     mapBuilder.map.on('moveend', onMoveEnd);
 
+    // Handle getFeatureInfo when map is clicked
+    mapBuilder.map.on('singleclick', function(evt) {
+      document.getElementById('pills-popup').innerHTML = '';
+      var viewResolution = mapBuilder.map.getView().getResolution();
+      var getFeatureInfos = [];
+      var getFeatureInfosIframes = ""
+
+      mapBuilder.map.getLayers().forEach(function(layer) {
+        if(layer.type == "IMAGE" && layer.values_.popup == "True"){
+          var url = layer.getSource().getGetFeatureInfoUrl(
+            evt.coordinate, viewResolution, 'EPSG:3857',
+            {'INFO_FORMAT': 'text/html'});
+
+          // Display getFeatureInfos by zIndex order
+          if (url) {
+            getFeatureInfos[layer.getZIndex()] = url;
+          }
+        }
+      });
+
+      for (var i = getFeatureInfos.length - 1; i >= 0; i--) {
+        if(getFeatureInfos[i] !== undefined){
+          getFeatureInfosIframes += '<iframe seamless src="' + getFeatureInfos[i] + '"></iframe>';
+        }
+      }
+      document.getElementById('pills-popup').innerHTML = getFeatureInfosIframes;
+
+      // Show popup tab
+      $('#pills-popup-tab').tab('show')
+    });
+
     $('#layerStore').fancytree({
         selectMode: 3,
         source: mapBuilder.layerStoreTree,
@@ -332,6 +357,7 @@ $(function() {
           repositoryId: repositoryId,
           projectId: projectId,
           bbox: node.data.bbox,
+          popup: node.data.popup,
           source: new ImageWMS({
               url: '/index.php/lizmap/service/?repository=' + repositoryId + '&project=' + projectId,
               params: {

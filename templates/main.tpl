@@ -50,14 +50,17 @@
 <div id="mapBuilder" class="bg-white">
   <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Couches</a>
+      <a class="nav-link active" id="pills-layers-tab" data-toggle="pill" href="#pills-layers" role="tab" aria-controls="pills-layers" aria-selected="true">Couches</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Sélection</a>
+      <a class="nav-link" id="pills-selection-tab" data-toggle="pill" href="#pills-selection" role="tab" aria-controls="pills-selection" aria-selected="false">Sélection</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="pills-popup-tab" data-toggle="pill" href="#pills-popup" role="tab" aria-controls="pills-popup" aria-selected="false">Popup</a>
     </li>
   </ul>
   <div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+    <div class="tab-pane fade show active" id="pills-layers" role="tabpanel" aria-labelledby="pills-layers-tab">
       <table id="layerStore">
           <colgroup>
               <col>
@@ -81,7 +84,7 @@
           </tbody>
       </table>
     </div>
-    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+    <div class="tab-pane fade" id="pills-selection" role="tabpanel" aria-labelledby="pills-selection-tab">
       <table id="layerSelected">
           <colgroup>
             <col>
@@ -116,6 +119,8 @@
             </tr>
           </tbody>
       </table>
+    </div>
+    <div class="tab-pane fade" id="pills-popup" role="tabpanel" aria-labelledby="pills-popup-tab">
     </div>
   </div>
 </div>

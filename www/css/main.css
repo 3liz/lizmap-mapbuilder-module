@@ -3,7 +3,7 @@
 
 #map{padding-top: 75px;}
 
-#mapBuilder{
+#mapBuilder, #getFeatureInfos{
 	position: absolute;
 	z-index: 1;
 	padding: 3px;
