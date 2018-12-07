@@ -68,8 +68,9 @@
 </div>
 
 <div id="dock" class="bg-white">
+  <div id="dock-close"><button class="btn btn-sm">Fermer</button></div>
   <div id="mapBuilder" class="tab-content">
-      <div class="tab-pane fade show active" id="layerswitcher" role="tabpanel" aria-labelledby="switcher-tab">
+      <div class="tab-pane fade show active" id="layerswitcher" role="tabpanel" aria-labelledby="layerswitcher-tab">
         <table id="layerStore">
             <colgroup>
                 <col>
@@ -93,7 +94,7 @@
             </tbody>
         </table>
       </div>
-      <div class="tab-pane fade" id="layerselection" role="tabpanel" aria-labelledby="pills-selection-tab">
+      <div class="tab-pane fade" id="layerselection" role="tabpanel" aria-labelledby="layerselection-tab">
         <table id="layerSelected">
             <colgroup>
               <col>

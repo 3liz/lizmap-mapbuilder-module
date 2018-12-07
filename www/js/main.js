@@ -20,11 +20,6 @@ var originalZoom = 12;
 
 $(function() {
 
-  // Disable focus
-  $('[data-toggle="tooltip"]').tooltip({
-     'trigger': 'hover'
-  });
-
   function buildLayerTree(layer, cfg) {
     var myArray = [];
     if (Array.isArray(layer)) {
@@ -551,5 +546,22 @@ $(function() {
 
     refreshLayerSelected();
     e.stopPropagation();  // prevent fancytree activate for this row
+  });
+
+  // Open/Close dock behaviour
+  $('#dock-close').on("click", function(e){
+    $('#mapmenu .nav-link').removeClass('active');
+    $("#dock").hide();
+  });
+
+  $('#mapmenu .nav-link').on('shown.bs.tab', function (e) {
+    $("#dock").show();
+  })
+
+  // Bootstrap
+
+  // Disable tooltip on focus
+  $('[data-toggle="tooltip"]').tooltip({
+     'trigger': 'hover'
   });
 });

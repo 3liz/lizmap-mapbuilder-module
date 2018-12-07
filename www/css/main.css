@@ -25,13 +25,7 @@
     padding: 5px;
 }
 
-/*#mapBuilder{
-	position: absolute;
-	
-	padding: 3px;
-	top: 75px;
-	left: 40px;
-}*/
+#dock-close{text-align: right;}
 
 .footer{position: absolute;bottom: 5px;right: 2px;width: 100%}
 
