@@ -132,43 +132,6 @@ $(function() {
     return dragZoomControl;
   }(Control));
 
-  var exportPDFControl = (function (Control) {
-    function exportPDFControl(opt_options) {
-      var options = opt_options || {};
-
-      var button = document.createElement('button');
-      button.className = 'fas fa-file-pdf';
-      button.title = 'Impression PDF';
-
-      var element = document.createElement('div');
-      element.className = 'ol-export-pdf ol-unselectable ol-control';
-      element.appendChild(button);
-
-      Control.call(this, {
-        element: element,
-        target: options.target
-      });
-
-      button.addEventListener('click', this.handleExportPDF.bind(this), false);
-    }
-
-    if ( Control ) exportPDFControl.__proto__ = Control;
-    exportPDFControl.prototype = Object.create( Control && Control.prototype );
-    exportPDFControl.prototype.constructor = exportPDFControl;
-
-    exportPDFControl.prototype.handleExportPDF = function handleExportPDF () {
-      document.body.style.cursor = 'progress';
-      var canvas = $('#map canvas');
-      var data = canvas[0].toDataURL('image/jpeg');
-      var pdf = new jsPDF('landscape');
-      pdf.addImage(data, 'JPEG', 0, 0);
-      pdf.save('map.pdf');
-      document.body.style.cursor = 'auto';
-    };
-
-    return exportPDFControl;
-  }(Control));
-
   var zoomToOriginControl = (function (Control) {
     function zoomToOriginControl(opt_options) {
       var options = opt_options || {};
@@ -206,15 +169,14 @@ $(function() {
       controls: defaultControls().extend([
         new ScaleLine(),
         new dragZoomControl(),
-        new exportPDFControl(),
         new zoomToOriginControl()
       ]),
-      // layers: [
-      //   new TileLayer({
-      //     title: "OSM",
-      //     source: new OSM()
-      //   })
-      // ],
+      layers: [
+        new TileLayer({
+          title: "OSM",
+          source: new OSM()
+        })
+      ],
       view: new View({
           center: originalCenter,
           zoom: originalZoom
@@ -556,7 +518,50 @@ $(function() {
 
   $('#mapmenu .nav-link').on('shown.bs.tab', function (e) {
     $("#dock").show();
-  })
+  });
+
+  $('#pdf-print-btn').on("click", function(e){
+
+    $(this).addClass("disabled");
+    document.body.style.cursor = 'progress';
+
+    var dims = {
+       a0: [1189, 841],
+       a1: [841, 594],
+       a2: [594, 420],
+       a3: [420, 297],
+       a4: [297, 210],
+       a5: [210, 148]
+     };
+
+    var format = document.getElementById('format-pdf-print').value;
+    var resolution = document.getElementById('resolution-pdf-print').value;
+    var dim = dims[format];
+    var width = Math.round(dim[0] * resolution / 25.4);
+    var height = Math.round(dim[1] * resolution / 25.4);
+    var size = mapBuilder.map.getSize();
+    var extent = mapBuilder.map.getView().calculateExtent(size);
+
+    mapBuilder.map.once('rendercomplete', function(event) {
+      var canvas = event.context.canvas;
+      var data = canvas.toDataURL('image/jpeg');
+      var pdf = new jsPDF('landscape', undefined, format);
+      pdf.text($('#pdf-print-title').val(), 15, 10);
+      pdf.addImage(data, 'JPEG', 5, 20, dim[0], dim[1]);
+      pdf.save('map.pdf');
+      // Reset original map size
+      mapBuilder.map.setSize(size);
+      mapBuilder.map.getView().fit(extent, {size: size});
+      document.body.style.cursor = 'auto';
+    });
+
+    // Set print size
+    var printSize = [width, height];
+    mapBuilder.map.setSize(printSize);
+    mapBuilder.map.getView().fit(extent, {size: printSize});
+
+    $(this).removeClass("disabled");
+  });
 
   // Bootstrap
 
