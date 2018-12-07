@@ -539,17 +539,35 @@ $(function() {
     var format = document.getElementById('format-pdf-print').value;
     var resolution = document.getElementById('resolution-pdf-print').value;
     var dim = dims[format];
+    // 1 inch = 2,54 cm = 25,4 mm
     var width = Math.round(dim[0] * resolution / 25.4);
     var height = Math.round(dim[1] * resolution / 25.4);
     var size = mapBuilder.map.getSize();
     var extent = mapBuilder.map.getView().calculateExtent(size);
 
+    var pdf = new jsPDF('landscape', 'mm', format);
+    // Add title
+    pdf.setFontSize(18);
+    pdf.text($('#pdf-print-title').val(), 50, 10);
+
+    var offset = 25;
+    var maxWidthLegend = 0;
+    $( "#legend img" ).each(function( index, legend ) {
+      pdf.addImage(legend, 'PNG', 0, offset*25.4/resolution);
+      offset += legend.height;
+
+      if( legend.height > maxWidthLegend){
+        maxWidthLegend = legend.height;
+      }
+    });
+
+    // Add map and save pdf
     mapBuilder.map.once('rendercomplete', function(event) {
       var canvas = event.context.canvas;
       var data = canvas.toDataURL('image/jpeg');
-      var pdf = new jsPDF('landscape', undefined, format);
-      pdf.text($('#pdf-print-title').val(), 15, 10);
-      pdf.addImage(data, 'JPEG', 5, 20, dim[0], dim[1]);
+ 
+
+      pdf.addImage(data, 'JPEG', maxWidthLegend*25.4/resolution, 20, dim[0] - (maxWidthLegend*25.4/resolution), dim[1]);
       pdf.save('map.pdf');
       // Reset original map size
       mapBuilder.map.setSize(size);
@@ -558,7 +576,7 @@ $(function() {
     });
 
     // Set print size
-    var printSize = [width, height];
+    var printSize = [width - maxWidthLegend, height];
     mapBuilder.map.setSize(printSize);
     mapBuilder.map.getView().fit(extent, {size: printSize});
 
