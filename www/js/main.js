@@ -385,18 +385,7 @@ $(function() {
         var node = data.node;
         $(node.tr).find(".layerSelectedStyles").text(node.data.styles);
 
-        var getLegendURL = "";
         var opacity = 0;
-
-        var layers = mapBuilder.map.getLayers().getArray();
-        for (var i = 0; i < layers.length; i++) {
-          if(layers[i].ol_uid == node.data.ol_uid){
-            getLegendURL = layers[i].values_.source.url_+'&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER='+layers[i].values_.source.params_.LAYERS+'&STYLE='+layers[i].values_.source.params_.STYLES+'&FORMAT=image/png';
-            opacity = layers[i].getOpacity();
-          }
-        }
-
-        $(node.tr).find(".toggleLegend").html("<button class='btn btn-sm'><i class='fas fa-image'></i></button><img src='"+getLegendURL+"'>");
 
         $(node.tr).find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-trash'></i></button>");
         $(node.tr).find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
@@ -417,11 +406,6 @@ $(function() {
           $("#layerSelected th.hide").hide();
         }
       }
-  });
-
-  $('#layerSelected').on("click", ".toggleLegend button", function(e){
-    $(this).next().toggle();
-    e.stopPropagation();  // prevent fancytree activate for this row
   });
 
   $('#layerSelected').on("click", ".deleteLayerButton button", function(e){
@@ -508,6 +492,24 @@ $(function() {
 
     refreshLayerSelected();
     e.stopPropagation();  // prevent fancytree activate for this row
+  });
+
+  $('#legend-tab').on('shown.bs.tab', function (e) {
+    var legends = [];
+    var legendsDiv = "";
+
+    mapBuilder.map.getLayers().forEach(function(layer) {
+      if(layer.type == "IMAGE"){
+        legends[layer.getZIndex()] = layer.values_.source.url_+'&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER='+layer.values_.source.params_.LAYERS+'&STYLE='+layer.values_.source.params_.STYLES+'&FORMAT=image/png';
+      }
+    });
+
+    for (var i = legends.length - 1; i >= 0; i--) {
+      if(legends[i] !== undefined){
+        legendsDiv += '<div><img src="' + legends[i] + '"></div>';
+      }
+    }
+    document.getElementById('legend').innerHTML = legendsDiv;
   });
 
   // Open/Close dock behaviour

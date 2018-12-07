@@ -50,7 +50,7 @@
 <div id="mapmenu" style="">
   <ul class="nav nav-tabs flex-column">
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Couches">
-      <a id="layerswitcher-tab" class="nav-link" data-toggle="tab" href="#layerswitcher" role="tab" aria-controls="layerswitcher">
+      <a id="layerswitcher-tab" class="nav-link active" data-toggle="tab" href="#layerswitcher" role="tab" aria-controls="layerswitcher">
         <i class="fas fa-layer-group"></i>
       </a>
     </li>
@@ -59,13 +59,18 @@
       <i class="fas fa-clipboard-list"></i>
       </a>
     </li>
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Légende">
+      <a id="legend-tab" class="nav-link" data-toggle="tab" href="#legend" role="tab" aria-controls="legend">
+      <i class="fas fa-image"></i>
+      </a>
+    </li>
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Popup">
       <a id="popupcontent-tab" class="nav-link" data-toggle="tab" href="#popupcontent" role="tab" aria-controls="popupcontent">
       <i class="fas fa-comment-alt"></i>
       </a>
     </li>
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Impression PDF">
-      <a id="pdf-print-tab" class="nav-link active" data-toggle="tab" href="#pdf-print" role="tab" aria-controls="pdf-print">
+      <a id="pdf-print-tab" class="nav-link" data-toggle="tab" href="#pdf-print" role="tab" aria-controls="pdf-print">
       <i class="fas fa-file-pdf"></i>
       </a>
     </li>
@@ -75,7 +80,7 @@
 <div id="dock" class="bg-white">
   <div id="dock-close"><button class="btn btn-sm">Fermer</button></div>
   <div id="mapBuilder" class="tab-content">
-    <div class="tab-pane fade" id="layerswitcher" role="tabpanel" aria-labelledby="layerswitcher-tab">
+    <div class="tab-pane fade show active" id="layerswitcher" role="tabpanel" aria-labelledby="layerswitcher-tab">
       <table id="layerStore">
           <colgroup>
               <col>
@@ -89,7 +94,6 @@
                   <th>Ajout</th>
               </tr>
           </thead>
-          <!-- Otionally define a row that serves as template, when new nodes are created: -->
           <tbody>
               <tr>
                   <td></td>
@@ -106,7 +110,6 @@
             <col>
             <col>
             <col>
-            <col>
             <col span="3">
           </colgroup>
           <thead>
@@ -117,7 +120,6 @@
               <th></th>
               <th>Infos</th>
               <th class="hide">Style</th>
-              <th class="hide">Légende</th>
               <th class="hide">Opacité</th>
             </tr>
           </thead>
@@ -129,15 +131,16 @@
               <td class="zoomToExtentButton"></td>
               <td class="toggleInfos"></td>
               <td class="layerSelectedStyles hide"></td>
-              <td class="toggleLegend hide"></td>
               <td class="changeOpacityButton hide"></td>
             </tr>
           </tbody>
       </table>
     </div>
+    <div class="tab-pane fade" id="legend" role="tabpanel" aria-labelledby="legend-tab">
+    </div>
     <div class="tab-pane fade" id="popupcontent" role="tabpanel" aria-labelledby="popupcontent-tab">
     </div>
-    <div class="tab-pane fade show active" id="pdf-print" role="tabpanel" aria-labelledby="pdf-print-tab">
+    <div class="tab-pane fade" id="pdf-print" role="tabpanel" aria-labelledby="pdf-print-tab">
       <input id="pdf-print-title" class="form-control" type="text" placeholder="Titre de la carte">
       <label>Format de la page</label>
       <select id="format-pdf-print" class="custom-select">
