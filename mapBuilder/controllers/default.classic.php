@@ -80,6 +80,13 @@ class defaultCtrl extends jController {
         // Write tree as JSON
         $rep->addJSCode('var mapBuilder = {"layerStoreTree": '.json_encode($nestedTree).'}');
 
+        // Get original extent from ini file if set
+        $readConfigPath = parse_ini_file(jApp::configPath('mapBuilder.ini.php'), True);
+
+        if(array_key_exists('extent', $readConfigPath)){
+            $rep->addJSCode("mapBuilder.extent = ".$readConfigPath['extent'].";");
+        }
+
         $rep->body->assign('repositoryLabel', $title);
         $rep->body->assign('isConnected', jAuth::isConnected());
         $rep->body->assign('user', jAuth::getUserSession());

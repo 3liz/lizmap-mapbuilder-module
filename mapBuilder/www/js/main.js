@@ -14,9 +14,9 @@ import {transformExtent,Projection} from 'ol/proj.js';
 import {defaults as defaultInteractions, DragZoom} from 'ol/interaction.js';
 import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from 'ol/events/condition.js';
 
-// TODO : récupérer ses valeurs depuis un fichier de conf 
-var originalCenter = [430645.4279553129, 5404295.196391977];
-var originalZoom = 12;
+// Extent on France if not defined in mapBuilder.ini.php
+var originalCenter = [217806.92414447578, 5853470.637803803];
+var originalZoom = 6;
 
 $(function() {
 
@@ -186,6 +186,11 @@ $(function() {
           zoom: originalZoom
       })
   });
+
+  // Extent is set in mapBuilder.ini.php => fit view on it
+  if(mapBuilder.hasOwnProperty('extent')){
+    mapBuilder.map.getView().fit(transformExtent(mapBuilder.extent, 'EPSG:4326', mapBuilder.map.getView().projection_));
+  }
 
   function onMoveEnd(evt) {
     if($(".ol-drag-zoom").hasClass("active")){
@@ -515,10 +520,6 @@ $(function() {
     }
     document.getElementById('legend').innerHTML = legendsDiv;
   }
-
-  // $('#legend-tab').on('shown.bs.tab', function (e) {
-  //   loadLegend();
-  // });
 
   // Open/Close dock behaviour
   $('#dock-close').on("click", function(e){
