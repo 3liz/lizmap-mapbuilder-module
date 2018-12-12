@@ -1,0 +1,24 @@
+{
+    "name": "lizmap/lizmap-mapbuilder-module",
+    "type": "jelix-module",
+    "description": "Jelix module for Lizmap, which adds a map builder based on every repositories",
+    "keywords": ["module", "jelix", "lizmap", "builder"],
+    "homepage": "https://3liz.com",
+    "license": "Mozilla Public License 2.0 (MPL 2.0)",
+    "authors": [
+        {
+            "name": "Nicolas Boisteault",
+            "email": "nboisteault@3liz.com"
+        }
+    ],
+    "require": {
+    },
+    "minimum-stability": "stable",
+    "extra" : {
+        "jelix" : {
+            "modules": [
+                "mapBuilder/"
+            ]
+        }
+    }
+}
