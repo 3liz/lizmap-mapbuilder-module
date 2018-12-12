@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "OpenLayers with Webpack",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "watch": "webpack --watch"
+    "build": "webpack --config webpack.prod.js",
+    "watch": "webpack --watch --config webpack.dev.js"
   },
   "devDependencies": {
     "webpack": "^4.12.1",
-    "webpack-command": "^0.3.0"
+    "webpack-command": "^0.3.0",
+    "webpack-merge": "^4.1.5"
   },
   "dependencies": {
     "jspdf": "^1.4.1",
