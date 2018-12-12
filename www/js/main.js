@@ -83,6 +83,10 @@ $(function() {
       if ($.ui.fancytree.getTree("#layerSelected") !== null) {
         $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
       }
+
+      // Refresh legends
+      // TODO : improve loadLegend to avoid multiple getLegendGraphic requests
+      loadLegend();
   }
 
   var dragZoomControl = (function (Control) {
@@ -494,7 +498,7 @@ $(function() {
     e.stopPropagation();  // prevent fancytree activate for this row
   });
 
-  $('#legend-tab').on('shown.bs.tab', function (e) {
+  function loadLegend(){
     var legends = [];
     var legendsDiv = "";
 
@@ -510,7 +514,11 @@ $(function() {
       }
     }
     document.getElementById('legend').innerHTML = legendsDiv;
-  });
+  }
+
+  // $('#legend-tab').on('shown.bs.tab', function (e) {
+  //   loadLegend();
+  // });
 
   // Open/Close dock behaviour
   $('#dock-close').on("click", function(e){
@@ -540,8 +548,9 @@ $(function() {
     var resolution = document.getElementById('resolution-pdf-print').value;
     var dim = dims[format];
     // 1 inch = 2,54 cm = 25,4 mm
-    var width = Math.round(dim[0] * resolution / 25.4);
-    var height = Math.round(dim[1] * resolution / 25.4);
+    const INCHTOMM = 25.4;
+    var width = Math.round(dim[0] * resolution / INCHTOMM);
+    var height = Math.round(dim[1] * resolution / INCHTOMM);
     var size = mapBuilder.map.getSize();
     var extent = mapBuilder.map.getView().calculateExtent(size);
 
@@ -552,12 +561,13 @@ $(function() {
 
     var offset = 25;
     var maxWidthLegend = 0;
+
     $( "#legend img" ).each(function( index, legend ) {
-      pdf.addImage(legend, 'PNG', 0, offset*25.4/resolution);
+      pdf.addImage(legend, 'PNG', 0, offset * INCHTOMM/resolution);
       offset += legend.height;
 
-      if( legend.height > maxWidthLegend){
-        maxWidthLegend = legend.height;
+      if( legend.width > maxWidthLegend){
+        maxWidthLegend = legend.width;
       }
     });
 
@@ -566,8 +576,7 @@ $(function() {
       var canvas = event.context.canvas;
       var data = canvas.toDataURL('image/jpeg');
  
-
-      pdf.addImage(data, 'JPEG', maxWidthLegend*25.4/resolution, 20, dim[0] - (maxWidthLegend*25.4/resolution), dim[1]);
+      pdf.addImage(data, 'JPEG', maxWidthLegend * INCHTOMM/resolution, 20, dim[0] - (maxWidthLegend * INCHTOMM/resolution), dim[1]);
       pdf.save('map.pdf');
       // Reset original map size
       mapBuilder.map.setSize(size);
