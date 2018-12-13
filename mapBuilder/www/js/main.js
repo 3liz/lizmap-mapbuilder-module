@@ -187,9 +187,12 @@ $(function() {
       })
   });
 
-  // Extent is set in mapBuilder.ini.php => fit view on it
+  // Extent is set in mapBuilder.ini.php => fit view on it and override originalCenter and originalZoom
   if(mapBuilder.hasOwnProperty('extent')){
     mapBuilder.map.getView().fit(transformExtent(mapBuilder.extent, 'EPSG:4326', mapBuilder.map.getView().projection_));
+
+    originalCenter = mapBuilder.map.getView().getCenter();
+    originalZoom = mapBuilder.map.getView().getZoom();
   }
 
   function onMoveEnd(evt) {
