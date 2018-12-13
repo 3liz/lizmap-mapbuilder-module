@@ -18,6 +18,9 @@ import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from '
 var originalCenter = [217806.92414447578, 5853470.637803803];
 var originalZoom = 6;
 
+// 1 inch = 2,54 cm = 25,4 mm
+const INCHTOMM = 25.4;
+
 $(function() {
 
   function buildLayerTree(layer, cfg) {
@@ -169,22 +172,22 @@ $(function() {
   }(Control));
 
   mapBuilder.map = new Map({
-      target: 'map',
-      controls: defaultControls().extend([
-        new ScaleLine(),
-        new dragZoomControl(),
-        new zoomToOriginControl()
-      ]),
-      layers: [
-        new TileLayer({
-          title: "OSM",
-          source: new OSM()
-        })
-      ],
-      view: new View({
-          center: originalCenter,
-          zoom: originalZoom
+    target: 'map',
+    controls: defaultControls().extend([
+      new ScaleLine(),
+      new dragZoomControl(),
+      new zoomToOriginControl()
+    ]),
+    layers: [
+      new TileLayer({
+        title: "OSM",
+        source: new OSM()
       })
+    ],
+    view: new View({
+        center: originalCenter,
+        zoom: originalZoom
+    })
   });
 
   // Extent is set in mapBuilder.ini.php => fit view on it and override originalCenter and originalZoom
@@ -241,80 +244,80 @@ $(function() {
   });
 
   $('#layerStore').fancytree({
-      selectMode: 3,
-      source: mapBuilder.layerStoreTree,
-      extensions: ["table", "glyph"],
-      table: {
-        indentation: 20,      // indent 20px per node level
-        nodeColumnIdx: 0     // render the node title into the first column
-      },
-      glyph: {
-          // The preset defines defaults for all supported icon types.
-          // It also defines a common class name that is prepended (in this case 'fa ')
-          preset: "awesome5",
-          map: {
-            doc: "fas fa-globe-africa",
-            docOpen: "fas fa-globe-africa",
-            folder: "fas fa-folder",
-            folderOpen: "fas fa-folder-open"
-          }
-        },
-      lazyLoad: function(event, data) {
-          //https://github.com/mar10/fancytree/wiki/TutorialLoadData
-          var repositoryId = data.node.data.repository;
-          var projectId = data.node.data.project;
-          var url = lizUrls.wms+"?repository=" + repositoryId + "&project=" + projectId + "&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
-          var parser = new WMSCapabilities();
-
-          const promises = [
-            new Promise(resolve => 
-              $.get(url, function(capabilities) {
-                  var result = parser.read(capabilities);
-
-                  var node = result.Capability;
-
-                  // First layer is in fact project
-                  if (node.hasOwnProperty('Layer')) {
-                      resolve(node.Layer.Layer);
-                  }
-              })
-            ),
-            new Promise(resolve => 
-              $.getJSON(lizUrls.config,{"repository":repositoryId,"project":projectId},function(cfgData) {
-                resolve(cfgData);
-              })
-            )
-          ];
-
-          data.result = Promise.all(promises).then(results => {
-            return buildLayerTree(results[0], results[1]);
-          });
-      },
-      renderColumns: function(event, data) {
-        var node = data.node,
-        $tdList = $(node.tr).find(">td");
-
-        // Disable buttons if current scale not between minScale et maxScale
-        var disabled = '';
-
-        // Min/max Scale
-        // if(node.data.hasOwnProperty('minScale')){
-        //   disabled = 'disabled';
-        // }
-
-        // Style list
-        if(node.data.hasOwnProperty('style')){
-          var styleOption = "";
-          node.data.style.forEach(function(style) {
-            styleOption += "<option>"+style.Name+"</option>";
-          });
-          $tdList.eq(1).html("<select "+disabled+" class='layerStyles custom-select-sm'>"+styleOption+"</select>");
+    selectMode: 3,
+    source: mapBuilder.layerStoreTree,
+    extensions: ["table", "glyph"],
+    table: {
+      indentation: 20,      // indent 20px per node level
+      nodeColumnIdx: 0     // render the node title into the first column
+    },
+    glyph: {
+        // The preset defines defaults for all supported icon types.
+        // It also defines a common class name that is prepended (in this case 'fa ')
+        preset: "awesome5",
+        map: {
+          doc: "fas fa-globe-africa",
+          docOpen: "fas fa-globe-africa",
+          folder: "fas fa-folder",
+          folderOpen: "fas fa-folder-open"
         }
-        // Add button for layers (level 1 => repositories, 2 => projects)
-        if(node.getLevel() > 2 && node.children == null){
-          $tdList.eq(2).html("<button "+disabled+" type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>");
-        }
+      },
+    lazyLoad: function(event, data) {
+        //https://github.com/mar10/fancytree/wiki/TutorialLoadData
+        var repositoryId = data.node.data.repository;
+        var projectId = data.node.data.project;
+        var url = lizUrls.wms+"?repository=" + repositoryId + "&project=" + projectId + "&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
+        var parser = new WMSCapabilities();
+
+        const promises = [
+          new Promise(resolve => 
+            $.get(url, function(capabilities) {
+                var result = parser.read(capabilities);
+
+                var node = result.Capability;
+
+                // First layer is in fact project
+                if (node.hasOwnProperty('Layer')) {
+                    resolve(node.Layer.Layer);
+                }
+            })
+          ),
+          new Promise(resolve => 
+            $.getJSON(lizUrls.config,{"repository":repositoryId,"project":projectId},function(cfgData) {
+              resolve(cfgData);
+            })
+          )
+        ];
+
+        data.result = Promise.all(promises).then(results => {
+          return buildLayerTree(results[0], results[1]);
+        });
+    },
+    renderColumns: function(event, data) {
+      var node = data.node,
+      $tdList = $(node.tr).find(">td");
+
+      // Disable buttons if current scale not between minScale et maxScale
+      var disabled = '';
+
+      // Min/max Scale
+      // if(node.data.hasOwnProperty('minScale')){
+      //   disabled = 'disabled';
+      // }
+
+      // Style list
+      if(node.data.hasOwnProperty('style')){
+        var styleOption = "";
+        node.data.style.forEach(function(style) {
+          styleOption += "<option>"+style.Name+"</option>";
+        });
+        $tdList.eq(1).html("<select "+disabled+" class='layerStyles custom-select-sm'>"+styleOption+"</select>");
       }
+      // Add button for layers (level 1 => repositories, 2 => projects)
+      if(node.getLevel() > 2 && node.children == null){
+        $tdList.eq(2).html("<button "+disabled+" type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>");
+      }
+    }
   });
 
   /* Handle custom addLayerButton clicks (http://wwwendt.de/tech/fancytree/demo/#sample-ext-table.html) */
@@ -327,19 +330,28 @@ $(function() {
     var projectId = parentList[1].data.project;
 
     var newLayer = new ImageLayer({
-        title: node.title,
-        repositoryId: repositoryId,
-        projectId: projectId,
-        bbox: node.data.bbox,
-        popup: node.data.popup,
-        source: new ImageWMS({
-            url: '/index.php/lizmap/service/?repository=' + repositoryId + '&project=' + projectId,
-            params: {
-              'LAYERS': node.data.name,
-              'STYLES': $(node.tr).find(">td .layerStyles :selected").text()
-            }
-        })
+      title: node.title,
+      repositoryId: repositoryId,
+      projectId: projectId,
+      bbox: node.data.bbox,
+      popup: node.data.popup,
+      source: new ImageWMS({
+        url: '/index.php/lizmap/service/?repository=' + repositoryId + '&project=' + projectId,
+        params: {
+          'LAYERS': node.data.name,
+          'STYLES': $(node.tr).find(">td .layerStyles :selected").text()
+        },
+        serverType: 'qgis'
+      })
     });
+
+    // Set min/max resolution if min/max scale are defined in getCapabilities
+    if(node.data.hasOwnProperty('minScale')){
+      newLayer.setMinResolution(node.data.minScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
+    }
+    if(node.data.hasOwnProperty('maxScale')){
+      newLayer.setMaxResolution(node.data.maxScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
+    }
 
     var maxZindex = -1;
     // Get maximum Z-index to put new layer at top of the stack
@@ -551,8 +563,6 @@ $(function() {
     var format = document.getElementById('format-pdf-print').value;
     var resolution = document.getElementById('resolution-pdf-print').value;
     var dim = dims[format];
-    // 1 inch = 2,54 cm = 25,4 mm
-    const INCHTOMM = 25.4;
     var width = Math.round(dim[0] * resolution / INCHTOMM);
     var height = Math.round(dim[1] * resolution / INCHTOMM);
     var size = mapBuilder.map.getSize();
