@@ -411,6 +411,13 @@ $(function() {
 
         var opacity = 0;
 
+        var layers = mapBuilder.map.getLayers().getArray();
+        for (var i = 0; i < layers.length; i++) {
+          if(layers[i].ol_uid == node.data.ol_uid){
+            opacity = layers[i].getOpacity();
+          }
+        }
+
         $(node.tr).find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-trash'></i></button>");
         $(node.tr).find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
         $(node.tr).find(".changeOrder").html("<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>");
