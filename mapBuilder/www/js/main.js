@@ -69,12 +69,18 @@ $(function() {
       var layerTree = [];
       mapBuilder.map.getLayers().forEach(function(layer) {
         // Don't add OSM
-        if(layer.values_.title != "OSM"){
-          layerTree[layer.getZIndex()] = {
+        if(layer.getProperties().title != "OSM"){
+          var layerObject = {
             title: layer.getProperties().title,
             styles: layer.getSource().getParams().STYLES,
             ol_uid: layer.ol_uid
           };
+
+          if(layer.getZIndex() !== undefined){
+            layerTree[layer.getZIndex()] = layerObject;
+          }/*else{
+            layerTree.push(layerObject);
+          }*/
         }
       });
 
@@ -297,25 +303,17 @@ $(function() {
       var node = data.node,
       $tdList = $(node.tr).find(">td");
 
-      // Disable buttons if current scale not between minScale et maxScale
-      var disabled = '';
-
-      // Min/max Scale
-      // if(node.data.hasOwnProperty('minScale')){
-      //   disabled = 'disabled';
-      // }
-
       // Style list
       if(node.data.hasOwnProperty('style')){
         var styleOption = "";
         node.data.style.forEach(function(style) {
           styleOption += "<option>"+style.Name+"</option>";
         });
-        $tdList.eq(1).html("<select "+disabled+" class='layerStyles custom-select-sm'>"+styleOption+"</select>");
+        $tdList.eq(1).html("<select class='layerStyles custom-select-sm'>"+styleOption+"</select>");
       }
       // Add button for layers (level 1 => repositories, 2 => projects)
       if(node.getLevel() > 2 && node.children == null){
-        $tdList.eq(2).html("<button "+disabled+" type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>");
+        $tdList.eq(2).html("<button type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>");
       }
     }
   });
@@ -613,7 +611,84 @@ $(function() {
     $(this).removeClass("disabled");
   });
 
-  // Bootstrap
+  // Save user's map context
+  $('#savemap-btn').on("click", function(e){
+
+    var mapContext = [];
+
+    mapBuilder.map.getLayers().forEach(function(layer) {
+      // Don't add OSM
+      if(layer.values_.title != "OSM"){
+
+        var layerProperties = layer.getProperties();
+        var layerSourceParams = layer.getSource().getParams();
+
+        mapContext.push({
+          title: layerProperties.title,
+          repositoryId: layerProperties.repositoryId,
+          projectId: layerProperties.projectId,
+          opacity: layerProperties.opacity,
+          bbox: layerProperties.bbox,
+          popup: layerProperties.popup,
+          zIndex: layerProperties.zIndex,
+          minResolution: layerProperties.minResolution,
+          maxResolution: layerProperties.maxResolution, //maxResolution peut valoir Infinity et devient null en json
+          name: layerSourceParams.LAYERS,
+          style: layerSourceParams.STYLES
+        });
+      }
+    });
+
+    $.ajax({
+      url: "/index.php/mapBuilder/mapcontext/save/",
+      type:"POST",
+      data: JSON.stringify(mapContext),
+      contentType:"application/json",
+      dataType:"text",
+      success: function( data ){
+        if(data == "ok"){
+          $('#message').html('\
+            <div class="alert alert-success alert-dismissible fade show" role="alert">\
+              Contexte de la carte enregistré.\
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
+              <span aria-hidden="true">&times;</span>\
+              </button>\
+            </div>');
+          $('#message .alert').alert();
+        }
+      }
+    });
+  });
+
+  // Add layers based on map context if present
+  if(mapBuilder.hasOwnProperty('mapcontext') && mapBuilder.mapcontext.length > 0){
+    for (var i = 0; i < mapBuilder.mapcontext.length; i++) {
+      var layerContext = mapBuilder.mapcontext[i];
+
+      var newLayer = new ImageLayer({
+        title: layerContext.title,
+        repositoryId: layerContext.repositoryId,
+        projectId: layerContext.projectId,
+        opacity: layerContext.opacity,
+        bbox: layerContext.bbox,
+        popup: layerContext.popup,
+        zIndex: layerContext.zIndex,
+        minResolution: layerContext.minResolution,
+        maxResolution: layerContext.maxResolution != null ? layerContext.maxResolution : Infinity,
+        source: new ImageWMS({
+          url: '/index.php/lizmap/service/?repository=' + layerContext.repositoryId + '&project=' + layerContext.projectId,
+          params: {
+            'LAYERS': layerContext.name,
+            'STYLES': layerContext.style
+          },
+          serverType: 'qgis'
+        })
+      });
+
+      mapBuilder.map.addLayer(newLayer);
+    }
+    refreshLayerSelected();
+  }
 
   // Disable tooltip on focus
   $('[data-toggle="tooltip"]').tooltip({

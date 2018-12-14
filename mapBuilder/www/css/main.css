@@ -3,13 +3,18 @@
 
 #map{padding-top: 75px;}
 
-#mapmenu {
+#message, #mapmenu, #dock{
     position: absolute;
-    left: 0px;
     top: 75px;
+    z-index: 1;
+}
+
+#message{left: 40px;z-index: 2;}
+
+#mapmenu {
+    left: 0px;
     height: 100%;
     width: 30px;
-    z-index: 1030;
     background: #4A4A4A;
     background: rgba(0,0,0,0.7);
 }
@@ -18,10 +23,7 @@
 #mapmenu .nav-link.active{color: initial;}
 
 #dock {
-    position: absolute;
     left: 30px;
-    top: 75px;
-    z-index: 1;
     padding: 5px;
 }
 

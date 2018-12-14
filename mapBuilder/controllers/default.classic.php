@@ -82,9 +82,13 @@ class defaultCtrl extends jController {
 
         // Get original extent from ini file if set
         $readConfigPath = parse_ini_file(jApp::configPath('mapBuilder.ini.php'), True);
-
         if(array_key_exists('extent', $readConfigPath)){
             $rep->addJSCode("mapBuilder.extent = ".$readConfigPath['extent'].";");
+        }
+
+        // Get map context in $_SESSION if exists
+        if(isset($_SESSION['mapcontext']) && $_SESSION['mapcontext'] != ''){
+            $rep->addJSCode("mapBuilder.mapcontext = ".json_encode($_SESSION['mapcontext']).";");
         }
 
         $rep->body->assign('repositoryLabel', $title);

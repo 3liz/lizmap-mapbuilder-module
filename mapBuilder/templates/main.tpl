@@ -47,6 +47,8 @@
   </nav>
 </div>
 
+<div id="message"></div>
+
 <div id="mapmenu" style="">
   <ul class="nav nav-tabs flex-column">
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Couches">
@@ -72,6 +74,11 @@
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Impression PDF">
       <a id="pdf-print-tab" class="nav-link" data-toggle="tab" href="#pdf-print" role="tab" aria-controls="pdf-print">
       <i class="fas fa-file-pdf"></i>
+      </a>
+    </li>
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Sauvegarder">
+      <a id="savemap-btn" class="nav-link" aria-controls="savemap">
+      <i class="fas fa-save"></i>
       </a>
     </li>
   </ul>
