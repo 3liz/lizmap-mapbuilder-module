@@ -613,8 +613,13 @@ $(function() {
 
   // Save user's map context
   $('#savemap-btn').on("click", function(e){
+    var mapContext = {};
 
-    var mapContext = [];
+    // First save map center and zoom
+    mapContext.center = mapBuilder.map.getView().getCenter();
+    mapContext.zoom = mapBuilder.map.getView().getZoom();
+    // Then save layers
+    mapContext.layers = [];
 
     mapBuilder.map.getLayers().forEach(function(layer) {
       // Don't add OSM
@@ -623,7 +628,7 @@ $(function() {
         var layerProperties = layer.getProperties();
         var layerSourceParams = layer.getSource().getParams();
 
-        mapContext.push({
+        mapContext.layers.push({
           title: layerProperties.title,
           repositoryId: layerProperties.repositoryId,
           projectId: layerProperties.projectId,
@@ -660,34 +665,41 @@ $(function() {
     });
   });
 
-  // Add layers based on map context if present
-  if(mapBuilder.hasOwnProperty('mapcontext') && mapBuilder.mapcontext.length > 0){
-    for (var i = 0; i < mapBuilder.mapcontext.length; i++) {
-      var layerContext = mapBuilder.mapcontext[i];
+  // Load map context if present
+  if(mapBuilder.hasOwnProperty('mapcontext')){
+    // Set zoom and center
+    mapBuilder.map.getView().setCenter(mapBuilder.mapcontext.center);
+    mapBuilder.map.getView().setZoom(mapBuilder.mapcontext.zoom);
 
-      var newLayer = new ImageLayer({
-        title: layerContext.title,
-        repositoryId: layerContext.repositoryId,
-        projectId: layerContext.projectId,
-        opacity: layerContext.opacity,
-        bbox: layerContext.bbox,
-        popup: layerContext.popup,
-        zIndex: layerContext.zIndex,
-        minResolution: layerContext.minResolution,
-        maxResolution: layerContext.maxResolution != null ? layerContext.maxResolution : Infinity,
-        source: new ImageWMS({
-          url: '/index.php/lizmap/service/?repository=' + layerContext.repositoryId + '&project=' + layerContext.projectId,
-          params: {
-            'LAYERS': layerContext.name,
-            'STYLES': layerContext.style
-          },
-          serverType: 'qgis'
-        })
-      });
+    // Load layers if present 
+    if(mapBuilder.mapcontext.layers.length > 0){
+      for (var i = 0; i < mapBuilder.mapcontext.layers.length; i++) {
+        var layerContext = mapBuilder.mapcontext.layers[i];
 
-      mapBuilder.map.addLayer(newLayer);
+        var newLayer = new ImageLayer({
+          title: layerContext.title,
+          repositoryId: layerContext.repositoryId,
+          projectId: layerContext.projectId,
+          opacity: layerContext.opacity,
+          bbox: layerContext.bbox,
+          popup: layerContext.popup,
+          zIndex: layerContext.zIndex,
+          minResolution: layerContext.minResolution,
+          maxResolution: layerContext.maxResolution != null ? layerContext.maxResolution : Infinity,
+          source: new ImageWMS({
+            url: '/index.php/lizmap/service/?repository=' + layerContext.repositoryId + '&project=' + layerContext.projectId,
+            params: {
+              'LAYERS': layerContext.name,
+              'STYLES': layerContext.style
+            },
+            serverType: 'qgis'
+          })
+        });
+
+        mapBuilder.map.addLayer(newLayer);
+      }
+      refreshLayerSelected();
     }
-    refreshLayerSelected();
   }
 
   // Disable tooltip on focus
