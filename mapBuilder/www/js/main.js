@@ -546,15 +546,6 @@ $(function() {
   });
 
   $('#mapmenu .nav-link').on('shown.bs.tab', function (e) {
-    // Display layers having attribute table
-    if(e.target.id == "attribute-tab"){
-      // mapBuilder.map.getLayers().forEach(function(layer) {
-      //   // Don't add OSM
-      //   if(layer.values_.title != "OSM"){
-      //     console.log(layer);
-      //   }
-      // });
-    }
     $("#dock").show();
   });
 
@@ -633,7 +624,7 @@ $(function() {
 
     mapBuilder.map.getLayers().forEach(function(layer) {
       // Don't add OSM
-      if(layer.values_.title != "OSM"){
+      if(layer.getProperties().title != "OSM"){
 
         var layerProperties = layer.getProperties();
         var layerSourceParams = layer.getSource().getParams();
@@ -711,6 +702,22 @@ $(function() {
       refreshLayerSelected();
     }
   }
+
+  $('#attribute-btn').on("click", function(e){
+    $('#bottom-dock').toggle();
+
+    var summaryTable = '<table class="table">';
+    // TODO : Charger les layers configurés pour avoir leur table attributaire visible
+    mapBuilder.map.getLayers().forEach(function(layer) {
+      // Don't add OSM
+      if(layer.getProperties().title != "OSM"){
+        summaryTable += '<tr><td>'+layer.getProperties().title+'</td><td><button class="btn">Détail</button></td></tr>';
+      }
+    });
+    summaryTable += '</table>';
+
+    $('#attributeLayersSummary').html(summaryTable);
+  });
 
   // Disable tooltip on focus
   $('[data-toggle="tooltip"]').tooltip({

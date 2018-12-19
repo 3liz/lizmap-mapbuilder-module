@@ -77,7 +77,7 @@
       </a>
     </li>
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Données">
-      <a id="attribute-tab" class="nav-link" data-toggle="tab" href="#attribute" role="tab" aria-controls="attribute">
+      <a id="attribute-btn" class="nav-link" aria-controls="attribute">
       <i class="fas fa-list-ul"></i>
       </a>
     </li>
@@ -171,8 +171,17 @@
       </select>
       <button id="pdf-print-btn" type="button" class="btn btn-sm btn-block">Imprimer</button>
     </div>
-    <div class="tab-pane fade" id="attribute" role="tabpanel" aria-labelledby="attribute-tab">
-    </div>
+  </div>
+</div>
+
+<div id="bottom-dock">
+  <ul id="attributeLayersTabs" class="nav nav-tabs">
+    <li id="nav-tab-attribute-summary" class="nav-item">
+      <a class="nav-link active" href="#attributeLayersSummary">Données</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="attributeLayersContent">
+    <div class="tab-pane fade show active" id="attributeLayersSummary" role="tabpanel" aria-labelledby="nav-tab-attribute-summary">...</div>
   </div>
 </div>
 

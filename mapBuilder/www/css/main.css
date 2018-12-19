@@ -1,9 +1,9 @@
 #headermenu {padding:0;top:40px;}
 #auth {width: 100%}
 
-#map{padding-top: 75px;}
+#map, #mapmenu{padding-top: 75px;}
 
-#message, #mapmenu, #dock{
+#message, #dock{
     position: absolute;
     top: 75px;
     z-index: 1;
@@ -12,11 +12,13 @@
 #message{left: 40px;z-index: 2;}
 
 #mapmenu {
+    position: absolute;
     left: 0px;
     height: 100%;
     width: 30px;
     background: #4A4A4A;
     background: rgba(0,0,0,0.7);
+    z-index: 1;
 }
 
 #mapmenu .nav-link{padding: 0;text-align: center;color: white}
@@ -28,6 +30,19 @@
 }
 
 #dock-close{text-align: right;}
+
+#bottom-dock{
+    position: absolute;
+    z-index: 1;
+    bottom: 0px;
+    left: 30px;
+    right: 10px;
+    height: 48%;
+    display: none;
+    background: rgba(0,0,0,0.7);
+}
+
+#attributeLayersContent{height: 100%; background-color: #F0F0F0;}
 
 .footer{position: absolute;bottom: 5px;right: 2px;width: 100%}
 
