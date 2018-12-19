@@ -1,7 +1,5 @@
 import $ from 'jquery';
 
-// import * as jsPDF from 'jspdf'
-
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import {defaults as defaultControls, Control, ScaleLine} from 'ol/control.js';
@@ -553,10 +551,10 @@ $(function() {
 
   $('#pdf-print-btn').on("click", function(e){
 
-    import(/* webpackChunkName: "jspdf" */ 'jspdf').then(jsPDF => {
-      $(this).addClass("disabled");
-      document.body.style.cursor = 'progress';
+    $(this).addClass("disabled");
+    document.body.style.cursor = 'progress';
 
+    import(/* webpackChunkName: "jspdf" */ 'jspdf').then(jsPDF => {
       var dims = {
          a0: [1189, 841],
          a1: [841, 594],
@@ -610,9 +608,8 @@ $(function() {
       var printSize = [width - maxWidthLegend, height];
       mapBuilder.map.setSize(printSize);
       mapBuilder.map.getView().fit(extent, {size: printSize});
-
-      $(this).removeClass("disabled");
-     });
+    });
+    $(this).removeClass("disabled");
   });
 
   // Save user's map context
