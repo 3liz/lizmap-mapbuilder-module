@@ -76,6 +76,11 @@
       <i class="fas fa-file-pdf"></i>
       </a>
     </li>
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Données">
+      <a id="attribute-tab" class="nav-link" data-toggle="tab" href="#attribute" role="tab" aria-controls="attribute">
+      <i class="fas fa-list-ul"></i>
+      </a>
+    </li>
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Sauvegarder">
       <a id="savemap-btn" class="nav-link" aria-controls="savemap">
       <i class="fas fa-save"></i>
@@ -165,6 +170,8 @@
         <option value="300">300 dpi</option>
       </select>
       <button id="pdf-print-btn" type="button" class="btn btn-sm btn-block">Imprimer</button>
+    </div>
+    <div class="tab-pane fade" id="attribute" role="tabpanel" aria-labelledby="attribute-tab">
     </div>
   </div>
 </div>

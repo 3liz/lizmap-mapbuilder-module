@@ -15,5 +15,7 @@ class mapBuilderModuleInstaller extends jInstallerModule {
     	// Copy this CSS
         $this->copyDirectoryContent('../www/css/skin-awesome', jApp::wwwPath('mapBuilder/skin-awesome'));
         $this->copyDirectoryContent('../www/css/fontawesome-free-5.4.1-web', jApp::wwwPath('mapBuilder/fontawesome-free-5.4.1-web'));
+        // Copy conf file
+        $this->copyDirectoryContent('conf', jApp::configPath());
     }
 }

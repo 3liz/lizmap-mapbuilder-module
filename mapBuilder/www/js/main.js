@@ -546,6 +546,15 @@ $(function() {
   });
 
   $('#mapmenu .nav-link').on('shown.bs.tab', function (e) {
+    // Display layers having attribute table
+    if(e.target.id == "attribute-tab"){
+      // mapBuilder.map.getLayers().forEach(function(layer) {
+      //   // Don't add OSM
+      //   if(layer.values_.title != "OSM"){
+      //     console.log(layer);
+      //   }
+      // });
+    }
     $("#dock").show();
   });
 
