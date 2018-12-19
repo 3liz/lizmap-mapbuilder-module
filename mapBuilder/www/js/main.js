@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-import * as jsPDF from 'jspdf'
+// import * as jsPDF from 'jspdf'
 
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
@@ -553,62 +553,66 @@ $(function() {
 
   $('#pdf-print-btn').on("click", function(e){
 
-    $(this).addClass("disabled");
-    document.body.style.cursor = 'progress';
+    import(/* webpackChunkName: "jspdf" */ 'jspdf').then(jsPDF => {
+      $(this).addClass("disabled");
+      document.body.style.cursor = 'progress';
 
-    var dims = {
-       a0: [1189, 841],
-       a1: [841, 594],
-       a2: [594, 420],
-       a3: [420, 297],
-       a4: [297, 210],
-       a5: [210, 148]
-     };
+      var dims = {
+         a0: [1189, 841],
+         a1: [841, 594],
+         a2: [594, 420],
+         a3: [420, 297],
+         a4: [297, 210],
+         a5: [210, 148]
+       };
 
-    var format = document.getElementById('format-pdf-print').value;
-    var resolution = document.getElementById('resolution-pdf-print').value;
-    var dim = dims[format];
-    var width = Math.round(dim[0] * resolution / INCHTOMM);
-    var height = Math.round(dim[1] * resolution / INCHTOMM);
-    var size = mapBuilder.map.getSize();
-    var extent = mapBuilder.map.getView().calculateExtent(size);
+      var format = document.getElementById('format-pdf-print').value;
+      var resolution = document.getElementById('resolution-pdf-print').value;
+      var dim = dims[format];
+      var width = Math.round(dim[0] * resolution / INCHTOMM);
+      var height = Math.round(dim[1] * resolution / INCHTOMM);
+      var size = mapBuilder.map.getSize();
+      var extent = mapBuilder.map.getView().calculateExtent(size);
 
-    var pdf = new jsPDF('landscape', 'mm', format);
-    // Add title
-    pdf.setFontSize(18);
-    pdf.text($('#pdf-print-title').val(), 50, 10);
+      // Note that when using import() on ES6 modules you must reference the .default property as it's the actual module object that will be returned when the promise is resolved.
+      // => https://webpack.js.org/guides/lazy-loading/
+      var pdf = new jsPDF.default('landscape', 'mm', format);
+      // Add title
+      pdf.setFontSize(18);
+      pdf.text($('#pdf-print-title').val(), 50, 10);
 
-    var offset = 25;
-    var maxWidthLegend = 0;
+      var offset = 25;
+      var maxWidthLegend = 0;
 
-    $( "#legend img" ).each(function( index, legend ) {
-      pdf.addImage(legend, 'PNG', 0, offset * INCHTOMM/resolution);
-      offset += legend.height;
+      $( "#legend img" ).each(function( index, legend ) {
+        pdf.addImage(legend, 'PNG', 0, offset * INCHTOMM/resolution);
+        offset += legend.height;
 
-      if( legend.width > maxWidthLegend){
-        maxWidthLegend = legend.width;
-      }
-    });
+        if( legend.width > maxWidthLegend){
+          maxWidthLegend = legend.width;
+        }
+      });
 
-    // Add map and save pdf
-    mapBuilder.map.once('rendercomplete', function(event) {
-      var canvas = event.context.canvas;
-      var data = canvas.toDataURL('image/jpeg');
- 
-      pdf.addImage(data, 'JPEG', maxWidthLegend * INCHTOMM/resolution, 20, dim[0] - (maxWidthLegend * INCHTOMM/resolution), dim[1]);
-      pdf.save('map.pdf');
-      // Reset original map size
-      mapBuilder.map.setSize(size);
-      mapBuilder.map.getView().fit(extent, {size: size});
-      document.body.style.cursor = 'auto';
-    });
+      // Add map and save pdf
+      mapBuilder.map.once('rendercomplete', function(event) {
+        var canvas = event.context.canvas;
+        var data = canvas.toDataURL('image/jpeg');
+      
+        pdf.addImage(data, 'JPEG', maxWidthLegend * INCHTOMM/resolution, 20, dim[0] - (maxWidthLegend * INCHTOMM/resolution), dim[1]);
+        pdf.save('map.pdf');
+        // Reset original map size
+        mapBuilder.map.setSize(size);
+        mapBuilder.map.getView().fit(extent, {size: size});
+        document.body.style.cursor = 'auto';
+      });
 
-    // Set print size
-    var printSize = [width - maxWidthLegend, height];
-    mapBuilder.map.setSize(printSize);
-    mapBuilder.map.getView().fit(extent, {size: printSize});
+      // Set print size
+      var printSize = [width - maxWidthLegend, height];
+      mapBuilder.map.setSize(printSize);
+      mapBuilder.map.getView().fit(extent, {size: printSize});
 
-    $(this).removeClass("disabled");
+      $(this).removeClass("disabled");
+     });
   });
 
   // Save user's map context

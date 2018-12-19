@@ -5,6 +5,8 @@ module.exports = {
   entry: './main.js',
   output: {
     path: __dirname,
+    publicPath: '/index.php/jelix/www/getfile?targetmodule=mapBuilder&file=js%2F',
+    chunkFilename: '[name].bundle.js',
     filename: 'mapbuilder.js'
   },
   externals: {
