@@ -94,58 +94,61 @@
   <div id="mapBuilder" class="tab-content">
     <div class="tab-pane fade show active" id="layerswitcher" role="tabpanel" aria-labelledby="layerswitcher-tab">
       <table id="layerStore">
-          <colgroup>
-              <col>
-              <col width="70px">
-              <col>
-          </colgroup>
-          <thead>
-              <tr>
-                  <th>Couche</th>
-                  <th>Style</th>
-                  <th>Ajout</th>
-              </tr>
-          </thead>
-          <tbody>
-              <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-              </tr>
-          </tbody>
+        <colgroup>
+          <col>
+          <col width="70px">
+          <col>
+          <col>
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Couche</th>
+            <th>Style</th>
+            <th>Ajout</th>
+            <th>Données</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
       </table>
     </div>
     <div class="tab-pane fade" id="layerselection" role="tabpanel" aria-labelledby="layerselection-tab">
       <table id="layerSelected">
-          <colgroup>
-            <col>
-            <col>
-            <col>
-            <col>
-            <col span="3">
-          </colgroup>
-          <thead>
-            <tr>
-              <th>Couche</th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th>Infos</th>
-              <th class="hide">Style</th>
-              <th class="hide">Opacité</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td></td>
-              <td class="changeOrder"></td>
-              <td class="deleteLayerButton"></td>
-              <td class="zoomToExtentButton"></td>
-              <td class="toggleInfos"></td>
-              <td class="layerSelectedStyles hide"></td>
-              <td class="changeOpacityButton hide"></td>
-            </tr>
-          </tbody>
+        <colgroup>
+          <col>
+          <col>
+          <col>
+          <col>
+          <col span="3">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Couche</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Infos</th>
+            <th class="hide">Style</th>
+            <th class="hide">Opacité</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td></td>
+            <td class="changeOrder"></td>
+            <td class="deleteLayerButton"></td>
+            <td class="zoomToExtentButton"></td>
+            <td class="toggleInfos"></td>
+            <td class="layerSelectedStyles hide"></td>
+            <td class="changeOpacityButton hide"></td>
+          </tr>
+        </tbody>
       </table>
     </div>
     <div class="tab-pane fade" id="legend" role="tabpanel" aria-labelledby="legend-tab">
@@ -175,14 +178,8 @@
 </div>
 
 <div id="bottom-dock">
-  <ul id="attributeLayersTabs" class="nav nav-tabs">
-    <li id="nav-tab-attribute-summary" class="nav-item">
-      <a class="nav-link active" href="#attributeLayersSummary">Données</a>
-    </li>
-  </ul>
-  <div class="tab-content" id="attributeLayersContent">
-    <div class="tab-pane fade show active" id="attributeLayersSummary" role="tabpanel" aria-labelledby="nav-tab-attribute-summary">...</div>
-  </div>
+  <ul id="attributeLayersTabs" class="nav nav-tabs" role="tablist"></ul>
+  <div class="tab-content" id="attributeLayersContent"></div>
 </div>
 
 <div id="map" class="map"></div>

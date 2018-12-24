@@ -53,6 +53,11 @@ $(function() {
     if(layer.hasOwnProperty('MaxScaleDenominator') && layer.MaxScaleDenominator !== undefined){
       myObj.maxScale = layer.MaxScaleDenominator;
     }
+    if(cfg.attributeLayers.hasOwnProperty(layer.Name) 
+      && cfg.attributeLayers[layer.Name].hideLayer != "True"
+      && cfg.attributeLayers[layer.Name].pivot != "True"){
+      myObj.hasAttributeTable = true;
+    }
     myArray.push(myObj);
     // Layer has children and is not a group as layer => folder
     if (layer.hasOwnProperty('Layer') && cfg.layers[layer.Name].groupAsLayer == 'False') {
@@ -267,35 +272,34 @@ $(function() {
         }
       },
     lazyLoad: function(event, data) {
-        //https://github.com/mar10/fancytree/wiki/TutorialLoadData
-        var repositoryId = data.node.data.repository;
-        var projectId = data.node.data.project;
-        var url = lizUrls.wms+"?repository=" + repositoryId + "&project=" + projectId + "&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
-        var parser = new WMSCapabilities();
+      //https://github.com/mar10/fancytree/wiki/TutorialLoadData
+      var repositoryId = data.node.data.repository;
+      var projectId = data.node.data.project;
+      var url = lizUrls.wms+"?repository=" + repositoryId + "&project=" + projectId + "&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
+      var parser = new WMSCapabilities();
 
-        const promises = [
-          new Promise(resolve => 
-            $.get(url, function(capabilities) {
-                var result = parser.read(capabilities);
+      const promises = [
+        new Promise(resolve => 
+          $.get(url, function(capabilities) {
+              var result = parser.read(capabilities);
+              var node = result.Capability;
 
-                var node = result.Capability;
+              // First layer is in fact project
+              if (node.hasOwnProperty('Layer')) {
+                  resolve(node.Layer.Layer);
+              }
+          })
+        ),
+        new Promise(resolve => 
+          $.getJSON(lizUrls.config,{"repository":repositoryId,"project":projectId},function(cfgData) {
+            resolve(cfgData);
+          })
+        )
+      ];
 
-                // First layer is in fact project
-                if (node.hasOwnProperty('Layer')) {
-                    resolve(node.Layer.Layer);
-                }
-            })
-          ),
-          new Promise(resolve => 
-            $.getJSON(lizUrls.config,{"repository":repositoryId,"project":projectId},function(cfgData) {
-              resolve(cfgData);
-            })
-          )
-        ];
-
-        data.result = Promise.all(promises).then(results => {
-          return buildLayerTree(results[0], results[1]);
-        });
+      data.result = Promise.all(promises).then(results => {
+        return buildLayerTree(results[0], results[1]);
+      });
     },
     renderColumns: function(event, data) {
       var node = data.node,
@@ -312,6 +316,10 @@ $(function() {
       // Add button for layers (level 1 => repositories, 2 => projects)
       if(node.getLevel() > 2 && node.children == null){
         $tdList.eq(2).html("<button type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>");
+      }
+      // Add button to display layer's attribute table if eligible
+      if(node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable){
+        $tdList.eq(3).html("<button type='button' class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>");
       }
     }
   });
@@ -367,6 +375,95 @@ $(function() {
     mapBuilder.map.addLayer(newLayer);
     refreshLayerSelected();
     e.stopPropagation();  // prevent fancytree activate for this row
+  });
+
+  $('#layerStore').on("click", ".attributeLayerButton", function(e){
+    var node = $.ui.fancytree.getNode(e);
+
+    var parentList = node.getParentList();
+    // We get repositoryId and projectId from parents node in the tree
+    var repositoryId = parentList[1].data.repository;
+    var projectId = parentList[1].data.project;
+
+    const promises = [
+      new Promise(resolve => 
+        // GetFeature request
+        $.getJSON(lizUrls.wms, {
+           'repository':repositoryId
+          ,'project':projectId
+          ,'SERVICE':'WFS'
+          ,'REQUEST':'GetFeature'
+          ,'VERSION':'1.0.0'
+          ,'TYPENAME':node.data.name
+          ,'OUTPUTFORMAT': 'GeoJSON'
+        }, function(features) {
+          resolve(features);
+        })
+      ),
+      new Promise(resolve => 
+        // DescribeFeatureType request to get aliases
+        $.getJSON(lizUrls.wms, {
+           'repository':repositoryId
+          ,'project':projectId
+          ,'SERVICE':'WFS'
+          ,'VERSION':'1.0.0'
+          ,'REQUEST':'DescribeFeatureType'
+          ,'TYPENAME':node.data.name
+          ,'OUTPUTFORMAT':'JSON'
+        }, function(describe) {
+          resolve(describe);
+        })
+      )
+    ];
+
+    Promise.all(promises).then(results => {
+      // TODO : cache results
+      var features = results[0].features;
+      var aliases = results[1].aliases;
+
+      var attributeHTMLTable = '<table class="table-responsive">';
+
+      // Add table header
+      attributeHTMLTable += '<tr>';
+      for (var property in features[0].properties) {
+        attributeHTMLTable += '<th>'+ aliases[property] +'</th>';
+      }
+      attributeHTMLTable += '</tr>';
+
+      // Add data
+      features.forEach(function(feature) {
+        attributeHTMLTable += '<tr>';
+        for(var property in feature.properties){
+          attributeHTMLTable += '<td>'+ feature.properties[property] +'</td>';
+        }
+        attributeHTMLTable += '</tr>';
+      });
+
+      attributeHTMLTable += '</table>';
+
+      // Hhide other tabs before appending
+      $('#attributeLayersTabs .nav-link').removeClass('active');
+      $('#attributeLayersContent .tab-pane').removeClass('show active');
+
+      $('#attributeLayersTabs').append('\
+          <li class="nav-item">\
+            <a class="nav-link active" href="#attributeLayer-'+repositoryId+'-'+projectId+'-'+node.data.name+'" role="tab">'+node.title+'</a>\
+          </li>'
+        );
+
+      $('#attributeLayersContent').append('\
+          <div class="tab-pane fade show active" id="attributeLayer-'+repositoryId+'-'+projectId+'-'+node.data.name+'" role="tabpanel">\
+          '+attributeHTMLTable+'\
+          </div>'
+        );
+
+      $('#attributeLayersTabs a').on('click', function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+      });
+
+      $('#bottom-dock').show();
+    });
   });
 
   $('#layerSelected').fancytree({
@@ -705,18 +802,6 @@ $(function() {
 
   $('#attribute-btn').on("click", function(e){
     $('#bottom-dock').toggle();
-
-    var summaryTable = '<table class="table">';
-    // TODO : Charger les layers configurés pour avoir leur table attributaire visible
-    mapBuilder.map.getLayers().forEach(function(layer) {
-      // Don't add OSM
-      if(layer.getProperties().title != "OSM"){
-        summaryTable += '<tr><td>'+layer.getProperties().title+'</td><td><button class="btn">Détail</button></td></tr>';
-      }
-    });
-    summaryTable += '</table>';
-
-    $('#attributeLayersSummary').html(summaryTable);
   });
 
   // Disable tooltip on focus
