@@ -27,6 +27,8 @@
 #dock {
     left: 30px;
     padding: 5px;
+    height: 43%;
+    overflow-y: auto;
 }
 
 #dock-close{text-align: right;}

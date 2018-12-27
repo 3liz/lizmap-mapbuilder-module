@@ -343,7 +343,12 @@ $(function() {
       }
       // Add button to display layer's attribute table if eligible
       if(node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable){
-        $tdList.eq(3).html("<button type='button' class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>");
+        var parentList = node.getParentList();
+        // We get repositoryId and projectId from parents node in the tree
+        var repositoryId = parentList[1].data.repository;
+        var projectId = parentList[1].data.project;
+
+        $tdList.eq(3).html("<button type='button' id='" + repositoryId+"|"+projectId + "|attrBtn' class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>");
       }
     }
   });
@@ -403,8 +408,7 @@ $(function() {
 
   $('#layerStore').on("click", ".attributeLayerButton", function(e){
     // Disable button to avoid multiple calls
-    // TODO : enable button when tab is closed
-    $(this).attr('disabled','disabled');
+    $(this).prop("disabled",true);;
 
     var node = $.ui.fancytree.getNode(e);
 
@@ -497,7 +501,7 @@ $(function() {
 
       $('#attributeLayersTabs').append('\
           <li class="nav-item">\
-            <a class="nav-link active" href="#attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tab">'+node.title+'</a>\
+            <a class="nav-link active" href="#attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tab">'+node.title+'&nbsp;<i data-node-key="' + node.key + '" class="fas fa-times"></i></a>\
           </li>'
         );
 
@@ -512,6 +516,35 @@ $(function() {
       $('#attributeLayersTabs a').on('click', function (e) {
         e.preventDefault();
         $(this).tab('show');
+      });
+
+      // Handle close tabs
+      $('#attributeLayersTabs .fa-times').on('click', function () {
+        var isActiveTab = $(this).closest('a').hasClass('active');
+        var previousTab = $(this).closest('li').prev();
+        var nextTab = $(this).closest('li').next();
+
+        // Remove tab and its content
+        var parentId = $(this).closest('a').attr('href');
+        $(parentId).remove();
+        $(this).closest('li').remove();
+
+        // Enable attribute table button
+        var node = $.ui.fancytree.getTree("#layerStore").getNodeByKey($(this).data('node-key'));
+        $(node.tr).find(".attributeLayerButton").prop("disabled",false);
+
+        if($('#attributeLayersContent').html().trim() == ""){
+          $('#bottom-dock').hide();
+        }
+
+        // Active another sibling tab if current was active
+        if(isActiveTab){
+          if(nextTab.length > 0){
+            nextTab.find('.nav-link').tab('show');
+          }else{
+            previousTab.find('.nav-link').tab('show');
+          }
+        }
       });
 
       $('#bottom-dock').show();
