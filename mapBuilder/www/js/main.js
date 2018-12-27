@@ -343,12 +343,7 @@ $(function() {
       }
       // Add button to display layer's attribute table if eligible
       if(node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable){
-        var parentList = node.getParentList();
-        // We get repositoryId and projectId from parents node in the tree
-        var repositoryId = parentList[1].data.repository;
-        var projectId = parentList[1].data.project;
-
-        $tdList.eq(3).html("<button type='button' id='" + repositoryId+"|"+projectId + "|attrBtn' class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>");
+        $tdList.eq(3).html("<button type='button' class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>");
       }
     }
   });
@@ -407,6 +402,8 @@ $(function() {
   });
 
   $('#layerStore').on("click", ".attributeLayerButton", function(e){
+    $('#attribute-btn').addClass("active");
+
     // Disable button to avoid multiple calls
     $(this).prop("disabled",true);;
 
@@ -495,7 +492,7 @@ $(function() {
 
       attributeHTMLTable += '</table>';
 
-      // Hhide other tabs before appending
+      // Hide other tabs before appending
       $('#attributeLayersTabs .nav-link').removeClass('active');
       $('#attributeLayersContent .tab-pane').removeClass('show active');
 
@@ -535,6 +532,7 @@ $(function() {
 
         if($('#attributeLayersContent').html().trim() == ""){
           $('#bottom-dock').hide();
+          $('#attribute-btn').removeClass("active");
         }
 
         // Active another sibling tab if current was active
@@ -886,7 +884,10 @@ $(function() {
   }
 
   $('#attribute-btn').on("click", function(e){
-    $('#bottom-dock').toggle();
+    if($('#attributeLayersContent').html().trim() != ""){
+      $('#bottom-dock').show();
+    }
+    
   });
 
   // Disable tooltip on focus
