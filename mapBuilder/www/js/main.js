@@ -21,6 +21,23 @@ const INCHTOMM = 25.4;
 
 $(function() {
 
+  function performCleanName(aName) {
+    var accentMap = {
+        "à": "a",    "á": "a",    "â": "a",    "ã": "a",    "ä": "a",    "ç": "c",    "è": "e",    "é": "e",    "ê": "e",    "ë": "e",    "ì": "i",    "í": "i",    "î": "i",    "ï": "i",    "ñ": "n",    "ò": "o",    "ó": "o",    "ô": "o",    "õ": "o",    "ö": "o",    "ù": "u",    "ú": "u",    "û": "u",    "ü": "u",    "ý": "y",    "ÿ": "y",
+        "À": "A",    "Á": "A",    "Â": "A",    "Ã": "A",    "Ä": "A",    "Ç": "C",    "È": "E",    "É": "E",    "Ê": "E",    "Ë": "E",    "Ì": "I",    "Í": "I",    "Î": "I",    "Ï": "I",    "Ñ": "N",    "Ò": "O",    "Ó": "O",    "Ô": "O",    "Õ": "O",    "Ö": "O",    "Ù": "U",    "Ú": "U",    "Û": "U",    "Ü": "U",    "Ý": "Y",
+        "-":" ", "'": " ", "(": " ", ")": " "};
+    var normalize = function( term ) {
+        var ret = "";
+        for ( var i = 0; i < term.length; i++ ) {
+            ret += accentMap[ term.charAt(i) ] || term.charAt(i);
+        }
+        return ret;
+    };
+    var theCleanName = normalize(aName);
+    var reg = new RegExp('\\W', 'g');
+    return theCleanName.replace(reg, '_');
+  }
+
   function buildLayerTree(layer, cfg) {
     var myArray = [];
     if (Array.isArray(layer)) {
@@ -298,6 +315,13 @@ $(function() {
       ];
 
       data.result = Promise.all(promises).then(results => {
+        if(! mapBuilder.hasOwnProperty('lizMap')){
+          mapBuilder.lizMap = {};
+        }
+        // Cache project config for later use
+        mapBuilder.lizMap[repositoryId + '|' + projectId] = {};
+        mapBuilder.lizMap[repositoryId + '|' + projectId].config = results[1];
+
         return buildLayerTree(results[0], results[1]);
       });
     },
@@ -378,7 +402,13 @@ $(function() {
   });
 
   $('#layerStore').on("click", ".attributeLayerButton", function(e){
+    // Disable button to avoid multiple calls
+    // TODO : enable button when tab is closed
+    $(this).attr('disabled','disabled');
+
     var node = $.ui.fancytree.getNode(e);
+
+    var layerName = performCleanName(node.data.name);
 
     var parentList = node.getParentList();
     // We get repositoryId and projectId from parents node in the tree
@@ -394,7 +424,7 @@ $(function() {
           ,'SERVICE':'WFS'
           ,'REQUEST':'GetFeature'
           ,'VERSION':'1.0.0'
-          ,'TYPENAME':node.data.name
+          ,'TYPENAME':layerName
           ,'OUTPUTFORMAT': 'GeoJSON'
         }, function(features) {
           resolve(features);
@@ -408,7 +438,7 @@ $(function() {
           ,'SERVICE':'WFS'
           ,'VERSION':'1.0.0'
           ,'REQUEST':'DescribeFeatureType'
-          ,'TYPENAME':node.data.name
+          ,'TYPENAME':layerName
           ,'OUTPUTFORMAT':'JSON'
         }, function(describe) {
           resolve(describe);
@@ -421,20 +451,40 @@ $(function() {
       var features = results[0].features;
       var aliases = results[1].aliases;
 
-      var attributeHTMLTable = '<table class="table-responsive">';
+      // Show only WFS-published and non hidden properties
+      var propertiesFromWFS = features[0].properties;
+      var visibleProperties = [];
+
+      var columns = mapBuilder.lizMap[repositoryId + '|' + projectId].config.attributeLayers[node.data.name].attributetableconfig.columns.column;
+
+      if(columns !== undefined){
+        for (var i = 0; i < columns.length; i++) {
+          if(propertiesFromWFS.hasOwnProperty(columns[i].attributes.name) && columns[i].attributes.hidden == "0"){
+            visibleProperties.push(columns[i].attributes.name);
+          }
+        }
+      }else{
+        for (var property in propertiesFromWFS) {
+          visibleProperties.push(property);
+        }
+      }
+
+      var attributeHTMLTable = '<table class="table">';
 
       // Add table header
       attributeHTMLTable += '<tr>';
-      for (var property in features[0].properties) {
-        attributeHTMLTable += '<th>'+ aliases[property] +'</th>';
+      for (var i = 0; i < visibleProperties.length; i++) {
+        var columnName = aliases[visibleProperties[i]] != "" ? aliases[visibleProperties[i]] : visibleProperties[i];
+        attributeHTMLTable += '<th>'+ columnName +'</th>';
       }
       attributeHTMLTable += '</tr>';
 
       // Add data
+      // TODO handle urls
       features.forEach(function(feature) {
         attributeHTMLTable += '<tr>';
-        for(var property in feature.properties){
-          attributeHTMLTable += '<td>'+ feature.properties[property] +'</td>';
+        for (var i = 0; i < visibleProperties.length; i++) {
+          attributeHTMLTable += '<td>'+ feature.properties[visibleProperties[i]] +'</td>';
         }
         attributeHTMLTable += '</tr>';
       });
@@ -447,13 +497,15 @@ $(function() {
 
       $('#attributeLayersTabs').append('\
           <li class="nav-item">\
-            <a class="nav-link active" href="#attributeLayer-'+repositoryId+'-'+projectId+'-'+node.data.name+'" role="tab">'+node.title+'</a>\
+            <a class="nav-link active" href="#attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tab">'+node.title+'</a>\
           </li>'
         );
 
       $('#attributeLayersContent').append('\
-          <div class="tab-pane fade show active" id="attributeLayer-'+repositoryId+'-'+projectId+'-'+node.data.name+'" role="tabpanel">\
-          '+attributeHTMLTable+'\
+          <div class="tab-pane fade show active" id="attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tabpanel">\
+            <div class="table-responsive">\
+            '+attributeHTMLTable+'\
+            </div>\
           </div>'
         );
 
@@ -474,28 +526,28 @@ $(function() {
       },
       dnd5: {
           dragStart: function(node, data) {
-              return true;
+            return true;
           },
           dragDrop: function(node, data) {
-              if (data.otherNode) {
-                  data.otherNode.moveTo(node, data.hitMode);
-              }
-              // Parcourt de la liste des nodes pour mettre à jour le Z-index des couches
-              var allNodes = node.parent.children;
+            if (data.otherNode) {
+              data.otherNode.moveTo(node, data.hitMode);
+            }
+            // Parcourt de la liste des nodes pour mettre à jour le Z-index des couches
+            var allNodes = node.parent.children;
 
-              for (var i = 0; i < allNodes.length; i++) {
-                  var layers = mapBuilder.map.getLayers().getArray();
-                  for (var j = 0; j < layers.length; j++) {
-                      if (allNodes[i].data.ol_uid == layers[j].ol_uid) {
-                          layers[j].setZIndex(allNodes.length - i);
-                      }
-                  }
+            for (var i = 0; i < allNodes.length; i++) {
+              var layers = mapBuilder.map.getLayers().getArray();
+              for (var j = 0; j < layers.length; j++) {
+                if (allNodes[i].data.ol_uid == layers[j].ol_uid) {
+                  layers[j].setZIndex(allNodes.length - i);
+                }
               }
+            }
           },
           dragEnter: function(node, data) {
-              // Don't allow dropping *over* a node (would create a child). Just
-              // allow changing the order:
-              return ["before", "after"];
+            // Don't allow dropping *over* a node (would create a child). Just
+            // allow changing the order:
+            return ["before", "after"];
           }
       },
       renderColumns: function(event, data) {

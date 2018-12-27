@@ -42,7 +42,14 @@
     background: rgba(0,0,0,0.7);
 }
 
-#attributeLayersContent{font-size: small; background-color: #F0F0F0;height: 85%;}
+.nav-link, .nav-link:hover{color: white}
+
+#attributeLayersContent{
+    font-size: small;
+    background-color: #F0F0F0;
+    height: 85%;
+    overflow-y: auto;
+}
 
 .footer{position: absolute;bottom: 5px;right: 2px;width: 100%}
 
