@@ -557,6 +557,11 @@ $(function() {
     });
   });
 
+  $('#hideBottomDock').on("click", function(){
+    $('#bottom-dock').hide();
+    $('.bottom-dock').removeClass('active');
+  });
+
   $('#layerSelected').fancytree({
       extensions: ["dnd5", "table"],
       table: {

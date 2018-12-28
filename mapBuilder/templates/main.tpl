@@ -77,7 +77,7 @@
       </a>
     </li>
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Données">
-      <a id="attribute-btn" class="nav-link" aria-controls="attribute">
+      <a id="attribute-btn" class="nav-link bottom-dock" aria-controls="attribute">
       <i class="fas fa-list-ul"></i>
       </a>
     </li>
