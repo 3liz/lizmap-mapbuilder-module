@@ -10,6 +10,12 @@ module.exports = {
     chunkFilename: '[name].bundle.js',
     filename: 'mapbuilder.js'
   },
+  // resolve: {
+  //   modules: [
+  //     path.resolve('./modules'),
+  //     path.resolve('./node_modules')
+  //   ]
+  // },
   externals: {
       jquery: 'jQuery'
     }

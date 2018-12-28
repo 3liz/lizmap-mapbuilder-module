@@ -50,6 +50,13 @@
     background: rgba(0,0,0,0.7);
 }
 
+#bottom-dock.half-transparent {
+    opacity: 0.5;
+}
+#bottom-dock.visible {
+    opacity: 1;
+}
+
 #bottom-dock-window-buttons{padding: 2px;}
 
 .nav-link, .nav-link:hover{color: white}

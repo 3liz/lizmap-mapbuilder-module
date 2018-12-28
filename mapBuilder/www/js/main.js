@@ -12,6 +12,8 @@ import {transformExtent,Projection} from 'ol/proj.js';
 import {defaults as defaultInteractions, DragZoom} from 'ol/interaction.js';
 import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from 'ol/events/condition.js';
 
+import * as bottomDock from './modules/bottom-dock.js';
+
 // Extent on France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
 var originalZoom = 6;
@@ -573,11 +575,6 @@ $(function() {
 
       $('#bottom-dock').show();
     });
-  });
-
-  $('#hideBottomDock').on("click", function(){
-    $('#bottom-dock').hide();
-    $('.bottom-dock').removeClass('active');
   });
 
   $('#layerSelected').fancytree({
