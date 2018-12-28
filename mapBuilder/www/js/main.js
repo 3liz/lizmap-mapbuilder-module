@@ -482,14 +482,32 @@ $(function() {
       attributeHTMLTable += '</tr>';
 
       // Add data
-      // TODO handle urls
-      features.forEach(function(feature) {
+      for (var i = 0; i < features.length; i++) {
+        var feature = features[i];
+
         attributeHTMLTable += '<tr><td><button type="button" title="Zoomer" class="btn btn-sm zoomToFeatureExtent" data-feature-extent="'+JSON.stringify(feature.bbox)+'"><i class="fas fa-search-plus"></i></button></td>';
-        for (var i = 0; i < visibleProperties.length; i++) {
-          attributeHTMLTable += '<td>'+ feature.properties[visibleProperties[i]] +'</td>';
+        for (var j = 0; j < visibleProperties.length; j++) {
+          var propertieValue = feature.properties[visibleProperties[j]];
+
+          // Replace url or media by link
+          if(typeof propertieValue === 'string'){
+            if( propertieValue.substr(0,6) == 'media/' || propertieValue.substr(0,6) == '/media/' ){
+                var rdata = propertieValue;
+                if( propertieValue.substr(0,6) == '/media/' )
+                    rdata = propertieValue.slice(1);
+                propertieValue = '<a href="' + lizUrls.media + '?repository='+repositoryId+'&project='+projectId+'&path=/' + rdata + '" target="_blank">'+aliases[visibleProperties[j]]+'</a>';
+            }
+            else if( propertieValue.substr(0,4) == 'http' || propertieValue.substr(0,3) == 'www' ){
+                var rdata = propertieValue;
+                if(propertieValue.substr(0,3) == 'www')
+                    rdata = 'http://' + propertieValue;
+                propertieValue = '<a href="' + rdata + '" target="_blank">' + propertieValue + '</a>';
+            }
+          }
+          attributeHTMLTable += '<td>'+ propertieValue +'</td>';
         }
         attributeHTMLTable += '</tr>';
-      });
+      }
 
       attributeHTMLTable += '</table>';
 
@@ -899,8 +917,8 @@ $(function() {
   $('#attribute-btn').on("click", function(e){
     if($('#attributeLayersContent').html().trim() != ""){
       $('#bottom-dock').show();
+      $(this).addClass('active');
     }
-    
   });
 
   // Disable tooltip on focus

@@ -43,7 +43,8 @@ class defaultCtrl extends jController {
         // Pass some configuration options to the web page through javascript var
         $lizUrls = array(
           "config" => jUrl::get('lizmap~service:getProjectConfig'),
-          "wms" => jUrl::get('lizmap~service:index')
+          "wms" => jUrl::get('lizmap~service:index'),
+          "media" => jUrl::get('view~media:getMedia')
         );
 
         $rep->addJSCode("var lizUrls = ".json_encode($lizUrls).";");
