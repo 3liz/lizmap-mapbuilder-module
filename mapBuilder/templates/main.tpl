@@ -52,27 +52,27 @@
 <div id="mapmenu" style="">
   <ul class="nav nav-tabs flex-column">
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Couches">
-      <a id="layerswitcher-tab" class="nav-link active" data-toggle="tab" href="#layerswitcher" role="tab" aria-controls="layerswitcher">
+      <a id="layerswitcher-tab" class="nav-link active dock" data-toggle="tab" href="#layerswitcher" role="tab" aria-controls="layerswitcher">
         <i class="fas fa-layer-group"></i>
       </a>
     </li>
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Couches sélectionnées">
-      <a id="layerselection-tab" class="nav-link" data-toggle="tab" href="#layerselection" role="tab" aria-controls="layerselection">
+      <a id="layerselection-tab" class="nav-link dock" data-toggle="tab" href="#layerselection" role="tab" aria-controls="layerselection">
       <i class="fas fa-clipboard-list"></i>
       </a>
     </li>
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Légende">
-      <a id="legend-tab" class="nav-link" data-toggle="tab" href="#legend" role="tab" aria-controls="legend">
+      <a id="legend-tab" class="nav-link dock" data-toggle="tab" href="#legend" role="tab" aria-controls="legend">
       <i class="fas fa-image"></i>
       </a>
     </li>
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Popup">
-      <a id="popupcontent-tab" class="nav-link" data-toggle="tab" href="#popupcontent" role="tab" aria-controls="popupcontent">
+      <a id="popupcontent-tab" class="nav-link dock" data-toggle="tab" href="#popupcontent" role="tab" aria-controls="popupcontent">
       <i class="fas fa-comment-alt"></i>
       </a>
     </li>
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Impression PDF">
-      <a id="pdf-print-tab" class="nav-link" data-toggle="tab" href="#pdf-print" role="tab" aria-controls="pdf-print">
+      <a id="pdf-print-tab" class="nav-link dock" data-toggle="tab" href="#pdf-print" role="tab" aria-controls="pdf-print">
       <i class="fas fa-file-pdf"></i>
       </a>
     </li>
@@ -180,6 +180,9 @@
 <div id="bottom-dock">
   <ul id="attributeLayersTabs" class="nav nav-tabs" role="tablist"></ul>
   <div class="tab-content" id="attributeLayersContent"></div>
+  <div id="bottom-dock-window-buttons">
+    <button id="hideBottomDock" class="btn btn-sm" type="button" title="Fermer">Fermer</button>
+  </div>
 </div>
 
 <div id="map" class="map"></div>

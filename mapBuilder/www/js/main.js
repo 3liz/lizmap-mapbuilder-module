@@ -427,6 +427,7 @@ $(function() {
           ,'VERSION':'1.0.0'
           ,'TYPENAME':layerName
           ,'OUTPUTFORMAT': 'GeoJSON'
+          ,'GEOMETRYNAME': 'extent'
         }, function(features) {
           resolve(features);
         })
@@ -473,7 +474,7 @@ $(function() {
       var attributeHTMLTable = '<table class="table">';
 
       // Add table header
-      attributeHTMLTable += '<tr>';
+      attributeHTMLTable += '<tr><th></th>';
       for (var i = 0; i < visibleProperties.length; i++) {
         var columnName = aliases[visibleProperties[i]] != "" ? aliases[visibleProperties[i]] : visibleProperties[i];
         attributeHTMLTable += '<th>'+ columnName +'</th>';
@@ -483,7 +484,7 @@ $(function() {
       // Add data
       // TODO handle urls
       features.forEach(function(feature) {
-        attributeHTMLTable += '<tr>';
+        attributeHTMLTable += '<tr><td><button type="button" title="Zoomer" class="btn btn-sm zoomToFeatureExtent" data-feature-extent="'+JSON.stringify(feature.bbox)+'"><i class="fas fa-search-plus"></i></button></td>';
         for (var i = 0; i < visibleProperties.length; i++) {
           attributeHTMLTable += '<td>'+ feature.properties[visibleProperties[i]] +'</td>';
         }
@@ -504,7 +505,7 @@ $(function() {
 
       $('#attributeLayersContent').append('\
           <div class="tab-pane fade show active" id="attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tabpanel">\
-            <div class="table-responsive">\
+            <div class="table">\
             '+attributeHTMLTable+'\
             </div>\
           </div>'
@@ -530,6 +531,7 @@ $(function() {
         var node = $.ui.fancytree.getTree("#layerStore").getNodeByKey($(this).data('node-key'));
         $(node.tr).find(".attributeLayerButton").prop("disabled",false);
 
+        // Hide bottom dock
         if($('#attributeLayersContent').html().trim() == ""){
           $('#bottom-dock').hide();
           $('#attribute-btn').removeClass("active");
@@ -543,6 +545,12 @@ $(function() {
             previousTab.find('.nav-link').tab('show');
           }
         }
+      });
+
+      // Handle zoom to feature extent
+      $('.zoomToFeatureExtent').on('click', function () {
+        var bbox = $(this).data('feature-extent');
+        mapBuilder.map.getView().fit(transformExtent(bbox, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
       });
 
       $('#bottom-dock').show();
@@ -634,7 +642,7 @@ $(function() {
     var layers = mapBuilder.map.getLayers().getArray();
     for (var i = 0; i < layers.length; i++) {
       if(layers[i].ol_uid == node.data.ol_uid){
-        mapBuilder.map.getView().fit(transformExtent(layers[i].values_.bbox, 'EPSG:4326', mapBuilder.map.getView().projection_));
+        mapBuilder.map.getView().fit(transformExtent(layers[i].getProperties().bbox, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
       }
     }
     e.stopPropagation();  // prevent fancytree activate for this row
@@ -721,7 +729,7 @@ $(function() {
 
   // Open/Close dock behaviour
   $('#dock-close').on("click", function(e){
-    $('#mapmenu .nav-link').removeClass('active');
+    $('#mapmenu .dock').removeClass('active');
     $("#dock").hide();
   });
 

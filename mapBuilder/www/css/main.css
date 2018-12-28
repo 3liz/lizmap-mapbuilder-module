@@ -21,13 +21,19 @@
     z-index: 1;
 }
 
-#mapmenu .nav-link{padding: 0;text-align: center;color: white}
+#mapmenu .nav-link{
+    padding: 0;
+    text-align: center;
+    color: white;
+    border-top-left-radius: initial;
+    border-top-right-radius: initial;
+}
 #mapmenu .nav-link.active{color: initial;}
 
 #dock {
     left: 30px;
     padding: 5px;
-    height: 43%;
+    max-height: 43%;
     overflow-y: auto;
 }
 
@@ -39,17 +45,21 @@
     bottom: 0px;
     left: 30px;
     right: 10px;
-    height: 48%;
+    height: 45%;
     display: none;
     background: rgba(0,0,0,0.7);
 }
 
+#bottom-dock-window-buttons{padding: 2px;}
+
 .nav-link, .nav-link:hover{color: white}
+
+#attributeLayersTabs{height: 40px}
 
 #attributeLayersContent{
     font-size: small;
     background-color: #F0F0F0;
-    height: 85%;
+    height: calc(100% - 75px);
     overflow-y: auto;
 }
 
