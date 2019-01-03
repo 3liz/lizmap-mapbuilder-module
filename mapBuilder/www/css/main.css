@@ -76,7 +76,7 @@
 .toggleLegend > img {display: none;}
 
 .changeOrder > div {display: block;text-align: center;}
-#layerSelected tr:first-child div.changeOrderUp, #layerSelected tr:last-child div.changeOrderDown {visibility: hidden;}
+#layerSelected tr:first-child div.changeOrderUp, #layerSelected tr:last-child div.changeOrderDown {display: none;}
 
 .changeOpacityButton button{border-color: #343a40;}
 .changeOpacityButton button:nth-child(1){background-color: rgba(0, 0, 0, 0);}

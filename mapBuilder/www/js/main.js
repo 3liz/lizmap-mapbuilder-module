@@ -100,9 +100,7 @@ $(function() {
 
           if(layer.getZIndex() !== undefined){
             layerTree[layer.getZIndex()] = layerObject;
-          }/*else{
-            layerTree.push(layerObject);
-          }*/
+          }
         }
       });
 
@@ -614,15 +612,24 @@ $(function() {
         $(node.tr).find(".layerSelectedStyles").text(node.data.styles);
 
         var opacity = 0;
+        var visible = true;
 
         var layers = mapBuilder.map.getLayers().getArray();
         for (var i = 0; i < layers.length; i++) {
           if(layers[i].ol_uid == node.data.ol_uid){
             opacity = layers[i].getOpacity();
+            visible = layers[i].getVisible();
           }
         }
 
         $(node.tr).find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-trash'></i></button>");
+
+        if(visible){
+          $(node.tr).find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye'></i></button>");
+        }else{
+          $(node.tr).find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>");
+        }
+        
         $(node.tr).find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
         $(node.tr).find(".changeOrder").html("<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>");
         $(node.tr).find(".toggleInfos").html("<button class='btn btn-sm'><i class='fas fa-info'></i></button>");
@@ -653,6 +660,25 @@ $(function() {
       }
     }
     refreshLayerSelected();
+    e.stopPropagation();  // prevent fancytree activate for this row
+  });
+
+  // Toggle layer visibility
+  $('#layerSelected').on("click", ".toggleVisibilityButton button", function(e){
+    var node = $.ui.fancytree.getNode(e);
+
+    var layers = mapBuilder.map.getLayers().getArray();
+    for (var i = 0; i < layers.length; i++) {
+      if(layers[i].ol_uid == node.data.ol_uid){
+        if(layers[i].getVisible()){
+          layers[i].setVisible(false);
+          $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+        }else{
+          layers[i].setVisible(true);
+          $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+      }
+    }
     e.stopPropagation();  // prevent fancytree activate for this row
   });
 
@@ -701,31 +727,33 @@ $(function() {
     var node = $.ui.fancytree.getNode(e);
     var siblingNode = $(this).hasClass("changeOrderUp") ? node.getPrevSibling() : node.getNextSibling();
 
-    var nodeLayerZIndex = -1;
-    var siblingNodeLayerZIndex = -1;
+    if(siblingNode){
+      var nodeLayerZIndex = -1;
+      var siblingNodeLayerZIndex = -1;
 
-    var layers = mapBuilder.map.getLayers().getArray();
+      var layers = mapBuilder.map.getLayers().getArray();
 
-    for (var i = 0; i < layers.length; i++) {
-      if(layers[i].ol_uid == node.data.ol_uid){
-        nodeLayerZIndex = layers[i].getZIndex();
+      for (var i = 0; i < layers.length; i++) {
+        if(layers[i].ol_uid == node.data.ol_uid){
+          nodeLayerZIndex = layers[i].getZIndex();
+        }
+        if(layers[i].ol_uid == siblingNode.data.ol_uid){
+          siblingNodeLayerZIndex = layers[i].getZIndex();
+        }
       }
-      if(layers[i].ol_uid == siblingNode.data.ol_uid){
-        siblingNodeLayerZIndex = layers[i].getZIndex();
+
+      // Swap zIndex
+      for (var i = 0; i < layers.length; i++) {
+        if(layers[i].ol_uid == node.data.ol_uid){
+          layers[i].setZIndex(siblingNodeLayerZIndex);
+        }
+        if(layers[i].ol_uid == siblingNode.data.ol_uid){
+          layers[i].setZIndex(nodeLayerZIndex);
+        }
       }
+
+      refreshLayerSelected();
     }
-
-    // Swap zIndex
-    for (var i = 0; i < layers.length; i++) {
-      if(layers[i].ol_uid == node.data.ol_uid){
-        layers[i].setZIndex(siblingNodeLayerZIndex);
-      }
-      if(layers[i].ol_uid == siblingNode.data.ol_uid){
-        layers[i].setZIndex(nodeLayerZIndex);
-      }
-    }
-
-    refreshLayerSelected();
     e.stopPropagation();  // prevent fancytree activate for this row
   });
 
@@ -844,6 +872,7 @@ $(function() {
           opacity: layerProperties.opacity,
           bbox: layerProperties.bbox,
           popup: layerProperties.popup,
+          visible: layerProperties.visible,
           zIndex: layerProperties.zIndex,
           minResolution: layerProperties.minResolution,
           maxResolution: layerProperties.maxResolution, //maxResolution peut valoir Infinity et devient null en json
@@ -892,6 +921,7 @@ $(function() {
           opacity: layerContext.opacity,
           bbox: layerContext.bbox,
           popup: layerContext.popup,
+          visible: layerContext.visible,
           zIndex: layerContext.zIndex,
           minResolution: layerContext.minResolution,
           maxResolution: layerContext.maxResolution != null ? layerContext.maxResolution : Infinity,

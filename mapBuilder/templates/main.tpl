@@ -143,6 +143,7 @@
             <td></td>
             <td class="changeOrder"></td>
             <td class="deleteLayerButton"></td>
+            <td class="toggleVisibilityButton"></td>
             <td class="zoomToExtentButton"></td>
             <td class="toggleInfos"></td>
             <td class="layerSelectedStyles hide"></td>
