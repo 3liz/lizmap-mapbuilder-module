@@ -148,7 +148,7 @@ $(function() {
         $(this.element).removeClass('active');
 
         this.getMap().getInteractions().forEach(function(interaction) {
-          if(interaction.constructor.name === "DragZoom"){
+          if(interaction instanceof DragZoom){
             interaction.condition_ = shiftKeyOnlyCondition;
           }
         });
@@ -156,7 +156,7 @@ $(function() {
         $(this.element).addClass('active');
 
         this.getMap().getInteractions().forEach(function(interaction) {
-          if(interaction.constructor.name === "DragZoom"){
+          if(interaction instanceof DragZoom){
             interaction.condition_ = alwaysCondition;
           }
         });
@@ -248,7 +248,7 @@ $(function() {
       $(".ol-drag-zoom.active").removeClass("active");
 
       evt.map.getInteractions().forEach(function(interaction) {
-        if(interaction.constructor.name === "DragZoom"){
+        if(interaction instanceof DragZoom){
           interaction.condition_ = shiftKeyOnlyCondition;
         }
       });
@@ -902,7 +902,7 @@ $(function() {
     });
 
     $.ajax({
-      url: "/index.php/mapBuilder/mapcontext/save/",
+      url: lizUrls.mapcontext,
       type:"POST",
       data: JSON.stringify(mapContext),
       contentType:"application/json",
