@@ -5,6 +5,7 @@ import View from 'ol/View.js';
 import {defaults as defaultControls, Control, ScaleLine} from 'ol/control.js';
 import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
 import OSM from 'ol/source/OSM.js';
+import Stamen from 'ol/source/Stamen.js';
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
 import ImageWMS from 'ol/source/ImageWMS.js';
 import {transformExtent,Projection} from 'ol/proj.js';
@@ -90,8 +91,8 @@ $(function() {
   function refreshLayerSelected() {
       var layerTree = [];
       mapBuilder.map.getLayers().forEach(function(layer) {
-        // Don't add OSM
-        if(layer.getProperties().title != "OSM"){
+        // Don't add base layer
+        if( ! layer.getProperties().hasOwnProperty('baseLayer')){
           var layerObject = {
             title: layer.getProperties().title,
             styles: layer.getSource().getParams().STYLES,
@@ -204,17 +205,35 @@ $(function() {
       new dragZoomControl(),
       new zoomToOriginControl()
     ]),
-    layers: [
-      new TileLayer({
-        title: "OSM",
-        source: new OSM()
-      })
-    ],
     view: new View({
         center: originalCenter,
         zoom: originalZoom
     })
   });
+
+  // baseLayer is set in mapBuilder.ini.php
+  if(mapBuilder.hasOwnProperty('baseLayer')){
+    var baseLayer = null;
+    if(mapBuilder.baseLayer === 'osmMapnik'){
+      baseLayer = new TileLayer({
+        title: "OSM",
+        source: new OSM(),
+        baseLayer: true
+      });
+    }
+    else if(mapBuilder.baseLayer === 'osmStamenToner'){
+      baseLayer = new TileLayer({
+        source: new Stamen({
+          layer: 'toner'
+        }),
+        baseLayer: true
+      });
+    }
+
+    if(baseLayer){
+      mapBuilder.map.addLayer(baseLayer);
+    }
+  }
 
   // Extent is set in mapBuilder.ini.php => fit view on it and override originalCenter and originalZoom
   if(mapBuilder.hasOwnProperty('extent')){
@@ -364,7 +383,7 @@ $(function() {
       bbox: node.data.bbox,
       popup: node.data.popup,
       source: new ImageWMS({
-        url: '/index.php/lizmap/service/?repository=' + repositoryId + '&project=' + projectId,
+        url: lizUrls.wms+'?repository=' + repositoryId + '&project=' + projectId,
         params: {
           'LAYERS': node.data.name,
           'STYLES': $(node.tr).find(">td .layerStyles :selected").text()
@@ -763,7 +782,7 @@ $(function() {
 
     mapBuilder.map.getLayers().forEach(function(layer) {
       if(layer.type == "IMAGE"){
-        legends[layer.getZIndex()] = layer.values_.source.url_+'&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER='+layer.values_.source.params_.LAYERS+'&STYLE='+layer.values_.source.params_.STYLES+'&FORMAT=image/png';
+        legends[layer.getZIndex()] = layer.getSource().getUrl()+'&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER='+layer.values_.source.params_.LAYERS+'&STYLE='+layer.values_.source.params_.STYLES+'&FORMAT=image/png';
       }
     });
 
@@ -859,8 +878,8 @@ $(function() {
     mapContext.layers = [];
 
     mapBuilder.map.getLayers().forEach(function(layer) {
-      // Don't add OSM
-      if(layer.getProperties().title != "OSM"){
+      // Don't add base layer
+      if( ! layer.getProperties().hasOwnProperty('baseLayer')){
 
         var layerProperties = layer.getProperties();
         var layerSourceParams = layer.getSource().getParams();
@@ -926,7 +945,7 @@ $(function() {
           minResolution: layerContext.minResolution,
           maxResolution: layerContext.maxResolution != null ? layerContext.maxResolution : Infinity,
           source: new ImageWMS({
-            url: '/index.php/lizmap/service/?repository=' + layerContext.repositoryId + '&project=' + layerContext.projectId,
+            url: lizUrls.wms+'?repository=' + layerContext.repositoryId + '&project=' + layerContext.projectId,
             params: {
               'LAYERS': layerContext.name,
               'STYLES': layerContext.style

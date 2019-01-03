@@ -3,3 +3,6 @@
 
 ;; put here original extent (WGS 84) when mapBuilder load
 ;extent=[,,,]
+
+;; set base layer (osmMapnik, osmStamenToner, osmCyclemap)
+;baseLayer=osmMapnik

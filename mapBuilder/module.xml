@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="mapBuilder3liz.com" name="mapBuilder" createdate="2018-10-03">
-        <version date="2018-12-21">1.0.0-rc.3</version>
+        <version date="2019-01-03">1.0.0-rc.4</version>
         <label lang="en_US">mapBuilder</label>
         <description lang="en_US">Jelix module for Lizmap, which adds a map builder based on every repositories</description>
         <license>Mozilla Public License 2.0</license>
-        <copyright>2018 3liz</copyright>
+        <copyright>2019 3liz</copyright>
         <creator name="Nicolas Boisteault" email="nboisteault@3liz.com" />
         <homepageURL>https://3liz.com</homepageURL>
     </info>
