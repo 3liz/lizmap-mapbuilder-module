@@ -125,11 +125,13 @@
           <col>
           <col>
           <col>
+          <col>
           <col span="3">
         </colgroup>
         <thead>
           <tr>
             <th>Couche</th>
+            <th></th>
             <th></th>
             <th></th>
             <th></th>

@@ -92,6 +92,10 @@ class defaultCtrl extends jController {
         if(array_key_exists('baseLayer', $readConfigPath)){
             $rep->addJSCode("mapBuilder.baseLayer = '".$readConfigPath['baseLayer']."';");
         }
+        // Get base layer key from ini file if set
+        if(array_key_exists('baseLayerKey', $readConfigPath)){
+            $rep->addJSCode("mapBuilder.baseLayerKey = '".$readConfigPath['baseLayerKey']."';");
+        }
 
         // Get map context in $_SESSION if exists
         if(isset($_SESSION['mapcontext']) && $_SESSION['mapcontext'] != ''){

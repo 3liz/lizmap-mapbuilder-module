@@ -6,6 +6,7 @@ import {defaults as defaultControls, Control, ScaleLine} from 'ol/control.js';
 import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
 import OSM from 'ol/source/OSM.js';
 import Stamen from 'ol/source/Stamen.js';
+import XYZ from 'ol/source/XYZ.js';
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
 import ImageWMS from 'ol/source/ImageWMS.js';
 import {transformExtent,Projection} from 'ol/proj.js';
@@ -217,20 +218,28 @@ $(function() {
     if(mapBuilder.baseLayer === 'osmMapnik'){
       baseLayer = new TileLayer({
         title: "OSM",
-        source: new OSM(),
-        baseLayer: true
+        source: new OSM()
       });
     }
     else if(mapBuilder.baseLayer === 'osmStamenToner'){
       baseLayer = new TileLayer({
         source: new Stamen({
           layer: 'toner'
-        }),
-        baseLayer: true
+        })
+      });
+    }
+    else if(mapBuilder.baseLayer === 'osmCyclemap' 
+      && mapBuilder.hasOwnProperty('baseLayerKey')){
+      baseLayer = new TileLayer({
+        source: new XYZ({
+          url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=' + mapBuilder.baseLayerKey
+        })
       });
     }
 
     if(baseLayer){
+      // Add baseLayer property to treat this layer differently
+      baseLayer.setProperties({baseLayer: true});
       mapBuilder.map.addLayer(baseLayer);
     }
   }
