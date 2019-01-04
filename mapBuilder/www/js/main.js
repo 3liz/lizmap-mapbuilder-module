@@ -7,6 +7,7 @@ import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
 import OSM from 'ol/source/OSM.js';
 import Stamen from 'ol/source/Stamen.js';
 import XYZ from 'ol/source/XYZ.js';
+import BingMaps from 'ol/source/BingMaps.js';
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
 import ImageWMS from 'ol/source/ImageWMS.js';
 import {transformExtent,Projection} from 'ol/proj.js';
@@ -233,6 +234,24 @@ $(function() {
       baseLayer = new TileLayer({
         source: new XYZ({
           url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=' + mapBuilder.baseLayerKey
+        })
+      });
+    }
+    else if((mapBuilder.baseLayer === 'bingStreets' 
+      || mapBuilder.baseLayer === 'bingSatellite'
+      || mapBuilder.baseLayer === 'bingHybrid')
+      && mapBuilder.hasOwnProperty('baseLayerKey')){
+      var bingMapsCorrespondance = {
+        'bingStreets' : 'Road',
+        'bingSatellite' : 'Aerial',
+        'bingHybrid' : 'AerialWithLabels'
+      };
+      baseLayer = new TileLayer({
+        visible: false,
+        preload: Infinity,
+        source: new BingMaps({
+          key: mapBuilder.baseLayerKey,
+          imagerySet: bingMapsCorrespondance[mapBuilder.baseLayer]
         })
       });
     }
