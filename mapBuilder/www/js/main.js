@@ -4,13 +4,18 @@ import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import {defaults as defaultControls, Control, ScaleLine} from 'ol/control.js';
 import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
+
 import OSM from 'ol/source/OSM.js';
 import Stamen from 'ol/source/Stamen.js';
 import XYZ from 'ol/source/XYZ.js';
 import BingMaps from 'ol/source/BingMaps.js';
+import WMTS from 'ol/source/WMTS.js';
+import WMTSTileGrid from 'ol/tilegrid/WMTS.js';
+import {getWidth} from 'ol/extent.js';
+
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
 import ImageWMS from 'ol/source/ImageWMS.js';
-import {transformExtent,Projection} from 'ol/proj.js';
+import {transformExtent, Projection, fromLonLat, get as getProjection} from 'ol/proj.js';
 
 import {defaults as defaultInteractions, DragZoom} from 'ol/interaction.js';
 import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from 'ol/events/condition.js';
@@ -253,6 +258,50 @@ $(function() {
           key: mapBuilder.baseLayerKey,
           imagerySet: bingMapsCorrespondance[mapBuilder.baseLayer]
         })
+      });
+    }
+    else if((mapBuilder.baseLayer === 'ignTerrain' 
+      || mapBuilder.baseLayer === 'ignStreets'
+      || mapBuilder.baseLayer === 'ignSatellite'
+      || mapBuilder.baseLayer === 'ignCadastral') 
+      && mapBuilder.hasOwnProperty('baseLayerKey')){
+      var ignCorrespondance = {
+        'ignTerrain' : 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+        'ignStreets' : 'GEOGRAPHICALGRIDSYSTEMS.PLANIGN',
+        'ignSatellite' : 'ORTHOIMAGERY.ORTHOPHOTOS',
+        'ignCadastral' : 'CADASTRALPARCELS.PARCELS'
+      };
+      var resolutions = [];
+      var matrixIds = [];
+      var proj3857 = getProjection('EPSG:3857');
+      var maxResolution = getWidth(proj3857.getExtent()) / 256;
+
+      for (var i = 0; i < 18; i++) {
+        matrixIds[i] = i.toString();
+        resolutions[i] = maxResolution / Math.pow(2, i);
+      }
+
+      var tileGrid = new WMTSTileGrid({
+        origin: [-20037508, 20037508],
+        resolutions: resolutions,
+        matrixIds: matrixIds
+      });
+
+      var ign_source = new WMTS({
+        url: "https://gpp3-wxs.ign.fr/"+mapBuilder.baseLayerKey+"/wmts",
+        layer: ignCorrespondance[mapBuilder.baseLayer],
+        matrixSet: 'PM',
+        format: 'image/jpeg',
+        projection: 'EPSG:3857',
+        tileGrid: tileGrid,
+        style: 'normal',
+        attributions: '<a href="http://www.geoportail.fr/" target="_blank">' +
+              '<img src="https://api.ign.fr/geoportail/api/js/latest/' +
+              'theme/geoportal/img/logo_gp.gif"></a>'
+      });
+
+      var baseLayer = new TileLayer({
+        source: ign_source
       });
     }
 
