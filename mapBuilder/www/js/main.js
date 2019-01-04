@@ -270,13 +270,14 @@ $(function() {
   mapBuilder.map.on('singleclick', function(evt) {
     document.getElementById('popupcontent').innerHTML = '';
     var viewResolution = mapBuilder.map.getView().getResolution();
+    var projection = mapBuilder.map.getView().getProjection();
     var getFeatureInfos = [];
     var getFeatureInfosIframes = ""
 
     mapBuilder.map.getLayers().forEach(function(layer) {
-      if(layer.type == "IMAGE" && layer.values_.popup == "True"){
+      if( !layer.getProperties().hasOwnProperty('baseLayer') && layer.values_.popup == "True"){
         var url = layer.getSource().getGetFeatureInfoUrl(
-          evt.coordinate, viewResolution, 'EPSG:3857',
+          evt.coordinate, viewResolution, projection,
           {'INFO_FORMAT': 'text/html'});
 
         // Display getFeatureInfos by zIndex order
