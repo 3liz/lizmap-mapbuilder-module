@@ -485,7 +485,9 @@ $(function() {
       var propertiesFromWFS = features[0].properties;
       var visibleProperties = [];
 
-      var columns = mapBuilder.lizMap[repositoryId + '|' + projectId].config.attributeLayers[node.data.name].attributetableconfig.columns.column;
+      if(mapBuilder.lizMap[repositoryId + '|' + projectId].config.attributeLayers[node.data.name].hasOwnProperty('attributetableconfig')){
+        var columns = mapBuilder.lizMap[repositoryId + '|' + projectId].config.attributeLayers[node.data.name].attributetableconfig.columns.column;
+      }
 
       if(columns !== undefined){
         for (var i = 0; i < columns.length; i++) {
@@ -628,6 +630,9 @@ $(function() {
                 }
               }
             }
+            // Refresh legends
+            // TODO : improve loadLegend to avoid multiple getLegendGraphic requests
+            loadLegend();
           },
           dragEnter: function(node, data) {
             // Don't allow dropping *over* a node (would create a child). Just
