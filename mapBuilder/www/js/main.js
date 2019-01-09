@@ -29,6 +29,11 @@ var originalZoom = 6;
 // 1 inch = 2,54 cm = 25,4 mm
 const INCHTOMM = 25.4;
 
+// Disable fancytree logs in production mode
+if (PRODUCTION) {
+  $.ui.fancytree.debugLevel = 0;
+}
+
 $(function() {
 
   function performCleanName(aName) {

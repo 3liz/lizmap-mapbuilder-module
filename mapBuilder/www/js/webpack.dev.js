@@ -12,6 +12,11 @@ module.exports = {
     filename: 'mapbuilder.js'
   },
   externals: {
-      jquery: 'jQuery'
-    }
+    jquery: 'jQuery'
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      PRODUCTION: JSON.stringify(false)
+    })
+  ]
 };

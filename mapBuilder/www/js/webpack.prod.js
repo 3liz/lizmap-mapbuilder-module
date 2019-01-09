@@ -12,5 +12,10 @@ module.exports = {
   },
   externals: {
       jquery: 'jQuery'
-    }
+    },
+  plugins: [
+    new webpack.DefinePlugin({
+      PRODUCTION: JSON.stringify(true)
+    })
+  ]
 };
