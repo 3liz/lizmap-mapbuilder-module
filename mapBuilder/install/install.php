@@ -17,5 +17,12 @@ class mapBuilderModuleInstaller extends jInstallerModule {
         $this->copyDirectoryContent('../www/css/fontawesome-free-5.4.1-web', jApp::wwwPath('mapBuilder/fontawesome-free-5.4.1-web'));
         // Copy conf file
         $this->copyDirectoryContent('conf', jApp::configPath());
+
+        // SQL for map context
+        if ($this->firstDbExec()) {
+            // Add mapcontext table
+            $this->useDbProfile('jauth');
+            $this->execSQLScript('sql/mapcontext');
+        }
     }
 }
