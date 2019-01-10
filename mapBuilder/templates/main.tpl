@@ -186,9 +186,7 @@
         </label>
       </div>
       <button id="mapcontext-add-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">Ajouter un géosignet</button>
-      <div id="mapcontext-container">
-        <table></table>
-      </div>
+        {$LIST_MAPCONTEXT}
     </div>
   </div>
 </div>

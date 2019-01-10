@@ -37,7 +37,9 @@
     overflow-y: auto;
 }
 
-#dock-close{text-align: right;}
+#dock-close{text-align: right;margin-bottom: 5px}
+
+#mapcontext-container{margin-top: 10px }
 
 #bottom-dock{
     position: absolute;

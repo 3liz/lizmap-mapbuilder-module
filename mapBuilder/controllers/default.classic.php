@@ -114,6 +114,9 @@ class defaultCtrl extends jController {
 
         $rep->bodyTpl = 'mapBuilder~main';
 
+        // Affichage de la liste des mapcontext
+        $rep->body->assignZone('LIST_MAPCONTEXT', 'list_mapcontext');
+
         // Override default theme with color set in admin panel
         if($cssContent = jFile::read(jApp::varPath('lizmap-theme-config/') . 'theme.css') ){
           $css = '<style type="text/css">' . $cssContent . '</style>';

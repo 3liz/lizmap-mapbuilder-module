@@ -883,7 +883,7 @@ $(function() {
   }
 
   // Open/Close dock behaviour
-  $('#dock-close').on("click", function(e){
+  $('#dock-close > button').on("click", function(e){
     $('#mapmenu .dock').removeClass('active');
     $("#dock").hide();
   });

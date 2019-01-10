@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dao xmlns="http://jelix.org/ns/dao/1.0">
+    <datasources>
+        <primarytable name="mapcontext" realname="mapcontext" primarykey="id" />
+    </datasources>
+    <record>
+        <property name="id" fieldname="id" datatype="serial" required="true"/>
+        <property name="login" fieldname="usr_login" datatype="text" required="true"/>
+        <property name="name" fieldname="name" datatype="text" required="true"/>
+        <property name="is_public" fieldname="is_public" datatype="boolean" required="true"/>
+        <property name="mapcontext" fieldname="mapcontext" datatype="text" required="true"/>
+    </record>
+    <factory>
+    </factory>
+</dao>
