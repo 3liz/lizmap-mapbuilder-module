@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS public.mapcontext(
   id serial PRIMARY KEY,
   usr_login text NOT NULL,
+  name text NOT NULL,
   is_public boolean NOT NULL,
   mapcontext text NOT NULL
 );

@@ -82,7 +82,7 @@
       </a>
     </li>
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Géosignets">
-      <a id="geobookmark-tab" class="nav-link dock" data-toggle="tab" href="#geobookmark" role="tab" aria-controls="geobookmark">
+      <a id="mapcontext-tab" class="nav-link dock" data-toggle="tab" href="#mapcontext" role="tab" aria-controls="mapcontext">
       <i class="fas fa-external-link-alt"></i>
       </a>
     </li>
@@ -90,7 +90,7 @@
 </div>
 
 <div id="dock" class="bg-white">
-  <div id="dock-close"><button class="btn btn-sm">Fermer</button></div>
+  <div id="dock-close"><button class="btn btn-sm btn-outline-dark">Fermer</button></div>
   <div id="mapBuilder" class="tab-content">
     <div class="tab-pane fade show active" id="layerswitcher" role="tabpanel" aria-labelledby="layerswitcher-tab">
       <table id="layerStore">
@@ -175,12 +175,18 @@
         <option value="150">150 dpi</option>
         <option value="300">300 dpi</option>
       </select>
-      <button id="pdf-print-btn" type="button" class="btn btn-sm btn-block">Imprimer</button>
+      <button id="pdf-print-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">Imprimer</button>
     </div>
-    <div class="tab-pane fade" id="geobookmark" role="tabpanel" aria-labelledby="geobookmark-tab">
-      <input id="geobookmark-name" class="form-control" type="text" placeholder="Nom du signet">
-      <button id="geobookmark-save-btn" type="button" class="btn btn-sm btn-block">Ajouter un géosignet</button>
-      <div id="geobookmark-container">
+    <div class="tab-pane fade" id="mapcontext" role="tabpanel" aria-labelledby="mapcontext-tab">
+      <input id="mapcontext-name" class="form-control" type="text" placeholder="Nom du signet">
+      <div class="form-check form-control-sm">
+        <input class="form-check-input" type="checkbox" value="" id="publicmapcontext">
+        <label class="form-check-label" for="publicmapcontext">
+          Géosignet public
+        </label>
+      </div>
+      <button id="mapcontext-add-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">Ajouter un géosignet</button>
+      <div id="mapcontext-container">
         <table></table>
       </div>
     </div>
@@ -191,7 +197,7 @@
   <ul id="attributeLayersTabs" class="nav nav-tabs" role="tablist"></ul>
   <div class="tab-content" id="attributeLayersContent"></div>
   <div id="bottom-dock-window-buttons">
-    <button id="hideBottomDock" class="btn btn-sm" type="button" title="Fermer">Fermer</button>
+    <button id="hideBottomDock" class="btn btn-sm btn-outline-dark" type="button" title="Fermer">Fermer</button>
   </div>
 </div>
 

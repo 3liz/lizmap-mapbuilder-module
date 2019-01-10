@@ -955,8 +955,23 @@ $(function() {
     $(this).removeClass("disabled");
   });
 
-  // Save user's map context
-  $('#savemap-btn').on("click", function(e){
+  // Add user's map context
+  $('#mapcontext-add-btn').on("click", function(e){
+
+    // mapcontext needs a name
+    if($("#mapcontext-name").val() == ""){
+      $('#message').html('\
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">\
+          Veuillez renseigner un nom pour le géosignet.\
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
+          <span aria-hidden="true">&times;</span>\
+          </button>\
+        </div>');
+      $('#message > div').alert();
+
+      return;
+    }
+
     var mapContext = {};
 
     // First save map center and zoom
@@ -992,20 +1007,30 @@ $(function() {
     $.ajax({
       url: lizUrls.mapcontext,
       type:"POST",
-      data: JSON.stringify(mapContext),
-      contentType:"application/json",
+      data: { name: $("#mapcontext-name").val(), is_public: $("#publicmapcontext").is(':checked'), mapcontext: JSON.stringify(mapContext) },
+      // contentType:"application/json",
       dataType:"text",
       success: function( data ){
         if(data == "ok"){
           $('#message').html('\
             <div class="alert alert-success alert-dismissible fade show" role="alert">\
-              Contexte de la carte enregistré.\
+              Géosignet ajouté.\
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
               <span aria-hidden="true">&times;</span>\
               </button>\
             </div>');
-          $('#message .alert').alert();
         }
+        else if(data == "nok"){
+          $('#message').html('\
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">\
+              Erreur.\
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
+              <span aria-hidden="true">&times;</span>\
+              </button>\
+            </div>');
+        }
+
+        $('#message > div').alert();
       }
     });
   });

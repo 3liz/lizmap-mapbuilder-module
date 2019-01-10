@@ -9,10 +9,11 @@
 */
 
 class mapcontextCtrl extends jController {
-    /**
-    *
-    */
-    function save() {
+    /*
+     * Add a mapcontext
+     *
+     */
+    function add() {
 
         $rep = $this->getResponse('text');
 
@@ -21,22 +22,33 @@ class mapcontextCtrl extends jController {
             throw new Exception('Request method must be POST!');
         }
 
-        // Make sure that the content type of the POST request has been set to application/json
-        $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
-        if(strcasecmp($contentType, 'application/json') != 0){
-            throw new Exception('Content type must be: application/json');
-        }
-
-        $content = json_decode($this->param('__httpbody'), true);
-         
-        // If json_decode failed, the JSON is invalid.
-        if(!is_array($content)){
-            throw new Exception('Received content contained invalid JSON!');
-        }
-
-        $_SESSION['mapcontext'] = $content;
-
+        // Save in database
         $rep->content = 'ok';
+
+        // Check name
+        $name = filter_var( $this->param('name'), FILTER_SANITIZE_STRING );
+        if( empty($name) ){
+            $rep->content = 'nok';
+        }
+        if( $rep->content = 'ok' ){
+            $dao = jDao::get('mapBuilder~mapcontext');
+            $record = jDao::createRecord('mapBuilder~mapcontext');
+
+            $record->login = jAuth::getUserSession()->login;
+            $record->name = $name;
+            $record->is_public = $this->param('is_public');
+            $record->mapcontext = $this->param('mapcontext');
+            
+            // Save the new mapcontext
+            $id = Null;
+            try{
+                $id = $dao->insert($record);
+            }catch(Exception $e){
+                jLog::log( 'Error while inserting the mapcontext');
+                jLog::log( $e->getMessage());
+            }
+        }
+
         return $rep;
     }
 }
