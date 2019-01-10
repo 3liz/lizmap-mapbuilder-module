@@ -437,7 +437,7 @@ $(function() {
         node.data.style.forEach(function(style) {
           styleOption += "<option>"+style.Name+"</option>";
         });
-        $tdList.eq(1).html("<select class='layerStyles custom-select-sm'>"+styleOption+"</select>");
+        $tdList.eq(1).html("<select class='layerStyles custom-select custom-select-sm'>"+styleOption+"</select>");
       }
       // Add button for layers (level 1 => repositories, 2 => projects)
       if(node.getLevel() > 2 && node.children == null){

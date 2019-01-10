@@ -81,9 +81,9 @@
       <i class="fas fa-list-ul"></i>
       </a>
     </li>
-    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Sauvegarder">
-      <a id="savemap-btn" class="nav-link" aria-controls="savemap">
-      <i class="fas fa-save"></i>
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Géosignets">
+      <a id="geobookmark-tab" class="nav-link dock" data-toggle="tab" href="#geobookmark" role="tab" aria-controls="geobookmark">
+      <i class="fas fa-external-link-alt"></i>
       </a>
     </li>
   </ul>
@@ -96,7 +96,7 @@
       <table id="layerStore">
         <colgroup>
           <col>
-          <col width="70px">
+          <col width="90px">
           <col>
           <col>
         </colgroup>
@@ -176,6 +176,13 @@
         <option value="300">300 dpi</option>
       </select>
       <button id="pdf-print-btn" type="button" class="btn btn-sm btn-block">Imprimer</button>
+    </div>
+    <div class="tab-pane fade" id="geobookmark" role="tabpanel" aria-labelledby="geobookmark-tab">
+      <input id="geobookmark-name" class="form-control" type="text" placeholder="Nom du signet">
+      <button id="geobookmark-save-btn" type="button" class="btn btn-sm btn-block">Ajouter un géosignet</button>
+      <div id="geobookmark-container">
+        <table></table>
+      </div>
     </div>
   </div>
 </div>
