@@ -1040,7 +1040,7 @@ $(function() {
         is_public: $("#publicmapcontext").is(':checked'),
         mapcontext: JSON.stringify(mapContext)
        },
-      dataType:"text",
+      dataType:"html",
       success: function( data ){
         setMapContextContent(data);
         mAddMessage('Géosignet ajouté.', 'success', true);
@@ -1059,7 +1059,7 @@ $(function() {
           url: lizUrls.mapcontext_delete,
           type:"POST",
           data: { id: mcId },
-          dataType:"text",
+          dataType:"html",
           success: function( data ){
             setMapContextContent(data);
           }
@@ -1069,8 +1069,58 @@ $(function() {
     });
     // show map context
     $('.btn-mapcontext-run').click(function(){
-      var id = $(this).val();
-      // runGeoBookmark( id );
+      var mcId = $(this).val();
+
+      $.ajax({
+        url: lizUrls.mapcontext_get,
+        type:"GET",
+        data: { id: mcId },
+        dataType:"json",
+        success: function( mapcontext ){
+          // Remove all existing layers (begins index at end because index changes after remove !)
+          var layers = mapBuilder.map.getLayers().array_;
+          for (var i = layers.length - 1; i >= 0; i--) {
+            if( ! layers[i].getProperties().hasOwnProperty('baseLayer')){
+              mapBuilder.map.removeLayer(layers[i]);
+            }
+          }
+
+          // Set zoom and center
+          mapBuilder.map.getView().setCenter(mapcontext.center);
+          mapBuilder.map.getView().setZoom(mapcontext.zoom);
+
+          // Load layers if present 
+          if(mapcontext.layers.length > 0){
+            for (var i = 0; i < mapcontext.layers.length; i++) {
+              var layerContext = mapcontext.layers[i];
+
+              var newLayer = new ImageLayer({
+                title: layerContext.title,
+                repositoryId: layerContext.repositoryId,
+                projectId: layerContext.projectId,
+                opacity: layerContext.opacity,
+                bbox: layerContext.bbox,
+                popup: layerContext.popup,
+                visible: layerContext.visible,
+                zIndex: layerContext.zIndex,
+                minResolution: layerContext.minResolution,
+                maxResolution: layerContext.maxResolution != null ? layerContext.maxResolution : Infinity,
+                source: new ImageWMS({
+                  url: lizUrls.wms+'?repository=' + layerContext.repositoryId + '&project=' + layerContext.projectId,
+                  params: {
+                    'LAYERS': layerContext.name,
+                    'STYLES': layerContext.style
+                  },
+                  serverType: 'qgis'
+                })
+              });
+
+              mapBuilder.map.addLayer(newLayer);
+            }
+            refreshLayerSelected();
+          }
+        }
+      });
 
       return false;
     });

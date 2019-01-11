@@ -46,7 +46,8 @@ class defaultCtrl extends jController {
           "wms" => jUrl::get('lizmap~service:index'),
           "media" => jUrl::get('view~media:getMedia'),
           "mapcontext_add" => jUrl::get('mapBuilder~mapcontext:add'),
-          "mapcontext_delete" => jUrl::get('mapBuilder~mapcontext:delete')
+          "mapcontext_delete" => jUrl::get('mapBuilder~mapcontext:delete'),
+          "mapcontext_get" => jUrl::get('mapBuilder~mapcontext:get')
         );
 
         $rep->addJSCode("var lizUrls = ".json_encode($lizUrls).";");
@@ -96,11 +97,6 @@ class defaultCtrl extends jController {
         // Get base layer key from ini file if set
         if(array_key_exists('baseLayerKey', $readConfigPath)){
             $rep->addJSCode("mapBuilder.baseLayerKey = '".$readConfigPath['baseLayerKey']."';");
-        }
-
-        // Get map context in $_SESSION if exists
-        if(isset($_SESSION['mapcontext']) && $_SESSION['mapcontext'] != ''){
-            $rep->addJSCode("mapBuilder.mapcontext = ".json_encode($_SESSION['mapcontext']).";");
         }
 
         $rep->body->assign('repositoryLabel', $title);

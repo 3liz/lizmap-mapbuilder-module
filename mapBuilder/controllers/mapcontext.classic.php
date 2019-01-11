@@ -93,4 +93,40 @@ class mapcontextCtrl extends jController {
 
         return $rep;
     }
+
+    /*
+     * Get mapcontext by id
+     *
+     */
+    function get(){
+
+        // Get user
+        $juser = jAuth::getUserSession();
+        $usr_login = $juser->login;
+
+        // Bookmark id
+        $id = $this->intParam('id');
+
+        // Conditions to get the bookmark
+        $daomc = jDao::get('mapBuilder~mapcontext');
+        $conditions = jDao::createConditions();
+        $conditions->addCondition('login','=',$usr_login);
+        $conditions->addCondition('id','=',$id);
+        $mcCount = $daomc->countBy($conditions);
+
+        if( $mcCount != 1 ){
+            jMessage::add('Wrong id given', 'error');
+            return $this->error();
+        }else{
+            $mcList = $daomc->findBy($conditions);
+            $mcParams = array();
+            foreach( $mcList as $mc ){
+                $mcParams = json_decode(htmlspecialchars_decode($mc->mapcontext,ENT_QUOTES ));
+            }
+            $rep = $this->getResponse('json');
+            $rep->data = $mcParams;
+            return $rep;
+        }
+    }
+    
 }
