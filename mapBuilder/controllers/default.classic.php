@@ -45,7 +45,8 @@ class defaultCtrl extends jController {
           "config" => jUrl::get('lizmap~service:getProjectConfig'),
           "wms" => jUrl::get('lizmap~service:index'),
           "media" => jUrl::get('view~media:getMedia'),
-          "mapcontext" => jUrl::get('mapBuilder~mapcontext:add')
+          "mapcontext_add" => jUrl::get('mapBuilder~mapcontext:add'),
+          "mapcontext_delete" => jUrl::get('mapBuilder~mapcontext:delete')
         );
 
         $rep->addJSCode("var lizUrls = ".json_encode($lizUrls).";");

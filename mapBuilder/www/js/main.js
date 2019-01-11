@@ -53,6 +53,37 @@ $(function() {
     return theCleanName.replace(reg, '_');
   }
 
+  function mAddMessage( aMessage, aType, aClose ) {
+    var mType = 'info';
+    var mTypeList = ['info', 'danger', 'success'];
+    var mClose = false;
+    var mDismissible = '';
+
+    if ( $.inArray(aType, mTypeList) != -1 )
+      mType = aType;
+
+    if ( aClose ){
+      mClose = true;
+      mDismissible = 'alert-dismissible';
+    }
+
+    var html = '<div class="alert alert-'+mType+' '+mDismissible+' fade show" role="alert">';
+
+    html += aMessage;
+
+    if ( mClose ){
+      html += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\
+                <span aria-hidden="true">&times;</span>\
+              </button>';
+    }
+    
+    html += '</div>';
+
+    var elt = $(html);
+    $('#message').append(elt);
+    return elt;
+  }
+
   function buildLayerTree(layer, cfg) {
     var myArray = [];
     if (Array.isArray(layer)) {
@@ -1005,34 +1036,33 @@ $(function() {
     });
 
     $.ajax({
-      url: lizUrls.mapcontext,
+      url: lizUrls.mapcontext_add,
       type:"POST",
       data: { name: $("#mapcontext-name").val(), is_public: $("#publicmapcontext").is(':checked'), mapcontext: JSON.stringify(mapContext) },
-      // contentType:"application/json",
       dataType:"text",
       success: function( data ){
-        if(data == "ok"){
-          $('#message').html('\
-            <div class="alert alert-success alert-dismissible fade show" role="alert">\
-              Géosignet ajouté.\
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
-              <span aria-hidden="true">&times;</span>\
-              </button>\
-            </div>');
-        }
-        else if(data == "nok"){
-          $('#message').html('\
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">\
-              Erreur.\
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
-              <span aria-hidden="true">&times;</span>\
-              </button>\
-            </div>');
-        }
-
-        $('#message > div').alert();
+        $('#mapcontext-container').html(data);
+        mAddMessage('Géosignet ajouté.', 'success', true);
       }
     });
+  });
+
+  // delete map context
+  $('.btn-mapcontext-del').on("click", function(e){
+    if (confirm( 'Êtes-vous sûr de vouloir supprimer ce géosignet ?' )){
+      var mcId = $(this).val();
+
+      $.ajax({
+        url: lizUrls.mapcontext_delete,
+        type:"POST",
+        data: { id: mcId },
+        dataType:"text",
+        success: function( data ){
+          $('#mapcontext-container').html(data);
+        }
+      });
+    }
+    return false;
   });
 
   // Load map context if present

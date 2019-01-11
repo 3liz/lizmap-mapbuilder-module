@@ -15,22 +15,18 @@ class mapcontextCtrl extends jController {
      */
     function add() {
 
-        $rep = $this->getResponse('text');
+        $rep = $this->getResponse('htmlfragment');
 
         // Make sure that it is a POST request.
         if(strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') != 0){
             throw new Exception('Request method must be POST!');
         }
 
-        // Save in database
-        $rep->content = 'ok';
-
         // Check name
         $name = filter_var( $this->param('name'), FILTER_SANITIZE_STRING );
         if( empty($name) ){
-            $rep->content = 'nok';
-        }
-        if( $rep->content = 'ok' ){
+            jMessage::add('Please give a name', 'error');
+        }else{
             $dao = jDao::get('mapBuilder~mapcontext');
             $record = jDao::createRecord('mapBuilder~mapcontext');
 
@@ -46,8 +42,54 @@ class mapcontextCtrl extends jController {
             }catch(Exception $e){
                 jLog::log( 'Error while inserting the mapcontext');
                 jLog::log( $e->getMessage());
+                jMessage::add( 'Error while inserting the mapcontext', 'error' );
             }
         }
+
+        $rep->addContent(jZone::get('list_mapcontext'));
+        return $rep;
+    }
+
+    /*
+     * Delete mapcontext by id
+     *
+     */
+    function delete(){
+
+        $rep = $this->getResponse('htmlfragment');
+
+        // Make sure that it is a POST request.
+        if(strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') != 0){
+            throw new Exception('Request method must be POST!');
+        }
+
+        // Get user
+        $juser = jAuth::getUserSession();
+        $usr_login = $juser->login;
+
+        // mapcontext id
+        $id = $this->intParam('id');
+
+        // Conditions to get the mapcontext
+        $daomc = jDao::get('mapBuilder~mapcontext');
+        $conditions = jDao::createConditions();
+        $conditions->addCondition('login','=',$usr_login);
+        $conditions->addCondition('id','=',$id);
+        $mcCount = $daomc->countBy($conditions);
+
+        if( $mcCount != 1 ){
+            jMessage::add('Wrong id given', 'error');
+        }else{
+            try{
+                $daomc->delete($id);
+            }catch(Exception $e){
+                jLog::log( 'Error while deleting the mapcontext');
+                jLog::log( $e->getMessage());
+                jMessage::add( 'Error while deleting the mapcontext', 'error' );
+            }
+        }
+
+        $rep->addContent(jZone::get('list_mapcontext'));
 
         return $rep;
     }
