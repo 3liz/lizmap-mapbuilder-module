@@ -986,20 +986,17 @@ $(function() {
     $(this).removeClass("disabled");
   });
 
+
+  //#### MAP CONTEXT
+
+  bindMapContextEvents();
+
   // Add user's map context
-  $('#mapcontext-add-btn').on("click", function(e){
+  $('#mapcontext-add-btn').on("click", function(){
 
     // mapcontext needs a name
     if($("#mapcontext-name").val() == ""){
-      $('#message').html('\
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">\
-          Veuillez renseigner un nom pour le géosignet.\
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">\
-          <span aria-hidden="true">&times;</span>\
-          </button>\
-        </div>');
-      $('#message > div').alert();
-
+      mAddMessage('Veuillez renseigner un nom pour le géosignet.', 'danger', true);
       return;
     }
 
@@ -1038,70 +1035,95 @@ $(function() {
     $.ajax({
       url: lizUrls.mapcontext_add,
       type:"POST",
-      data: { name: $("#mapcontext-name").val(), is_public: $("#publicmapcontext").is(':checked'), mapcontext: JSON.stringify(mapContext) },
+      data: { 
+        name: $("#mapcontext-name").val(),
+        is_public: $("#publicmapcontext").is(':checked'),
+        mapcontext: JSON.stringify(mapContext)
+       },
       dataType:"text",
       success: function( data ){
-        $('#mapcontext-container').html(data);
+        setMapContextContent(data);
         mAddMessage('Géosignet ajouté.', 'success', true);
       }
     });
   });
 
-  // delete map context
-  $('.btn-mapcontext-del').on("click", function(e){
-    if (confirm( 'Êtes-vous sûr de vouloir supprimer ce géosignet ?' )){
-      var mcId = $(this).val();
+  function bindMapContextEvents(){
 
-      $.ajax({
-        url: lizUrls.mapcontext_delete,
-        type:"POST",
-        data: { id: mcId },
-        dataType:"text",
-        success: function( data ){
-          $('#mapcontext-container').html(data);
-        }
-      });
-    }
-    return false;
-  });
+    // delete map context
+    $('.btn-mapcontext-del').on("click", function(){
+      if (confirm( 'Êtes-vous sûr de vouloir supprimer ce géosignet ?' )){
+        var mcId = $(this).val();
+
+        $.ajax({
+          url: lizUrls.mapcontext_delete,
+          type:"POST",
+          data: { id: mcId },
+          dataType:"text",
+          success: function( data ){
+            setMapContextContent(data);
+          }
+        });
+      }
+      return false;
+    });
+    // show map context
+    $('.btn-mapcontext-run').click(function(){
+      var id = $(this).val();
+      // runGeoBookmark( id );
+
+      return false;
+    });
+  }
+
+  function setMapContextContent( mcData ){
+    // set content
+    $('#mapcontext-container').html(mcData);
+    // unbind previous click events
+    $('#mapcontext-container button').unbind('click');
+    // Bind events
+    bindMapContextEvents();
+    // Remove bname val
+    $('#mapcontext-name').val('').blur();
+  }
 
   // Load map context if present
-  if(mapBuilder.hasOwnProperty('mapcontext')){
-    // Set zoom and center
-    mapBuilder.map.getView().setCenter(mapBuilder.mapcontext.center);
-    mapBuilder.map.getView().setZoom(mapBuilder.mapcontext.zoom);
+  // if(mapBuilder.hasOwnProperty('mapcontext')){
+  //   // Set zoom and center
+  //   mapBuilder.map.getView().setCenter(mapBuilder.mapcontext.center);
+  //   mapBuilder.map.getView().setZoom(mapBuilder.mapcontext.zoom);
 
-    // Load layers if present 
-    if(mapBuilder.mapcontext.layers.length > 0){
-      for (var i = 0; i < mapBuilder.mapcontext.layers.length; i++) {
-        var layerContext = mapBuilder.mapcontext.layers[i];
+  //   // Load layers if present 
+  //   if(mapBuilder.mapcontext.layers.length > 0){
+  //     for (var i = 0; i < mapBuilder.mapcontext.layers.length; i++) {
+  //       var layerContext = mapBuilder.mapcontext.layers[i];
 
-        var newLayer = new ImageLayer({
-          title: layerContext.title,
-          repositoryId: layerContext.repositoryId,
-          projectId: layerContext.projectId,
-          opacity: layerContext.opacity,
-          bbox: layerContext.bbox,
-          popup: layerContext.popup,
-          visible: layerContext.visible,
-          zIndex: layerContext.zIndex,
-          minResolution: layerContext.minResolution,
-          maxResolution: layerContext.maxResolution != null ? layerContext.maxResolution : Infinity,
-          source: new ImageWMS({
-            url: lizUrls.wms+'?repository=' + layerContext.repositoryId + '&project=' + layerContext.projectId,
-            params: {
-              'LAYERS': layerContext.name,
-              'STYLES': layerContext.style
-            },
-            serverType: 'qgis'
-          })
-        });
+  //       var newLayer = new ImageLayer({
+  //         title: layerContext.title,
+  //         repositoryId: layerContext.repositoryId,
+  //         projectId: layerContext.projectId,
+  //         opacity: layerContext.opacity,
+  //         bbox: layerContext.bbox,
+  //         popup: layerContext.popup,
+  //         visible: layerContext.visible,
+  //         zIndex: layerContext.zIndex,
+  //         minResolution: layerContext.minResolution,
+  //         maxResolution: layerContext.maxResolution != null ? layerContext.maxResolution : Infinity,
+  //         source: new ImageWMS({
+  //           url: lizUrls.wms+'?repository=' + layerContext.repositoryId + '&project=' + layerContext.projectId,
+  //           params: {
+  //             'LAYERS': layerContext.name,
+  //             'STYLES': layerContext.style
+  //           },
+  //           serverType: 'qgis'
+  //         })
+  //       });
 
-        mapBuilder.map.addLayer(newLayer);
-      }
-      refreshLayerSelected();
-    }
-  }
+  //       mapBuilder.map.addLayer(newLayer);
+  //     }
+  //     refreshLayerSelected();
+  //   }
+  // }
 
   $('#attribute-btn').on("click", function(e){
     if($('#attributeLayersContent').html().trim() != ""){
