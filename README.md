@@ -1,7 +1,13 @@
 MapBuilder module
 =================
 
-Execute Lizmap install scripts
+Add this to `localconfig.ini.php` in `modules` section
+```
+mapBuilder.access=2
+
+```
+
+Then execute Lizmap install scripts
 
 ```
 php lizmap/install/installer.php
