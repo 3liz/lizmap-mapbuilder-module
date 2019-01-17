@@ -13,5 +13,4 @@ class mapBuilderModuleUpgrader extends jInstallerModule {
             $this->execSQLScript('sql/mapcontext');
         }
     }
-
 }
