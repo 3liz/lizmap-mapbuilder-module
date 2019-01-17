@@ -898,10 +898,12 @@ $(function() {
   function loadLegend(){
     var legends = [];
     var legendsDiv = "";
+    var scale = (mapBuilder.map.getView().getResolution() * 1000 * 90 * window.devicePixelRatio) / INCHTOMM;
 
     mapBuilder.map.getLayers().forEach(function(layer) {
       if(layer.type == "IMAGE"){
-        legends[layer.getZIndex()] = layer.getSource().getUrl()+'&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER='+layer.values_.source.params_.LAYERS+'&STYLE='+layer.values_.source.params_.STYLES+'&FORMAT=image/png&TRANSPARENT=TRUE&WIDTH=150&ITEMFONTSIZE=9&SYMBOLSPACE=1&ICONLABELSPACE=2&DPI=96&LAYERSPACE=0&LAYERFONTBOLD=FALSE';
+        var layerSource = layer.getSource();
+        legends[layer.getZIndex()] = layerSource.getUrl()+'&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER='+layerSource.getParams().LAYERS+'&STYLE='+layerSource.getParams().STYLES+'&FORMAT=image/png&TRANSPARENT=TRUE&WIDTH=150&ITEMFONTSIZE=9&SYMBOLSPACE=1&ICONLABELSPACE=2&DPI=96&LAYERSPACE=0&LAYERFONTBOLD=FALSE&SCALE='+scale;
       }
     });
 
@@ -1136,44 +1138,6 @@ $(function() {
     // Remove bname val
     $('#mapcontext-name').val('').blur();
   }
-
-  // Load map context if present
-  // if(mapBuilder.hasOwnProperty('mapcontext')){
-  //   // Set zoom and center
-  //   mapBuilder.map.getView().setCenter(mapBuilder.mapcontext.center);
-  //   mapBuilder.map.getView().setZoom(mapBuilder.mapcontext.zoom);
-
-  //   // Load layers if present 
-  //   if(mapBuilder.mapcontext.layers.length > 0){
-  //     for (var i = 0; i < mapBuilder.mapcontext.layers.length; i++) {
-  //       var layerContext = mapBuilder.mapcontext.layers[i];
-
-  //       var newLayer = new ImageLayer({
-  //         title: layerContext.title,
-  //         repositoryId: layerContext.repositoryId,
-  //         projectId: layerContext.projectId,
-  //         opacity: layerContext.opacity,
-  //         bbox: layerContext.bbox,
-  //         popup: layerContext.popup,
-  //         visible: layerContext.visible,
-  //         zIndex: layerContext.zIndex,
-  //         minResolution: layerContext.minResolution,
-  //         maxResolution: layerContext.maxResolution != null ? layerContext.maxResolution : Infinity,
-  //         source: new ImageWMS({
-  //           url: lizUrls.wms+'?repository=' + layerContext.repositoryId + '&project=' + layerContext.projectId,
-  //           params: {
-  //             'LAYERS': layerContext.name,
-  //             'STYLES': layerContext.style
-  //           },
-  //           serverType: 'qgis'
-  //         })
-  //       });
-
-  //       mapBuilder.map.addLayer(newLayer);
-  //     }
-  //     refreshLayerSelected();
-  //   }
-  // }
 
   $('#attribute-btn').on("click", function(e){
     if($('#attributeLayersContent').html().trim() != ""){
