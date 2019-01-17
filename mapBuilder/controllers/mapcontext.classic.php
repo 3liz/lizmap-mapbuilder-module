@@ -78,7 +78,7 @@ class mapcontextCtrl extends jController {
         $mcCount = $daomc->countBy($conditions);
 
         if( $mcCount != 1 ){
-            jMessage::add('Wrong id given', 'error');
+            jMessage::add('You can\'t delete this map context or it doesn\'t exist', 'error');
         }else{
             try{
                 $daomc->delete($id);
@@ -110,12 +110,16 @@ class mapcontextCtrl extends jController {
         // Conditions to get the bookmark
         $daomc = jDao::get('mapBuilder~mapcontext');
         $conditions = jDao::createConditions();
-        $conditions->addCondition('login','=',$usr_login);
         $conditions->addCondition('id','=',$id);
+        // Get map context if saved by logged user or public ones
+        $conditions->startGroup('OR');
+            $conditions->addCondition('login','=',$usr_login);
+            $conditions->addCondition('is_public','=',true);
+        $conditions->endGroup();
         $mcCount = $daomc->countBy($conditions);
 
         if( $mcCount != 1 ){
-            jMessage::add('Wrong id given', 'error');
+            jMessage::add('You don\'t have access to this map context or it doesn\'t exist' , 'error');
             return $this->error();
         }else{
             $mcList = $daomc->findBy($conditions);

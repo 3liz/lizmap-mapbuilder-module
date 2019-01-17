@@ -17,15 +17,25 @@ class list_mapcontextZone extends jZone {
 	    // Get user
 	    $juser = jAuth::getUserSession();
 	    $usr_login = $juser->login;
+	    $loggedUser = false;
+
+	    if($usr_login){
+	    	$loggedUser = true;
+	    }
 
 	    // Get user mapcontexts
 	    $daomc = jDao::get('mapBuilder~mapcontext');
 	    $conditions = jDao::createConditions();
-	    $conditions->addCondition('login','=',$usr_login);
+	    // Get mapcontexts saved by logged user or public ones
+	    $conditions->startGroup('OR');
+	        $conditions->addCondition('login','=',$usr_login);
+	        $conditions->addCondition('is_public','=',true);
+	    $conditions->endGroup();
 	    $mcList = $daomc->findBy($conditions);
 	    $mcCount = $daomc->countBy($conditions);
 
 	    // Get html content
+	    $this->_tpl->assign('loggedUser',$loggedUser);
 	    $this->_tpl->assign('mcList',$mcList);
 	    $this->_tpl->assign('mcCount',$mcCount);
 	}
