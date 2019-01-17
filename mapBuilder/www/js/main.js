@@ -254,6 +254,9 @@ $(function() {
     })
   });
 
+  // Refresh legend when resolution changes
+  mapBuilder.map.getView().on('change:resolution', loadLegend);
+
   // baseLayer is set in mapBuilder.ini.php
   if(mapBuilder.hasOwnProperty('baseLayer')){
     var baseLayer = null;
@@ -736,7 +739,6 @@ $(function() {
               }
             }
             // Refresh legends
-            // TODO : improve loadLegend to avoid multiple getLegendGraphic requests
             loadLegend();
           },
           dragEnter: function(node, data) {
