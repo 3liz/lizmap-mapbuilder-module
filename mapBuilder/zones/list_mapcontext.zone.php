@@ -19,24 +19,33 @@ class list_mapcontextZone extends jZone {
 	    $usr_login = $juser->login;
 	    $loggedUser = false;
 
+	    // Get user mapcontexts
 	    if($usr_login){
 	    	$loggedUser = true;
+
+	    	$daomc = jDao::get('mapBuilder~mapcontext');
+	    	$conditions = jDao::createConditions();
+	    	$conditions->addCondition('login','=',$usr_login);
+	    	$mcOwnList = $daomc->findBy($conditions);
+	    	$mcOwnCount = $daomc->countBy($conditions);
 	    }
 
-	    // Get user mapcontexts
+	    // Get public mapcontexts
 	    $daomc = jDao::get('mapBuilder~mapcontext');
 	    $conditions = jDao::createConditions();
-	    // Get mapcontexts saved by logged user or public ones
-	    $conditions->startGroup('OR');
-	        $conditions->addCondition('login','=',$usr_login);
-	        $conditions->addCondition('is_public','=',true);
-	    $conditions->endGroup();
-	    $mcList = $daomc->findBy($conditions);
-	    $mcCount = $daomc->countBy($conditions);
+	    // Don't display logged user map context twice
+	    if($usr_login){
+	    	$conditions->addCondition('login','!=',$usr_login);
+		}
+	    $conditions->addCondition('is_public','=',true);
+	    $mcSharedList = $daomc->findBy($conditions);
+	    $mcSharedCount = $daomc->countBy($conditions);
 
 	    // Get html content
 	    $this->_tpl->assign('loggedUser',$loggedUser);
-	    $this->_tpl->assign('mcList',$mcList);
-	    $this->_tpl->assign('mcCount',$mcCount);
+	    $this->_tpl->assign('mcOwnList',$mcOwnList);
+	    $this->_tpl->assign('mcOwnCount',$mcOwnCount);
+	    $this->_tpl->assign('mcSharedList',$mcSharedList);
+	    $this->_tpl->assign('mcSharedCount',$mcSharedCount);
 	}
 }
