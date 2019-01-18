@@ -26,7 +26,7 @@ class defaultCtrl extends jController {
         // Assets
         $rep->addCSSLink(jApp::urlBasePath().'css/main.css');
         $rep->addCSSLinkModule('mapBuilder','css/ol-5.3.0.css');
-        $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/fontawesome-free-5.6.3-web/css/all.min.css');
+        $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/fontawesome-free-web/css/all.min.css');
         $rep->addCSSLinkModule('mapBuilder','css/bootstrap.min.css');
         $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/skin-awesome/ui.fancytree.css');
         $rep->addCSSLinkModule('mapBuilder','css/main.css');
