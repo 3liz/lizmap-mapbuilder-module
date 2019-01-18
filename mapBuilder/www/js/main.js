@@ -121,6 +121,10 @@ $(function() {
       && cfg.attributeLayers[layer.Name].pivot != "True"){
       myObj.hasAttributeTable = true;
     }
+    if(cfg.layers.hasOwnProperty(layer.Name) 
+      && cfg.layers[layer.Name].abstract != ""){
+      myObj.tooltip = cfg.layers[layer.Name].abstract;
+    }
     myArray.push(myObj);
     // Layer has children and is not a group as layer => folder
     if (layer.hasOwnProperty('Layer') && cfg.layers[layer.Name].groupAsLayer == 'False') {
@@ -158,7 +162,6 @@ $(function() {
       }
 
       // Refresh legends
-      // TODO : improve loadLegend to avoid multiple getLegendGraphic requests
       loadLegend();
   }
 
