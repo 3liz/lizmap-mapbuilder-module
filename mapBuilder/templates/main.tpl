@@ -51,17 +51,17 @@
 
 <div id="mapmenu" style="">
   <ul class="nav nav-tabs flex-column">
-    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Couches">
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="{@view~map.layers@}">
       <a id="layerswitcher-tab" class="nav-link active dock" data-toggle="tab" href="#layerswitcher" role="tab" aria-controls="layerswitcher">
         <i class="fas fa-layer-group"></i>
       </a>
     </li>
-    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Couches sélectionnées">
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="{@mapBuilder~default.selector.layers.selection@}">
       <a id="layerselection-tab" class="nav-link dock" data-toggle="tab" href="#layerselection" role="tab" aria-controls="layerselection">
       <i class="fas fa-clipboard-list"></i>
       </a>
     </li>
-    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Légende">
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="{@view~map.legend@}">
       <a id="legend-tab" class="nav-link dock" data-toggle="tab" href="#legend" role="tab" aria-controls="legend">
       <i class="fas fa-image"></i>
       </a>
@@ -71,17 +71,17 @@
       <i class="fas fa-comment-alt"></i>
       </a>
     </li>
-    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Impression PDF">
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="{@mapBuilder~pdfprint.pdfprint@}">
       <a id="pdf-print-tab" class="nav-link dock" data-toggle="tab" href="#pdf-print" role="tab" aria-controls="pdf-print">
       <i class="fas fa-file-pdf"></i>
       </a>
     </li>
-    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Données">
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="{@view~map.attributeLayers.toolbar.title@}">
       <a id="attribute-btn" class="nav-link bottom-dock" aria-controls="attribute">
       <i class="fas fa-list-ul"></i>
       </a>
     </li>
-    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Géosignets">
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="{@view~map.permalink.geobookmark.title@}">
       <a id="mapcontext-tab" class="nav-link dock" data-toggle="tab" href="#mapcontext" role="tab" aria-controls="mapcontext">
       <i class="fas fa-external-link-alt"></i>
       </a>
@@ -103,9 +103,9 @@
         <tbody>
           <tr>
             <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td title="{@mapBuilder~default.style@}"></td>
+            <td title="{@mapBuilder~default.selector.layers.add@}"></td>
+            <td title="{@mapBuilder~default.selector.layers.data@}"></td>
           </tr>
         </tbody>
       </table>
@@ -139,9 +139,8 @@
     <div class="tab-pane fade" id="popupcontent" role="tabpanel" aria-labelledby="popupcontent-tab">
     </div>
     <div class="tab-pane fade" id="pdf-print" role="tabpanel" aria-labelledby="pdf-print-tab">
-      <input id="pdf-print-title" class="form-control" type="text" placeholder="Titre de la carte">
-      <label>Format de la page</label>
-      <select id="format-pdf-print" class="custom-select">
+      <input id="pdf-print-title" class="form-control" type="text" placeholder="{@mapBuilder~pdfprint.title@}">
+      <select id="format-pdf-print" class="custom-select" data-toggle="tooltip" title="{@mapBuilder~pdfprint.format@}">
         <option value="a0">A0</option>
         <option value="a1">A1</option>
         <option value="a2">A2</option>
@@ -149,16 +148,14 @@
         <option value="a4" selected>A4</option>
         <option value="a5">A5</option>
       </select>
-      <label>Resolution </label>
-      <select id="resolution-pdf-print" class="custom-select">
+      <select id="resolution-pdf-print" class="custom-select" data-toggle="tooltip" title="{@mapBuilder~pdfprint.resolution@}">
         <option value="72">72 dpi</option>
         <option value="150">150 dpi</option>
         <option value="300">300 dpi</option>
       </select>
-      <button id="pdf-print-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">Imprimer</button>
+      <button id="pdf-print-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">{@view~map.print.toolbar.title@}</button>
     </div>
     <div class="tab-pane fade" id="mapcontext" role="tabpanel" aria-labelledby="mapcontext-tab">
-      Géosignets
       {if $isConnected}
       <input id="mapcontext-name" class="form-control" type="text" placeholder="Nom du signet">
       <div class="form-check form-control-sm">
@@ -180,7 +177,7 @@
   <ul id="attributeLayersTabs" class="nav nav-tabs" role="tablist"></ul>
   <div class="tab-content" id="attributeLayersContent"></div>
   <div id="bottom-dock-window-buttons">
-    <button id="hideBottomDock" class="btn btn-sm btn-outline-dark" type="button" title="Fermer">Fermer</button>
+    <button id="hideBottomDock" class="btn btn-sm btn-outline-light" type="button">{@view~dictionnary.generic.btn.close.title@}</button>
   </div>
 </div>
 

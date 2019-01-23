@@ -96,6 +96,8 @@
 	display: block;
 }
 
+#pdf-print > * {margin-bottom: 5px}
+
 .hide{display: none;}
 
 /* Fancytree */

@@ -28,6 +28,9 @@ class list_mapcontextZone extends jZone {
 	    	$conditions->addCondition('login','=',$usr_login);
 	    	$mcOwnList = $daomc->findBy($conditions);
 	    	$mcOwnCount = $daomc->countBy($conditions);
+
+	    	$this->_tpl->assign('mcOwnList',$mcOwnList);
+	    	$this->_tpl->assign('mcOwnCount',$mcOwnCount);
 	    }
 
 	    // Get public mapcontexts
@@ -43,8 +46,6 @@ class list_mapcontextZone extends jZone {
 
 	    // Get html content
 	    $this->_tpl->assign('loggedUser',$loggedUser);
-	    $this->_tpl->assign('mcOwnList',$mcOwnList);
-	    $this->_tpl->assign('mcOwnCount',$mcOwnCount);
 	    $this->_tpl->assign('mcSharedList',$mcSharedList);
 	    $this->_tpl->assign('mcSharedCount',$mcSharedCount);
 	}

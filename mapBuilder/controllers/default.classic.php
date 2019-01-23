@@ -33,6 +33,9 @@ class defaultCtrl extends jController {
 
         $rep->addStyle('html, body, .map', 'height: 100%;width: 100%;margin: 0;padding: 0');
 
+        // TODO get locales 
+        // $rep->addJSLink(jUrl::get('view~translate:index'));
+
         $rep->addJSLinkModule('mapBuilder','js/es6-promise.auto.min.js');
         $rep->addJSLinkModule('mapBuilder','js/jquery-3.3.1.min.js');
         $rep->addJSLinkModule('mapBuilder','js/jquery.fancytree-all-deps.min.js');
