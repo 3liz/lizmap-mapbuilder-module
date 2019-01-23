@@ -90,7 +90,7 @@
 </div>
 
 <div id="dock" class="bg-white">
-  <div id="dock-close"><button class="btn btn-sm btn-outline-dark">Fermer</button></div>
+  <div id="dock-close"><button class="btn btn-sm btn-outline-dark">{@view~dictionnary.generic.btn.close.title@}</button></div>
   <div id="mapBuilder" class="tab-content">
     <div class="tab-pane fade show active" id="layerswitcher" role="tabpanel" aria-labelledby="layerswitcher-tab">
       <table id="layerStore">
@@ -100,14 +100,6 @@
           <col>
           <col>
         </colgroup>
-        <thead>
-          <tr>
-            <th>Couche</th>
-            <th>Style</th>
-            <th>Ajout</th>
-            <th>Données</th>
-          </tr>
-        </thead>
         <tbody>
           <tr>
             <td></td>
@@ -128,28 +120,16 @@
           <col>
           <col span="3">
         </colgroup>
-        <thead>
-          <tr>
-            <th>Couche</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th>Infos</th>
-            <th class="hide">Style</th>
-            <th class="hide">Opacité</th>
-          </tr>
-        </thead>
         <tbody>
           <tr>
             <td></td>
-            <td class="changeOrder"></td>
-            <td class="deleteLayerButton"></td>
-            <td class="toggleVisibilityButton"></td>
-            <td class="zoomToExtentButton"></td>
-            <td class="toggleInfos"></td>
-            <td class="layerSelectedStyles hide"></td>
-            <td class="changeOpacityButton hide"></td>
+            <td class="changeOrder" title="{@mapBuilder~default.selection.order.change@}"></td>
+            <td class="deleteLayerButton" title="{@view~map.selectiontool.toolbar.action.type.minus@}"></td>
+            <td class="toggleVisibilityButton" title="{@view~dictionnary.tree.button.checkbox@}"></td>
+            <td class="zoomToExtentButton" title="{@view~map.switcher.layer.zoomToExtent.title@}"></td>
+            <td class="toggleInfos" title="{@view~dictionnary.layer.metadata.title@}"></td>
+            <td class="layerSelectedStyles hide" title="{@mapBuilder~default.style@}"></td>
+            <td class="changeOpacityButton hide" title="{@view~dictionnary.layer.metadata.opacity.title@}"></td>
           </tr>
         </tbody>
       </table>

@@ -786,9 +786,9 @@ $(function() {
         $(node.tr).find(".changeOpacityButton").html('<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>');
 
         if($(".layerSelectedStyles:visible").length > 0){
-          $("#layerSelected th.hide").show();
+          $("#layerSelected td.hide").show();
         }else{
-          $("#layerSelected th.hide").hide();
+          $("#layerSelected td.hide").hide();
         }
       }
   });
