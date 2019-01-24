@@ -19,7 +19,7 @@ class defaultCtrl extends jController {
         // Get lizmap services
         $services = lizmap::getServices();
 
-        $title = "Map Builder";
+        $title = jLocale::get('mapBuilder~default.app.name');;
         $rep->title = $title;
 
         $rep->metaViewport = 'initial-scale=1.0, user-scalable=no, width=device-width, shrink-to-fit=no';
