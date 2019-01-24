@@ -171,7 +171,7 @@ $(function() {
 
       var button = document.createElement('button');
       button.className = 'fas fa-square';
-      button.title = 'Zoomer par rectangle';
+      button.title = lizDict['zoomrectangle'];
 
       var element = document.createElement('div');
       element.className = 'ol-drag-zoom ol-unselectable ol-control';
@@ -218,7 +218,7 @@ $(function() {
 
       var button = document.createElement('button');
       button.className = 'fas fa-expand-arrows-alt';
-      button.title = 'Zoomer sur l\'étendue initiale';
+      button.title = lizDict['zoominitial'];
 
       var element = document.createElement('div');
       element.className = 'ol-zoom-origin ol-unselectable ol-control';
@@ -246,7 +246,12 @@ $(function() {
 
   mapBuilder.map = new Map({
     target: 'map',
-    controls: defaultControls().extend([
+    controls: defaultControls({
+      zoomOptions: {
+        zoomInTipLabel: lizDict['zoomin'],
+        zoomOutTipLabel: lizDict['zoomout']
+      }
+    }).extend([
       new ScaleLine(),
       new dragZoomControl(),
       new zoomToOriginControl()
@@ -626,7 +631,7 @@ $(function() {
       for (var i = 0; i < features.length; i++) {
         var feature = features[i];
 
-        attributeHTMLTable += '<tr><td><button type="button" title="Zoomer" class="btn btn-sm zoomToFeatureExtent" data-feature-extent="'+JSON.stringify(feature.bbox)+'"><i class="fas fa-search-plus"></i></button></td>';
+        attributeHTMLTable += '<tr><td><button type="button" title="'+lizDict['zoomin']+'" class="btn btn-sm zoomToFeatureExtent" data-feature-extent="'+JSON.stringify(feature.bbox)+'"><i class="fas fa-search-plus"></i></button></td>';
         for (var j = 0; j < visibleProperties.length; j++) {
           var propertieValue = feature.properties[visibleProperties[j]];
 
@@ -1003,7 +1008,7 @@ $(function() {
 
     // mapcontext needs a name
     if($("#mapcontext-name").val() == ""){
-      mAddMessage('Veuillez renseigner un nom pour le géosignet.', 'danger', true);
+      mAddMessage(lizDict['geobookmark.name.required'], 'danger', true);
       return;
     }
 
@@ -1050,7 +1055,7 @@ $(function() {
       dataType:"html",
       success: function( data ){
         setMapContextContent(data);
-        mAddMessage('Géosignet ajouté.', 'success', true);
+        mAddMessage(lizDict['geobookmark.added'], 'success', true);
       }
     });
   });
@@ -1059,7 +1064,7 @@ $(function() {
 
     // delete map context
     $('.btn-mapcontext-del').on("click", function(){
-      if (confirm( 'Êtes-vous sûr de vouloir supprimer ce géosignet ?' )){
+      if (confirm( lizDict['geobookmark.delete.confirm'] )){
         var mcId = $(this).val();
 
         $.ajax({

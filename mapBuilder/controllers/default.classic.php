@@ -33,9 +33,6 @@ class defaultCtrl extends jController {
 
         $rep->addStyle('html, body, .map', 'height: 100%;width: 100%;margin: 0;padding: 0');
 
-        // TODO get locales 
-        // $rep->addJSLink(jUrl::get('view~translate:index'));
-
         $rep->addJSLinkModule('mapBuilder','js/es6-promise.auto.min.js');
         $rep->addJSLinkModule('mapBuilder','js/jquery-3.3.1.min.js');
         $rep->addJSLinkModule('mapBuilder','js/jquery.fancytree-all-deps.min.js');
@@ -101,6 +98,26 @@ class defaultCtrl extends jController {
         if(array_key_exists('baseLayerKey', $readConfigPath)){
             $rep->addJSCode("mapBuilder.baseLayerKey = '".$readConfigPath['baseLayerKey']."';");
         }
+
+        // Get locales
+        $lang = $this->param('lang');
+
+        if(!$lang)
+          $lang = jLocale::getCurrentLang().'_'.jLocale::getCurrentCountry();
+
+        $data = array();
+        $path = jApp::appPath().'modules/mapBuilder/locales/en_US/dictionary.UTF-8.properties';
+        if(file_exists($path)){
+          $lines = file($path);
+          foreach ($lines as $lineNumber => $lineContent){
+            if(!empty($lineContent) and $lineContent != '\n'){
+              $exp = explode('=', trim($lineContent));
+              if(!empty($exp[0]))
+                $data[$exp[0]] = jLocale::get('mapBuilder~dictionary.'.$exp[0], null, $lang);
+            }
+          }
+        }
+        $rep->addJSCode('var lizDict = '.json_encode($data).';');
 
         $rep->body->assign('repositoryLabel', $title);
         $rep->body->assign('isConnected', jAuth::isConnected());

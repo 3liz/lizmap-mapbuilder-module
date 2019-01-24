@@ -157,14 +157,14 @@
     </div>
     <div class="tab-pane fade" id="mapcontext" role="tabpanel" aria-labelledby="mapcontext-tab">
       {if $isConnected}
-      <input id="mapcontext-name" class="form-control" type="text" placeholder="Nom du signet">
+      <input id="mapcontext-name" class="form-control" type="text" placeholder="{@view~map.permalink.geobookmark.name.placeholder@}">
       <div class="form-check form-control-sm">
         <input class="form-check-input" type="checkbox" value="" id="publicmapcontext">
         <label class="form-check-label" for="publicmapcontext">
           public
         </label>
       </div>
-      <button id="mapcontext-add-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">Ajouter un géosignet</button>
+      <button id="mapcontext-add-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">{@view~map.permalink.geobookmark.button.add@}</button>
       {/if}
       <div id="mapcontext-container">
         {$LIST_MAPCONTEXT}
