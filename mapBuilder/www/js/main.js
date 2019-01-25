@@ -922,7 +922,7 @@ $(function() {
         legendsDiv += '<div><img src="' + legends[i] + '"></div>';
       }
     }
-    document.getElementById('legend').innerHTML = legendsDiv;
+    document.getElementById('legend-content').innerHTML = legendsDiv;
   }
 
   // Open/Close dock behaviour

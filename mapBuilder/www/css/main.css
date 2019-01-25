@@ -109,7 +109,17 @@ span.fancytree-drag-source.fancytree-drag-remove {
     overflow-y: auto;
 }
 
-#dock-close{text-align: right;margin-bottom: 5px}
+.dock-tab-title{
+    border-bottom: 1px dashed black;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    margin-bottom: 5px;
+}
+
+#dock-close{
+    position: absolute;
+    right: 5px;
+}
 
 #mapcontext-container{margin-top: 10px }
 

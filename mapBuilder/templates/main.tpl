@@ -96,6 +96,7 @@
   <div id="dock-close"><button class="btn btn-sm btn-outline-dark">{@view~dictionnary.generic.btn.close.title@}</button></div>
   <div id="mapBuilder" class="tab-content">
     <div class="tab-pane fade show active" id="layerswitcher" role="tabpanel" aria-labelledby="layerswitcher-tab">
+      <div class="dock-tab-title">{@view~map.layers@}</div>
       <table id="layerStore">
         <colgroup>
           <col>
@@ -114,6 +115,7 @@
       </table>
     </div>
     <div class="tab-pane fade" id="layerselection" role="tabpanel" aria-labelledby="layerselection-tab">
+      <div class="dock-tab-title">{@mapBuilder~default.selector.layers.selection@}</div>
       <table id="layerSelected">
         <colgroup>
           <col>
@@ -138,10 +140,14 @@
       </table>
     </div>
     <div class="tab-pane fade" id="legend" role="tabpanel" aria-labelledby="legend-tab">
+      <div class="dock-tab-title">{@view~map.legend@}</div>
+      <div id="legend-content"></div>
     </div>
     <div class="tab-pane fade" id="popupcontent" role="tabpanel" aria-labelledby="popupcontent-tab">
+      <div class="dock-tab-title">Popup</div>
     </div>
     <div class="tab-pane fade" id="pdf-print" role="tabpanel" aria-labelledby="pdf-print-tab">
+      <div class="dock-tab-title">{@mapBuilder~pdfprint.pdfprint@}</div>
       <input id="pdf-print-title" class="form-control" type="text" placeholder="{@mapBuilder~pdfprint.title@}">
       <select id="format-pdf-print" class="custom-select" data-toggle="tooltip" title="{@mapBuilder~pdfprint.format@}">
         <option value="a0">A0</option>
@@ -159,6 +165,7 @@
       <button id="pdf-print-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">{@view~map.print.toolbar.title@}</button>
     </div>
     <div class="tab-pane fade" id="mapcontext" role="tabpanel" aria-labelledby="mapcontext-tab">
+      <div class="dock-tab-title">{@view~map.permalink.geobookmark.title@}</div>
       {if $isConnected}
       <input id="mapcontext-name" class="form-control" type="text" placeholder="{@view~map.permalink.geobookmark.name.placeholder@}">
       <div class="form-check form-control-sm">
@@ -177,7 +184,11 @@
 </div>
 
 <div id="bottom-dock">
-  <ul id="attributeLayersTabs" class="nav nav-tabs" role="tablist"></ul>
+  <ul id="attributeLayersTabs" class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link disabled text-light" href="#" tabindex="-1" aria-disabled="true"><strong>{@view~map.attributeLayers.toolbar.title@}</strong></a>
+      </li>
+  </ul>
   <div class="tab-content" id="attributeLayersContent"></div>
   <div id="bottom-dock-window-buttons">
     <button id="hideBottomDock" class="btn btn-sm btn-outline-light" type="button">{@view~dictionnary.generic.btn.close.title@}</button>
