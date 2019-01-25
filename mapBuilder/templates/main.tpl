@@ -7,35 +7,38 @@
     <h1>{$repositoryLabel}</h1>
   </div>
 
-  <nav id="headermenu" class="navbar navbar-fixed-top">
+  <nav id="headermenu" class="navbar">
     <div id="auth" class="navbar-inner">
-      <ul class="nav float-right">
+      <ul class="nav justify-content-end">
+        <li class="home nav-item">
+          <a href="{jurl 'view~default:index'}" class="nav-link">
+            <span class="icon"></span>
+            <span class="text text-secondary">{@view~default.repository.list.title@}</span>
+          </a>
+        </li>
         {if $isConnected}
-        <li class="user dropdown">
-          <div class="dropdown">
-            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <li class="user nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
               <span class="icon"></span>
-              <span id="info-user-login" class="text">{$user->login|eschtml}</span>
-              <span class="caret"></span>
-            </button>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+              <span class="text text-secondary">{$user->login|eschtml}</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
               {ifacl2 'auth.user.view'}
               <a class="dropdown-item" href="{jurl 'jcommunity~account:show', array('user'=>$user->login)}">{@master_admin~gui.header.your.account@}</a>
               {/ifacl2}
               <a class="dropdown-item" href="{jurl 'jcommunity~login:out'}?auth_url_return={jurl 'view~default:index'}">{@view~default.header.disconnect@}</a>
             </div>
-          </div>
-        </li>
+          </li>
         {else}
-        <li class="login">
-          <a href="{jurl 'jcommunity~login:index', array('auth_url_return'=>$auth_url_return)}">
-            <span class="icon"></span>
-            <span class="text text-secondary">{@view~default.header.connect@}</span>
-          </a>
-        </li>
+          <li class="login nav-item">
+            <a class="nav-link" href="{jurl 'jcommunity~login:index', array('auth_url_return'=>$auth_url_return)}">
+              <span class="icon"></span>
+              <span class="text text-secondary">{@view~default.header.connect@}</span>
+            </a>
+          </li>
           {if isset($allowUserAccountRequests) and $allowUserAccountRequests == '1'}
-          <li class="registered">
-            <a href="{jurl 'jcommunity~registration:index'}">
+          <li class="registered nav-item">
+            <a class="nav-link" href="{jurl 'jcommunity~registration:index'}">
               <span class="icon"></span>
               <span class="text text-secondary">{@view~default.header.createAccount@}</span>
             </a>
