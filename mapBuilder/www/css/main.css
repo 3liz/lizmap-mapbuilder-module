@@ -1,3 +1,75 @@
+/* Fancytree */
+#layerSelected span.fancytree-expander, #layerSelected span.fancytree-icon{display: none;}
+table.fancytree-ext-table tbody tr.fancytree-active {
+    background-color: inherit;
+}
+
+table.fancytree-ext-table {
+    font-family: tahoma, arial, helvetica;
+    font-size: 10pt;
+    border-collapse: collapse;
+}
+
+span.fancytree-expander {
+    cursor: pointer;
+}
+
+span.fancytree-title {
+    color: #000;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+    min-height: 10pt;
+    padding: 0 3px 0 3px;
+    margin: 0px 0 0 3px;
+    border: 1px solid transparent;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    -ms-border-radius: 0px;
+    -o-border-radius: 0px;
+    border-radius: 0px;
+}
+
+span.fancytree-empty, span.fancytree-vline, span.fancytree-expander, span.fancytree-icon, span.fancytree-checkbox, span.fancytree-drag-helper-img, #fancytree-drop-marker {
+    width: 10pt;
+    height: 10pt;
+    display: inline-block;
+    vertical-align: top;
+    background-repeat: no-repeat;
+    background-position: left;
+    background-position: 0pt 0pt;
+}
+
+/*------------------------------------------------------------------------------
+ * Drag'n'drop support
+ *----------------------------------------------------------------------------*/
+/* ext-dnd5: */
+span.fancytree-childcounter {
+  color: #fff;
+  background: #337ab7;
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding: 2px;
+  text-align: center;
+}
+/*** Drop marker icon *********************************************************/
+#fancytree-drop-marker {
+  width: 20pt;
+  position: absolute;
+  margin: 0;
+}
+#fancytree-drop-marker.fancytree-drop-after,
+#fancytree-drop-marker.fancytree-drop-before {
+  width: 40pt;
+}
+/*** Source node while dragging ***********************************************/
+span.fancytree-drag-source.fancytree-drag-remove {
+  opacity: 0.15;
+}
+/*** Target node while dragging cursor is over it *****************************/
+
+/* Mapbuilder */
+
 #headermenu {padding:0;top:40px;}
 #auth {width: 100%}
 
@@ -99,12 +171,6 @@
 #pdf-print > * {margin-bottom: 5px}
 
 .hide{display: none;}
-
-/* Fancytree */
-#layerSelected span.fancytree-expander, #layerSelected span.fancytree-icon{display: none;}
-table.fancytree-ext-table tbody tr.fancytree-active {
-    background-color: inherit;
-}
 
 /* Controls OL */
 .ol-zoom{left: unset;right: .5em;}

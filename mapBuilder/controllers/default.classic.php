@@ -3,7 +3,7 @@
 * @package   lizmap
 * @subpackage mapBuilder
 * @author    3liz
-* @copyright 2011-2018 3liz
+* @copyright 2011-2019 3liz
 * @link      http://3liz.com
 * @license    All rights reserved
 */
@@ -26,9 +26,8 @@ class defaultCtrl extends jController {
         // Assets
         $rep->addCSSLink(jApp::urlBasePath().'css/main.css');
         $rep->addCSSLinkModule('mapBuilder','css/ol-5.3.0.css');
-        $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/fontawesome-free-web/css/all.min.css');
+        $rep->addCSSLink(jUrl::get('mapBuilder~fontawesome:index'));
         $rep->addCSSLinkModule('mapBuilder','css/bootstrap.min.css');
-        $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/skin-awesome/ui.fancytree.css');
         $rep->addCSSLinkModule('mapBuilder','css/main.css');
 
         $rep->addStyle('html, body, .map', 'height: 100%;width: 100%;margin: 0;padding: 0');
