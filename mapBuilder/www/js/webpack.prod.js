@@ -4,7 +4,7 @@ module.exports = {
   mode: 'production',
   entry: './main.js',
   output: {
-    path: __dirname,
+    path: __dirname+'/dist/',
     // pour que ça fonctionne il ne faut pas de '/' après /mapBuilder (à améliorer ?)
     publicPath: 'jelix/www/getfile?targetmodule=mapBuilder&file=js%2F',
     chunkFilename: '[name].bundle.js',
