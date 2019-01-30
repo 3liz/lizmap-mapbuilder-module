@@ -5,7 +5,7 @@
 * @author    3liz
 * @copyright 2011-2019 3liz
 * @link      http://3liz.com
-* @license    All rights reserved
+* @license   Mozilla Public License : http://www.mozilla.org/MPL/
 */
 
 class defaultCtrl extends jController {
@@ -25,19 +25,19 @@ class defaultCtrl extends jController {
         $rep->metaViewport = 'initial-scale=1.0, user-scalable=no, width=device-width, shrink-to-fit=no';
         // Assets
         $rep->addCSSLink(jApp::urlBasePath().'css/main.css');
-        $rep->addCSSLinkModule('mapBuilder','css/ol-5.3.0.css');
-        $rep->addCSSLink(jUrl::get('mapBuilder~fontawesome:index'));
-        $rep->addCSSLinkModule('mapBuilder','css/bootstrap.min.css');
-        $rep->addCSSLinkModule('mapBuilder','css/main.css');
+        $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/css/ol-5.3.0.css');
+        $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/css/fontawesome-free-web/css/all.min.css');
+        $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/css/bootstrap.min.css');
+        $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/css/main.css');
 
         $rep->addStyle('html, body, .map', 'height: 100%;width: 100%;margin: 0;padding: 0');
 
-        $rep->addJSLinkModule('mapBuilder','js/es6-promise.auto.min.js');
-        $rep->addJSLinkModule('mapBuilder','js/jquery-3.3.1.min.js');
-        $rep->addJSLinkModule('mapBuilder','js/jquery.fancytree-all-deps.min.js');
-        $rep->addJSLinkModule('mapBuilder','js/popper.min.js');
-        $rep->addJSLinkModule('mapBuilder','js/bootstrap.min.js');
-        $rep->addJSLinkModule('mapBuilder','js/mapbuilder.js');
+        $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/es6-promise.auto.min.js');
+        $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/jquery-3.3.1.min.js');
+        $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/jquery.fancytree-all-deps.min.js');
+        $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/popper.min.js');
+        $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/bootstrap.min.js');
+        $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/mapbuilder.js');
 
         // Pass some configuration options to the web page through javascript var
         $lizUrls = array(
