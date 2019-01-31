@@ -70,7 +70,7 @@
       </a>
     </li>
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Popup">
-      <a id="popupcontent-tab" class="nav-link dock" data-toggle="tab" href="#popupcontent" role="tab" aria-controls="popupcontent">
+      <a id="popup-display-tab" class="nav-link dock d-none" data-toggle="tab" href="#popup-display" role="tab" aria-controls="popup-display">
       <i class="fas fa-comment-alt"></i>
       </a>
     </li>
@@ -143,8 +143,9 @@
       <div class="dock-tab-title">{@view~map.legend@}</div>
       <div id="legend-content"></div>
     </div>
-    <div class="tab-pane fade" id="popupcontent" role="tabpanel" aria-labelledby="popupcontent-tab">
+    <div class="tab-pane fade" id="popup-display" role="tabpanel" aria-labelledby="popup-display-tab">
       <div class="dock-tab-title">Popup</div>
+      <div id="popup-content"></div>
     </div>
     <div class="tab-pane fade" id="pdf-print" role="tabpanel" aria-labelledby="pdf-print-tab">
       <div class="dock-tab-title">{@mapBuilder~pdfprint.pdfprint@}</div>

@@ -383,17 +383,21 @@ $(function() {
 
   // Handle getFeatureInfo when map is clicked
   mapBuilder.map.on('singleclick', function(evt) {
-    document.getElementById('popupcontent').innerHTML = '';
     var viewResolution = mapBuilder.map.getView().getResolution();
     var projection = mapBuilder.map.getView().getProjection();
     var getFeatureInfos = [];
-    var getFeatureInfosIframes = ""
 
     mapBuilder.map.getLayers().forEach(function(layer) {
       if( !layer.getProperties().hasOwnProperty('baseLayer') && layer.values_.popup == "True"){
         var url = layer.getSource().getGetFeatureInfoUrl(
           evt.coordinate, viewResolution, projection,
-          {'INFO_FORMAT': 'text/html'});
+          {
+            'INFO_FORMAT': 'text/html',
+            'FI_POINT_TOLERANCE': 25,
+            'FI_LINE_TOLERANCE': 10,
+            'FI_POLYGON_TOLERANCE': 5
+          }
+        );
 
         // Display getFeatureInfos by zIndex order
         if (url) {
@@ -402,15 +406,39 @@ $(function() {
       }
     });
 
+    // Fetch getFeatureInfos
+    var promises = [];
     for (var i = getFeatureInfos.length - 1; i >= 0; i--) {
       if(getFeatureInfos[i] !== undefined){
-        getFeatureInfosIframes += '<iframe seamless src="' + getFeatureInfos[i] + '"></iframe>';
+        promises.push(new Promise(resolve => 
+          $.get(getFeatureInfos[i], function(gfi) {
+            resolve(gfi);
+          })
+        ));
       }
     }
-    document.getElementById('popupcontent').innerHTML = getFeatureInfosIframes;
 
-    // Show popup tab
-    $('#popupcontent-tab').tab('show')
+    Promise.all(promises).then(results => {
+      var popupHTML = '';
+      for (var i = 0; i < results.length; i++) {
+        popupHTML += results[i];
+      }
+
+      document.getElementById('popup-content').innerHTML = popupHTML;
+      // Display if not empty
+      if(popupHTML != ''){
+        // Show popup tab
+        $('#mapmenu .dock').removeClass('active show');
+        $('#popup-display-tab').removeClass('d-none');
+        $('#popup-display-tab').tab('show');
+        $('#popup-display-tab').focus();
+      }else{
+        if($('#popup-display').hasClass('active')){
+          $('#popup-display-tab').addClass('d-none');
+          $("#dock").hide();
+        }
+      }
+    });
   });
 
   $('#layerStore').fancytree({
