@@ -84,7 +84,7 @@
       <i class="fas fa-list-ul"></i>
       </a>
     </li>
-    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="{@view~map.permalink.geobookmark.title@}">
+    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="{@mapBuilder~mapcontext.mymaps@}">
       <a id="mapcontext-tab" class="nav-link dock" data-toggle="tab" href="#mapcontext" role="tab" aria-controls="mapcontext">
       <i class="fas fa-external-link-alt"></i>
       </a>
@@ -166,16 +166,16 @@
       <button id="pdf-print-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">{@view~map.print.toolbar.title@}</button>
     </div>
     <div class="tab-pane fade" id="mapcontext" role="tabpanel" aria-labelledby="mapcontext-tab">
-      <div class="dock-tab-title">{@view~map.permalink.geobookmark.title@}</div>
+      <div class="dock-tab-title">{@mapBuilder~mapcontext.mymaps@}</div>
       {if $isConnected}
-      <input id="mapcontext-name" class="form-control" type="text" placeholder="{@view~map.permalink.geobookmark.name.placeholder@}">
+      <input id="mapcontext-name" class="form-control" type="text" placeholder="{@mapBuilder~mapcontext.mymaps.name@}">
       <div class="form-check form-control-sm">
         <input class="form-check-input" type="checkbox" value="" id="publicmapcontext">
         <label class="form-check-label" for="publicmapcontext">
           public
         </label>
       </div>
-      <button id="mapcontext-add-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">{@view~map.permalink.geobookmark.button.add@}</button>
+      <button id="mapcontext-add-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">{@mapBuilder~mapcontext.mymaps.add@}</button>
       {/if}
       <div id="mapcontext-container">
         {$LIST_MAPCONTEXT}
