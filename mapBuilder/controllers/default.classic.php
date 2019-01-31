@@ -37,10 +37,10 @@ class defaultCtrl extends jController {
         $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/jquery.fancytree-all-deps.min.js');
         $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/popper.min.js');
         $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/bootstrap.min.js');
-        $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/mapbuilder.js');
 
         // Pass some configuration options to the web page through javascript var
         $lizUrls = array(
+          "basepath" => jApp::urlBasePath(),
           "config" => jUrl::get('lizmap~service:getProjectConfig'),
           "wms" => jUrl::get('lizmap~service:index'),
           "media" => jUrl::get('view~media:getMedia'),
@@ -49,7 +49,10 @@ class defaultCtrl extends jController {
           "mapcontext_get" => jUrl::get('mapBuilder~mapcontext:get')
         );
 
-        $rep->addJSCode("var lizUrls = ".json_encode($lizUrls).";");
+        // Load lizUrls before mapbuilder. Webpack public path needs it
+        $rep->addJSCode("var lizUrls = ".json_encode($lizUrls).";", true);
+
+        $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/mapbuilder.js');
 
         $nestedTree = array();
         

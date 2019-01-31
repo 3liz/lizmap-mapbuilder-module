@@ -5,8 +5,6 @@ module.exports = {
   entry: './main.js',
   output: {
     path: __dirname+'/dist/',
-    // Chemin public vers les ressources js (à améliorer)
-    publicPath: '/mapBuilder/js/',
     chunkFilename: '[name].bundle.js',
     filename: 'mapbuilder.js'
   },

@@ -1,3 +1,6 @@
+// it is important to set global var before any imports
+__webpack_public_path__ = lizUrls.basepath+'mapBuilder/js/';
+
 import $ from 'jquery';
 
 import Map from 'ol/Map.js';
@@ -967,7 +970,7 @@ $(function() {
     $(this).addClass("disabled");
     document.body.style.cursor = 'progress';
 
-    import(/* webpackChunkName: "jspdf" */ 'jspdf').then(({ default: jsPDF }) => {
+    import(/* webpackChunkName: "jspdf" */ 'jspdf' ).then(({ default: jsPDF }) => {
       var dims = {
          a0: [1189, 841],
          a1: [841, 594],
