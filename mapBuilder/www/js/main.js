@@ -428,7 +428,6 @@ $(function() {
       // Display if not empty
       if(popupHTML != ''){
         // Show popup tab
-        $('#mapmenu .dock').removeClass('active show');
         $('#popup-display-tab').removeClass('d-none');
         $('#popup-display-tab').tab('show');
         $('#popup-display-tab').focus();
