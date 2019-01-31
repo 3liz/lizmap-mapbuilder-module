@@ -967,7 +967,7 @@ $(function() {
     $(this).addClass("disabled");
     document.body.style.cursor = 'progress';
 
-    import(/* webpackChunkName: "jspdf" */ 'jspdf').then(jsPDF => {
+    import(/* webpackChunkName: "jspdf" */ 'jspdf').then(({ default: jsPDF }) => {
       var dims = {
          a0: [1189, 841],
          a1: [841, 594],
@@ -987,7 +987,7 @@ $(function() {
 
       // Note that when using import() on ES6 modules you must reference the .default property as it's the actual module object that will be returned when the promise is resolved.
       // => https://webpack.js.org/guides/lazy-loading/
-      var pdf = new jsPDF.default('landscape', 'mm', format);
+      var pdf = new jsPDF('landscape', 'mm', format);
       // Add title
       pdf.setFontSize(18);
       pdf.text($('#pdf-print-title').val(), 50, 10);

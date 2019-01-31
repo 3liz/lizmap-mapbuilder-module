@@ -6,8 +6,8 @@ module.exports = {
   entry: './main.js',
   output: {
     path: __dirname+'/dist/',
-    // pour que ça fonctionne il ne faut pas de '/' après /mapBuilder (à améliorer ?)
-    publicPath: 'jelix/www/getfile?targetmodule=mapBuilder&file=js%2F',
+    // Chemin public vers les ressources js (à améliorer)
+    publicPath: '/mapBuilder/js/',
     chunkFilename: '[name].bundle.js',
     filename: 'mapbuilder.js'
   },
