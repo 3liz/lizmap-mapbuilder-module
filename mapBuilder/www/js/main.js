@@ -1017,7 +1017,7 @@ $(function() {
       // Add map and save pdf
       mapBuilder.map.once('rendercomplete', function(event) {
         var canvas = event.context.canvas;
-        var data = canvas.toDataURL('image/jpeg');
+        var data = canvas.toDataURL('image/png');
       
         pdf.addImage(data, 'JPEG', maxWidthLegend * INCHTOMM/resolution, 20, dim[0] - (maxWidthLegend * INCHTOMM/resolution), dim[1]);
         pdf.save('map.pdf');
