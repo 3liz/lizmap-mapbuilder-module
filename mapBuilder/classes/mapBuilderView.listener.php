@@ -29,7 +29,7 @@ class mapBuilderViewListener extends jEventListener{
             $extent = implode(", ", array( $destMinPt->x, $destMinPt->y, $destMaxPt->x, $destMaxPt->y ));
         }
         
-        $illustration = jApp::wwwPath().'themes/'.jApp::config()->theme.'/css/img/250x250_mappemonde.png';
+        $illustration = jApp::urlBasePath().'themes/'.jApp::config()->theme.'/css/img/250x250_mappemonde.png';
 
         jClasses::inc('lizmapMainViewItem');
         $mrep = new lizmapMainViewItem('_map_builder_rep', $name);
