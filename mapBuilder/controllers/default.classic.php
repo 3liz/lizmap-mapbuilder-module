@@ -108,7 +108,7 @@ class defaultCtrl extends jController {
           $lang = jLocale::getCurrentLang().'_'.jLocale::getCurrentCountry();
 
         $data = array();
-        $path = jApp::appPath().'modules/mapBuilder/locales/en_US/dictionary.UTF-8.properties';
+        $path = jApp::getModulePath('mapBuilder').'locales/en_US/dictionary.UTF-8.properties';
         if(file_exists($path)){
           $lines = file($path);
           foreach ($lines as $lineNumber => $lineContent){
