@@ -25,7 +25,7 @@ class defaultCtrl extends jController {
         $rep->metaViewport = 'initial-scale=1.0, user-scalable=no, width=device-width, shrink-to-fit=no';
         // Assets
         $rep->addCSSLink(jApp::urlBasePath().'css/main.css');
-        $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/css/ol-5.3.0.css');
+        $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/css/ol.css');
         $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/css/fontawesome-free-web/css/all.min.css');
         $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/css/bootstrap.min.css');
         $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/css/main.css');
@@ -33,7 +33,7 @@ class defaultCtrl extends jController {
         $rep->addStyle('html, body, .map', 'height: 100%;width: 100%;margin: 0;padding: 0');
 
         $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/es6-promise.auto.min.js');
-        $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/jquery-3.3.1.min.js');
+        $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/jquery.min.js');
         $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/jquery.fancytree-all-deps.min.js');
         $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/popper.min.js');
         $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/bootstrap.min.js');

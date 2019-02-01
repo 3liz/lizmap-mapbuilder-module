@@ -12,7 +12,7 @@ class mapBuilderModuleUpgrader extends jInstallerModule {
 
     function install() {
         // Copy CSS and JS assets
-        $this->copyDirectoryContent(jApp::getModulePath('mapBuilder').'/www/css', jApp::wwwPath('mapBuilder/css'));
-        $this->copyDirectoryContent(jApp::getModulePath('mapBuilder').'/www/js/dist', jApp::wwwPath('mapBuilder/js'));
+        $this->copyDirectoryContent('../www/css', jApp::wwwPath('mapBuilder/css'), true);
+        $this->copyDirectoryContent('../www/js/dist', jApp::wwwPath('mapBuilder/js'), true);
     }
 }

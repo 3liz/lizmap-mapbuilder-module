@@ -13,8 +13,8 @@ class mapBuilderModuleInstaller extends jInstallerModule {
 
     function install() {
         // Copy CSS and JS assets
-        $this->copyDirectoryContent(jApp::getModulePath('mapBuilder').'/www/css', jApp::wwwPath('mapBuilder/css'));
-        $this->copyDirectoryContent(jApp::getModulePath('mapBuilder').'/www/js/dist', jApp::wwwPath('mapBuilder/js'));
+        $this->copyDirectoryContent('../www/css', jApp::wwwPath('mapBuilder/css'));
+        $this->copyDirectoryContent('../www/js/dist', jApp::wwwPath('mapBuilder/js'));
 
         // Copy conf file
         $this->copyDirectoryContent('conf', jApp::configPath());
