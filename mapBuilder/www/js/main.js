@@ -56,7 +56,7 @@ $(function() {
     return theCleanName.replace(reg, '_');
   }
 
-  function mAddMessage( aMessage, aType, aClose ) {
+  function mAddMessage( aMessage, aType, aClose, aTimer ) {
     var mType = 'info';
     var mTypeList = ['info', 'danger', 'success'];
     var mClose = false;
@@ -84,6 +84,13 @@ $(function() {
 
     var elt = $(html);
     $('#message').append(elt);
+
+    if(aTimer !== undefined){
+      setTimeout(function() {
+        $(".alert").alert('close');
+      }, aTimer);
+    }
+
     return elt;
   }
 
@@ -1038,7 +1045,7 @@ $(function() {
 
     // mapcontext needs a name
     if($("#mapcontext-name").val() == ""){
-      mAddMessage(lizDict['geobookmark.name.required'], 'danger', true);
+      mAddMessage(lizDict['geobookmark.name.required'], 'danger', true, 5000);
       return;
     }
 
@@ -1085,7 +1092,7 @@ $(function() {
       dataType:"html",
       success: function( data ){
         setMapContextContent(data);
-        mAddMessage(lizDict['geobookmark.added'], 'success', true);
+        mAddMessage(lizDict['geobookmark.added'], 'success', true, 5000);
       }
     });
   });
