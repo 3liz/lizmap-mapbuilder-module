@@ -104,14 +104,12 @@
           <col>
           <col width="90px">
           <col>
-          <col>
         </colgroup>
         <tbody>
           <tr>
             <td></td>
             <td title="{@mapBuilder~default.style@}"></td>
             <td title="{@mapBuilder~default.selector.layers.add@}"></td>
-            <td title="{@mapBuilder~default.selector.layers.data@}"></td>
           </tr>
         </tbody>
       </table>
@@ -120,6 +118,7 @@
       <div class="dock-tab-title">{@mapBuilder~default.selector.layers.selection@}</div>
       <table id="layerSelected">
         <colgroup>
+          <col>
           <col>
           <col>
           <col>
@@ -134,6 +133,7 @@
             <td class="deleteLayerButton" title="{@view~map.selectiontool.toolbar.action.type.minus@}"></td>
             <td class="toggleVisibilityButton" title="{@view~dictionnary.tree.button.checkbox@}"></td>
             <td class="zoomToExtentButton" title="{@view~map.switcher.layer.zoomToExtent.title@}"></td>
+            <td class="displayDataButton" title="{@mapBuilder~default.selector.layers.data@}"></td>
             <td class="toggleInfos" title="{@view~dictionnary.layer.metadata.title@}"></td>
             <td class="layerSelectedStyles hide" title="{@mapBuilder~default.style@}"></td>
             <td class="changeOpacityButton hide" title="{@view~dictionnary.layer.metadata.opacity.title@}"></td>

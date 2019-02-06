@@ -151,8 +151,12 @@ $(function() {
         // Don't add base layer
         if( ! layer.getProperties().hasOwnProperty('baseLayer')){
           var layerObject = {
+            repositoryId: layer.getProperties().repositoryId,
+            projectId: layer.getProperties().projectId,
             title: layer.getProperties().title,
             styles: layer.getSource().getParams().STYLES,
+            hasAttributeTable: layer.getProperties().hasAttributeTable,
+            name: layer.getSource().getParams().LAYERS,
             ol_uid: layer.ol_uid
           };
 
@@ -522,10 +526,6 @@ $(function() {
       if(node.getLevel() > 2 && node.children == null){
         $tdList.eq(2).html("<button type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>");
       }
-      // Add button to display layer's attribute table if eligible
-      if(node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable){
-        $tdList.eq(3).html("<button type='button' class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>");
-      }
     }
   });
 
@@ -544,6 +544,7 @@ $(function() {
       projectId: projectId,
       bbox: node.data.bbox,
       popup: node.data.popup,
+      hasAttributeTable: node.data.hasAttributeTable,
       source: new ImageWMS({
         url: lizUrls.wms+'?repository=' + repositoryId + '&project=' + projectId,
         params: {
@@ -595,20 +596,151 @@ $(function() {
     e.stopPropagation();  // prevent fancytree activate for this row
   });
 
-  $('#layerStore').on("click", ".attributeLayerButton", function(e){
+
+  $('#layerSelected').fancytree({
+      extensions: ["dnd5", "table"],
+      table: {
+        indentation: 20,      // indent 20px per node level
+        nodeColumnIdx: 0     // render the node title into the first column
+      },
+      dnd5: {
+          dragStart: function(node, data) {
+            return true;
+          },
+          dragDrop: function(node, data) {
+            if (data.otherNode) {
+              data.otherNode.moveTo(node, data.hitMode);
+            }
+            // Parcourt de la liste des nodes pour mettre à jour le Z-index des couches
+            var allNodes = node.parent.children;
+
+            for (var i = 0; i < allNodes.length; i++) {
+              var layers = mapBuilder.map.getLayers().getArray();
+              for (var j = 0; j < layers.length; j++) {
+                if (allNodes[i].data.ol_uid == layers[j].ol_uid) {
+                  layers[j].setZIndex(allNodes.length - i);
+                }
+              }
+            }
+            // Refresh legends
+            loadLegend();
+          },
+          dragEnter: function(node, data) {
+            // Don't allow dropping *over* a node (would create a child). Just
+            // allow changing the order:
+            return ["before", "after"];
+          }
+      },
+      renderColumns: function(event, data) {
+        var node = data.node;
+        $(node.tr).find(".layerSelectedStyles").text(node.data.styles);
+
+        var opacity = 0;
+        var visible = true;
+
+        var layers = mapBuilder.map.getLayers().getArray();
+        for (var i = 0; i < layers.length; i++) {
+          if(layers[i].ol_uid == node.data.ol_uid){
+            opacity = layers[i].getOpacity();
+            visible = layers[i].getVisible();
+          }
+        }
+
+        $(node.tr).find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-trash'></i></button>");
+
+        if(visible){
+          $(node.tr).find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye'></i></button>");
+        }else{
+          $(node.tr).find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>");
+        }
+        
+        $(node.tr).find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
+
+        // Add button to display layer's attribute table if eligible
+        if(node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable !== undefined){
+          var disabled = '';
+
+          if($("#attributeLayersTabs .nav-link [data-ol_uid='"+node.data.ol_uid+"']").length != 0){
+            disabled = 'disabled';
+          }
+
+          $(node.tr).find(".displayDataButton").html("<button type='button' "+disabled+" class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>");
+        }
+
+        $(node.tr).find(".changeOrder").html("<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>");
+        $(node.tr).find(".toggleInfos").html("<button class='btn btn-sm'><i class='fas fa-info'></i></button>");
+
+        var buttons = "";
+        for (var i = 1; i < 6; i++) {
+          var active = opacity == (i*20)/100 ? "active" : "";
+          buttons += "<button type='button' class='btn "+active+"'>"+(i*20)+"</button>";
+        }
+
+        $(node.tr).find(".changeOpacityButton").html('<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>');
+
+        if($(".layerSelectedStyles:visible").length > 0){
+          $("#layerSelected td.hide").show();
+        }else{
+          $("#layerSelected td.hide").hide();
+        }
+      }
+  });
+
+  $('#layerSelected').on("click", ".deleteLayerButton button", function(e){
+    var node = $.ui.fancytree.getNode(e);
+
+    var layers = mapBuilder.map.getLayers().getArray();
+    for (var i = 0; i < layers.length; i++) {
+      if(layers[i].ol_uid == node.data.ol_uid){
+        mapBuilder.map.removeLayer(layers[i]);
+      }
+    }
+    refreshLayerSelected();
+    e.stopPropagation();  // prevent fancytree activate for this row
+  });
+
+  // Toggle layer visibility
+  $('#layerSelected').on("click", ".toggleVisibilityButton button", function(e){
+    var node = $.ui.fancytree.getNode(e);
+
+    var layers = mapBuilder.map.getLayers().getArray();
+    for (var i = 0; i < layers.length; i++) {
+      if(layers[i].ol_uid == node.data.ol_uid){
+        if(layers[i].getVisible()){
+          layers[i].setVisible(false);
+          $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+        }else{
+          layers[i].setVisible(true);
+          $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+      }
+    }
+    e.stopPropagation();  // prevent fancytree activate for this row
+  });
+
+  $('#layerSelected').on("click", ".zoomToExtentButton button", function(e){
+    var node = $.ui.fancytree.getNode(e);
+
+    var layers = mapBuilder.map.getLayers().getArray();
+    for (var i = 0; i < layers.length; i++) {
+      if(layers[i].ol_uid == node.data.ol_uid){
+        mapBuilder.map.getView().fit(transformExtent(layers[i].getProperties().bbox, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
+      }
+    }
+    e.stopPropagation();  // prevent fancytree activate for this row
+  });
+
+  $('#layerSelected').on("click", ".attributeLayerButton", function(e){
     $('#attribute-btn').addClass("active");
 
     // Disable button to avoid multiple calls
-    $(this).prop("disabled",true);;
+    $(this).prop("disabled",true);
 
     var node = $.ui.fancytree.getNode(e);
 
     var layerName = performCleanName(node.data.name);
-
-    var parentList = node.getParentList();
-    // We get repositoryId and projectId from parents node in the tree
-    var repositoryId = parentList[1].data.repository;
-    var projectId = parentList[1].data.project;
+    var repositoryId = node.data.repositoryId;
+    var projectId = node.data.projectId;
 
     const promises = [
       new Promise(resolve => 
@@ -713,7 +845,7 @@ $(function() {
 
       $('#attributeLayersTabs').append('\
           <li class="nav-item">\
-            <a class="nav-link active" href="#attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tab">'+node.title+'&nbsp;<i data-node-key="' + node.key + '" class="fas fa-times"></i></a>\
+            <a class="nav-link active" href="#attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tab">'+node.title+'&nbsp;<i data-ol_uid="' + node.data.ol_uid + '" class="fas fa-times"></i></a>\
           </li>'
         );
 
@@ -742,8 +874,12 @@ $(function() {
         $(this).closest('li').remove();
 
         // Enable attribute table button
-        var node = $.ui.fancytree.getTree("#layerStore").getNodeByKey($(this).data('node-key'));
-        $(node.tr).find(".attributeLayerButton").prop("disabled",false);
+        var ol_uid = $(this).data('ol_uid');
+        $.ui.fancytree.getTree("#layerSelected").visit(function(node){
+          if(node.data.ol_uid == ol_uid){
+            $(node.tr).find(".attributeLayerButton").prop("disabled",false);
+          }
+        });
 
         // Hide bottom dock
         if($('#attributeLayersContent').html().trim() == ""){
@@ -769,127 +905,6 @@ $(function() {
 
       $('#bottom-dock').show();
     });
-  });
-
-  $('#layerSelected').fancytree({
-      extensions: ["dnd5", "table"],
-      table: {
-        indentation: 20,      // indent 20px per node level
-        nodeColumnIdx: 0     // render the node title into the first column
-      },
-      dnd5: {
-          dragStart: function(node, data) {
-            return true;
-          },
-          dragDrop: function(node, data) {
-            if (data.otherNode) {
-              data.otherNode.moveTo(node, data.hitMode);
-            }
-            // Parcourt de la liste des nodes pour mettre à jour le Z-index des couches
-            var allNodes = node.parent.children;
-
-            for (var i = 0; i < allNodes.length; i++) {
-              var layers = mapBuilder.map.getLayers().getArray();
-              for (var j = 0; j < layers.length; j++) {
-                if (allNodes[i].data.ol_uid == layers[j].ol_uid) {
-                  layers[j].setZIndex(allNodes.length - i);
-                }
-              }
-            }
-            // Refresh legends
-            loadLegend();
-          },
-          dragEnter: function(node, data) {
-            // Don't allow dropping *over* a node (would create a child). Just
-            // allow changing the order:
-            return ["before", "after"];
-          }
-      },
-      renderColumns: function(event, data) {
-        var node = data.node;
-        $(node.tr).find(".layerSelectedStyles").text(node.data.styles);
-
-        var opacity = 0;
-        var visible = true;
-
-        var layers = mapBuilder.map.getLayers().getArray();
-        for (var i = 0; i < layers.length; i++) {
-          if(layers[i].ol_uid == node.data.ol_uid){
-            opacity = layers[i].getOpacity();
-            visible = layers[i].getVisible();
-          }
-        }
-
-        $(node.tr).find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-trash'></i></button>");
-
-        if(visible){
-          $(node.tr).find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye'></i></button>");
-        }else{
-          $(node.tr).find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>");
-        }
-        
-        $(node.tr).find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
-        $(node.tr).find(".changeOrder").html("<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>");
-        $(node.tr).find(".toggleInfos").html("<button class='btn btn-sm'><i class='fas fa-info'></i></button>");
-
-        var buttons = "";
-        for (var i = 1; i < 6; i++) {
-          var active = opacity == (i*20)/100 ? "active" : "";
-          buttons += "<button type='button' class='btn "+active+"'>"+(i*20)+"</button>";
-        }
-
-        $(node.tr).find(".changeOpacityButton").html('<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>');
-
-        if($(".layerSelectedStyles:visible").length > 0){
-          $("#layerSelected td.hide").show();
-        }else{
-          $("#layerSelected td.hide").hide();
-        }
-      }
-  });
-
-  $('#layerSelected').on("click", ".deleteLayerButton button", function(e){
-    var node = $.ui.fancytree.getNode(e);
-
-    var layers = mapBuilder.map.getLayers().getArray();
-    for (var i = 0; i < layers.length; i++) {
-      if(layers[i].ol_uid == node.data.ol_uid){
-        mapBuilder.map.removeLayer(layers[i]);
-      }
-    }
-    refreshLayerSelected();
-    e.stopPropagation();  // prevent fancytree activate for this row
-  });
-
-  // Toggle layer visibility
-  $('#layerSelected').on("click", ".toggleVisibilityButton button", function(e){
-    var node = $.ui.fancytree.getNode(e);
-
-    var layers = mapBuilder.map.getLayers().getArray();
-    for (var i = 0; i < layers.length; i++) {
-      if(layers[i].ol_uid == node.data.ol_uid){
-        if(layers[i].getVisible()){
-          layers[i].setVisible(false);
-          $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
-        }else{
-          layers[i].setVisible(true);
-          $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
-        }
-      }
-    }
-    e.stopPropagation();  // prevent fancytree activate for this row
-  });
-
-  $('#layerSelected').on("click", ".zoomToExtentButton button", function(e){
-    var node = $.ui.fancytree.getNode(e);
-
-    var layers = mapBuilder.map.getLayers().getArray();
-    for (var i = 0; i < layers.length; i++) {
-      if(layers[i].ol_uid == node.data.ol_uid){
-        mapBuilder.map.getView().fit(transformExtent(layers[i].getProperties().bbox, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
-      }
-    }
-    e.stopPropagation();  // prevent fancytree activate for this row
   });
 
   $('#layerSelected').on("click", ".toggleInfos button", function(e){
