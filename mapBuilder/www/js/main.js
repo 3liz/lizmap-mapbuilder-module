@@ -529,7 +529,7 @@ $(function() {
     }
   });
 
-  /* Handle custom addLayerButton clicks (http://wwwendt.de/tech/fancytree/demo/#sample-ext-table.html) */
+  /* Handle custom addLayerButton clicks */
   $('#layerStore').on("click", ".addLayerButton", function(e){
     var node = $.ui.fancytree.getNode(e);
 
@@ -576,6 +576,19 @@ $(function() {
     }else{
       newLayer.setZIndex(0);
     }
+
+    // Show layer is loading
+    newLayer.getSource().on('imageloadstart', function(event) {
+      $('#layers-loading').prepend('\
+        <span class="spinner-grow spinner-grow-sm" title="'+lizDict['selector.layers.loading']+'..." role="status">\
+          <span class="sr-only">'+lizDict['selector.layers.loading']+'...</span>\
+        </span>');
+    });
+
+    // Show layer had loaded
+    newLayer.getSource().on('imageloadend', function(event) {
+      $('#layers-loading > .spinner-grow:first').remove();
+    });
 
     mapBuilder.map.addLayer(newLayer);
     refreshLayerSelected();

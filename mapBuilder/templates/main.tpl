@@ -96,7 +96,9 @@
   <div id="dock-close"><button class="btn btn-sm btn-outline-dark">{@view~dictionnary.generic.btn.close.title@}</button></div>
   <div id="mapBuilder" class="tab-content">
     <div class="tab-pane fade show active" id="layerswitcher" role="tabpanel" aria-labelledby="layerswitcher-tab">
-      <div class="dock-tab-title">{@view~map.layers@}</div>
+      <div class="dock-tab-title">{@view~map.layers@}
+        <span id="layers-loading"></span>
+      </div>
       <table id="layerStore">
         <colgroup>
           <col>
