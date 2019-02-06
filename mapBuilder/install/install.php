@@ -8,7 +8,6 @@
 * @license   Mozilla Public License : http://www.mozilla.org/MPL/
 */
 
-
 class mapBuilderModuleInstaller extends jInstallerModule {
 
     function install() {
