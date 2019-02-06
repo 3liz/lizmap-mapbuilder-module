@@ -100,6 +100,10 @@ class defaultCtrl extends jController {
         if(array_key_exists('baseLayerKey', $readConfigPath)){
             $rep->addJSCode("mapBuilder.baseLayerKey = '".$readConfigPath['baseLayerKey']."';");
         }
+        // Get attributeTableTool key from ini file if set
+        if(array_key_exists('attributeTableTool', $readConfigPath)){
+            $rep->body->assign('attributeTableTool', $readConfigPath['attributeTableTool']);
+        }
 
         // Get locales
         $lang = $this->param('lang');

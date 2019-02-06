@@ -79,11 +79,13 @@
       <i class="fas fa-file-pdf"></i>
       </a>
     </li>
+    {if $attributeTableTool}
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="{@view~map.attributeLayers.toolbar.title@}">
       <a id="attribute-btn" class="nav-link bottom-dock" aria-controls="attribute">
       <i class="fas fa-list-ul"></i>
       </a>
     </li>
+    {/if}
     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="{@mapBuilder~mapcontext.mymaps@}">
       <a id="mapcontext-tab" class="nav-link dock" data-toggle="tab" href="#mapcontext" role="tab" aria-controls="mapcontext">
       <i class="fas fa-external-link-alt"></i>
@@ -123,7 +125,9 @@
           <col>
           <col>
           <col>
+          {if $attributeTableTool}
           <col>
+          {/if}
           <col span="3">
         </colgroup>
         <tbody>
@@ -133,7 +137,9 @@
             <td class="deleteLayerButton" title="{@view~map.selectiontool.toolbar.action.type.minus@}"></td>
             <td class="toggleVisibilityButton" title="{@view~dictionnary.tree.button.checkbox@}"></td>
             <td class="zoomToExtentButton" title="{@view~map.switcher.layer.zoomToExtent.title@}"></td>
+            {if $attributeTableTool}
             <td class="displayDataButton" title="{@mapBuilder~default.selector.layers.data@}"></td>
+            {/if}
             <td class="toggleInfos" title="{@view~dictionnary.layer.metadata.title@}"></td>
             <td class="layerSelectedStyles hide" title="{@mapBuilder~default.style@}"></td>
             <td class="changeOpacityButton hide" title="{@view~dictionnary.layer.metadata.opacity.title@}"></td>

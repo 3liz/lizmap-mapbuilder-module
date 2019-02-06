@@ -8,3 +8,6 @@ extent=[-4.65,51.68,9.10,40.63]
 baseLayer=osmMapnik
 ;; set your API key if needed
 ;baseLayerKey=
+
+;; enable/disable attribute table tool
+attributeTableTool=true

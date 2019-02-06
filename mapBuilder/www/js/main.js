@@ -633,7 +633,8 @@ $(function() {
       },
       renderColumns: function(event, data) {
         var node = data.node;
-        $(node.tr).find(".layerSelectedStyles").text(node.data.styles);
+        var nodeRow = $(node.tr);
+        nodeRow.find(".layerSelectedStyles").text(node.data.styles);
 
         var opacity = 0;
         var visible = true;
@@ -646,29 +647,29 @@ $(function() {
           }
         }
 
-        $(node.tr).find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-trash'></i></button>");
+        nodeRow.find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-trash'></i></button>");
 
         if(visible){
-          $(node.tr).find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye'></i></button>");
+          nodeRow.find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye'></i></button>");
         }else{
-          $(node.tr).find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>");
+          nodeRow.find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>");
         }
         
-        $(node.tr).find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
+        nodeRow.find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
 
         // Add button to display layer's attribute table if eligible
-        if(node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable !== undefined){
+        if(nodeRow.find(".displayDataButton").length == 1 && node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable !== undefined){
           var disabled = '';
 
           if($("#attributeLayersTabs .nav-link [data-ol_uid='"+node.data.ol_uid+"']").length != 0){
             disabled = 'disabled';
           }
 
-          $(node.tr).find(".displayDataButton").html("<button type='button' "+disabled+" class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>");
+          nodeRow.find(".displayDataButton").html("<button type='button' "+disabled+" class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>");
         }
 
-        $(node.tr).find(".changeOrder").html("<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>");
-        $(node.tr).find(".toggleInfos").html("<button class='btn btn-sm'><i class='fas fa-info'></i></button>");
+        nodeRow.find(".changeOrder").html("<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>");
+        nodeRow.find(".toggleInfos").html("<button class='btn btn-sm'><i class='fas fa-info'></i></button>");
 
         var buttons = "";
         for (var i = 1; i < 6; i++) {
@@ -676,7 +677,7 @@ $(function() {
           buttons += "<button type='button' class='btn "+active+"'>"+(i*20)+"</button>";
         }
 
-        $(node.tr).find(".changeOpacityButton").html('<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>');
+        nodeRow.find(".changeOpacityButton").html('<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>');
 
         if($(".layerSelectedStyles:visible").length > 0){
           $("#layerSelected td.hide").show();
