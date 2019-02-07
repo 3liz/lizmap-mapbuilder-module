@@ -177,12 +177,14 @@
       <div class="dock-tab-title">{@mapBuilder~mapcontext.mymaps@}</div>
       {if $isConnected}
       <input id="mapcontext-name" class="form-control" type="text" placeholder="{@mapBuilder~mapcontext.mymaps.name@}">
+      {ifacl2 "mapBuilder.mapcontext.public.manage"}
       <div class="form-check form-control-sm">
         <input class="form-check-input" type="checkbox" value="" id="publicmapcontext">
         <label class="form-check-label" for="publicmapcontext">
-          public
+          {@mapBuilder~mapcontext.public@}
         </label>
       </div>
+      {/ifacl2}
       <button id="mapcontext-add-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">{@mapBuilder~mapcontext.mymaps.add@}</button>
       {/if}
       <div id="mapcontext-container">

@@ -13,6 +13,13 @@ class defaultCtrl extends jController {
     *
     */
     function index() {
+        // Access control
+        if( !jAcl2::check('mapBuilder.access')){
+          $rep = $this->getResponse('redirect');
+          $rep->action = 'view~default:index';
+          jMessage::add(jLocale::get('view~default.repository.access.denied'), 'error');
+          return $rep;
+        }
 
         $rep = $this->getResponse('html', true);// true désactive le template général
 

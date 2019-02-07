@@ -32,7 +32,13 @@ class mapcontextCtrl extends jController {
 
             $record->login = jAuth::getUserSession()->login;
             $record->name = $name;
-            $record->is_public = $this->param('is_public');
+
+            // Access control
+            $record->is_public = false;
+            
+            if(jAcl2::check('mapBuilder.mapcontext.public.manage')){
+                $record->is_public = $this->param('is_public');
+            }
             $record->mapcontext = $this->param('mapcontext');
             
             // Save the new mapcontext
