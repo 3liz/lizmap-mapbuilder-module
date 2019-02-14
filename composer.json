@@ -17,7 +17,8 @@
     "extra" : {
         "jelix" : {
             "modules": [
-                "mapBuilder/"
+                "mapBuilder/",
+                "mapBuilderAdmin/"
             ]
         }
     }
