@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form xmlns="http://jelix.org/ns/forms/1.1">
+
+<group ref="mapBuilder">
+  <label locale="mapBuilder~default.app.name" />
+
+  <input ref="extent" type="string" readonly="true">
+   <label locale="view~default.project.bbox.label" />
+   <help>Dessiner l'emprise</help>
+  </input>
+
+<!--   <input ref="baseLayer" type="string">
+   <label locale="view~map.baselayermenu.title" />
+  </input> -->
+
+  <checkboxes ref="baseLayer">
+    <label locale="view~map.baselayermenu.title" />
+    <item value="osmMapnik">osmMapnik</item>
+    <item value="osmStamenToner">osmStamenToner</item>
+    <item value="osmCyclemap">osmCyclemap</item>
+    <item value="bingStreets">bingStreets</item>
+    <item value="bingSatellite">bingSatellite</item>
+    <item value="bingHybrid">bingHybrid</item>
+    <item value="ignTerrain">ignTerrain</item>
+    <item value="ignStreets">ignStreets</item>
+    <item value="ignSatellite">ignSatellite</item>
+    <item value="ignCadastral">ignCadastral</item>
+  </checkboxes>
+
+  <input ref="baseLayerKeyBing" type="string">
+   <label locale="mapBuilderAdmin~admin.form.baselayer.key.bing" />
+  </input>
+
+  <input ref="baseLayerKeyIGN" type="string">
+   <label locale="mapBuilderAdmin~admin.form.baselayer.key.ign" />
+  </input>
+
+  <checkbox ref="attributeTableTool">
+   <label locale="mapBuilderAdmin~admin.form.attribute.isactive" />
+  </checkbox>
+
+</group>
+
+<submit ref="_submit">
+    <label locale="admin~admin.form.admin_services.submit.label"/>
+</submit>
+</form>
