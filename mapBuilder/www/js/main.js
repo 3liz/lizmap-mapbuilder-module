@@ -287,7 +287,6 @@ $(function() {
       var baseLayer = null;
       if(mapBuilder.baseLayer[i] === 'osmMapnik'){
         baseLayer = new TileLayer({
-          baseLayer: true,
           source: new OSM()
         });
       }
@@ -370,8 +369,6 @@ $(function() {
       }
       else if(mapBuilder.baseLayer[i] === 'emptyBaselayer'){
         baseLayer = new TileLayer({
-          title: "Fond vide",
-          baseLayer: true
         });
       }
 
