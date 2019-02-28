@@ -6,8 +6,18 @@ extent=[-4.65,51.68,9.10,40.63]
 
 ;; set base layer (osmMapnik, osmStamenToner, osmCyclemap, bingStreets, bingSatellite, bingHybrid, ignTerrain, ignStreets, ignSatellite, ignCadastral)
 baseLayer=osmMapnik
-;; set your API key if needed
-;baseLayerKey=
+
+;; set default base layer
+baseLayerDefault=osmMapnik
+
+;; set your osmCyclemap API key if needed
+baseLayerKeyOSMCycleMap=
+
+;; set your Bing API key if needed
+baseLayerKeyBing=
+
+;; set your IGN API key if needed
+baseLayerKeyIGN=
 
 ;; enable/disable attribute table tool
-attributeTableTool=true
+attributeTableTool=1

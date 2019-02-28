@@ -34,7 +34,7 @@ $(function() {
   // Display original extent if set
   var extentString = $('#jforms_mapBuilderAdmin_config_extent').val();
   if(extentString !== ""){
-    var extent = transformExtent(JSON.parse(extentString), 'EPSG:4326', map.getView().getProjection())
+    var extent = transformExtent(extentString.split(',').map(parseFloat), 'EPSG:4326', map.getView().getProjection())
     source.addFeature(
       new Feature({
         geometry: fromExtent(extent)
@@ -54,7 +54,6 @@ $(function() {
   });
 
   draw.on('drawend', function (e) {
-    // $('#saveExtent').data('extent', transformExtent(e.feature.getGeometry().getExtent(), 'EPSG:3857', 'EPSG:4326'));
     $('#jforms_mapBuilderAdmin_config_extent').val(transformExtent(e.feature.getGeometry().getExtent(), 'EPSG:3857', 'EPSG:4326'));
   });
 

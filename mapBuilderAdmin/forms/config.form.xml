@@ -4,28 +4,24 @@
 <group ref="mapBuilder">
   <label locale="mapBuilder~default.app.name" />
 
-  <input ref="extent" type="string" readonly="true">
+  <input ref="extent" type="string" pattern="/^-?\d+\.?\d*,-?\d+\.?\d*,-?\d+\.?\d*,-?\d+\.?\d*$/">
    <label locale="view~default.project.bbox.label" />
-   <help>Dessiner l'emprise</help>
+   <help locale="mapBuilderAdmin~admin.form.extent.help" />
   </input>
 
-<!--   <input ref="baseLayer" type="string">
-   <label locale="view~map.baselayermenu.title" />
-  </input> -->
-
-  <checkboxes ref="baseLayer">
+  <checkboxes ref="baseLayer" required="true">
     <label locale="view~map.baselayermenu.title" />
-    <item value="osmMapnik">osmMapnik</item>
-    <item value="osmStamenToner">osmStamenToner</item>
-    <item value="osmCyclemap">osmCyclemap</item>
-    <item value="bingStreets">bingStreets</item>
-    <item value="bingSatellite">bingSatellite</item>
-    <item value="bingHybrid">bingHybrid</item>
-    <item value="ignTerrain">ignTerrain</item>
-    <item value="ignStreets">ignStreets</item>
-    <item value="ignSatellite">ignSatellite</item>
-    <item value="ignCadastral">ignCadastral</item>
+    <datasource class="mapBuilder~listBaseLayer" />
   </checkboxes>
+
+  <menulist ref="baseLayerDefault" required="true">
+    <label locale="mapBuilderAdmin~admin.form.baselayer.default" />
+    <datasource class="mapBuilder~listBaseLayer" />
+  </menulist>
+
+  <input ref="baseLayerKeyOSMCycleMap" type="string">
+   <label locale="mapBuilderAdmin~admin.form.baselayer.key.osm.cyclemap" />
+  </input>
 
   <input ref="baseLayerKeyBing" type="string">
    <label locale="mapBuilderAdmin~admin.form.baselayer.key.bing" />

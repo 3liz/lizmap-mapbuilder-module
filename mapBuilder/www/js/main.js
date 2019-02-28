@@ -281,97 +281,122 @@ $(function() {
 
   // baseLayer is set in mapBuilder.ini.php
   if(mapBuilder.hasOwnProperty('baseLayer')){
-    var baseLayer = null;
-    if(mapBuilder.baseLayer === 'osmMapnik'){
-      baseLayer = new TileLayer({
-        title: "OSM",
-        source: new OSM()
-      });
-    }
-    else if(mapBuilder.baseLayer === 'osmStamenToner'){
-      baseLayer = new TileLayer({
-        source: new Stamen({
-          layer: 'toner'
-        })
-      });
-    }
-    else if(mapBuilder.baseLayer === 'osmCyclemap' 
-      && mapBuilder.hasOwnProperty('baseLayerKey')){
-      baseLayer = new TileLayer({
-        source: new XYZ({
-          url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=' + mapBuilder.baseLayerKey
-        })
-      });
-    }
-    else if((mapBuilder.baseLayer === 'bingStreets' 
-      || mapBuilder.baseLayer === 'bingSatellite'
-      || mapBuilder.baseLayer === 'bingHybrid')
-      && mapBuilder.hasOwnProperty('baseLayerKey')){
-      var bingMapsCorrespondance = {
-        'bingStreets' : 'Road',
-        'bingSatellite' : 'Aerial',
-        'bingHybrid' : 'AerialWithLabels'
-      };
-      baseLayer = new TileLayer({
-        visible: false,
-        preload: Infinity,
-        source: new BingMaps({
-          key: mapBuilder.baseLayerKey,
-          imagerySet: bingMapsCorrespondance[mapBuilder.baseLayer]
-        })
-      });
-    }
-    else if((mapBuilder.baseLayer === 'ignTerrain' 
-      || mapBuilder.baseLayer === 'ignStreets'
-      || mapBuilder.baseLayer === 'ignSatellite'
-      || mapBuilder.baseLayer === 'ignCadastral') 
-      && mapBuilder.hasOwnProperty('baseLayerKey')){
-      var ignCorrespondance = {
-        'ignTerrain' : 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
-        'ignStreets' : 'GEOGRAPHICALGRIDSYSTEMS.PLANIGN',
-        'ignSatellite' : 'ORTHOIMAGERY.ORTHOPHOTOS',
-        'ignCadastral' : 'CADASTRALPARCELS.PARCELS'
-      };
-      var resolutions = [];
-      var matrixIds = [];
-      var proj3857 = getProjection('EPSG:3857');
-      var maxResolution = getWidth(proj3857.getExtent()) / 256;
+    mapBuilder.baseLayer = mapBuilder.baseLayer.split(',');
 
-      for (var i = 0; i < 18; i++) {
-        matrixIds[i] = i.toString();
-        resolutions[i] = maxResolution / Math.pow(2, i);
+    for (var i = 0; i < mapBuilder.baseLayer.length; i++) {
+      var baseLayer = null;
+      if(mapBuilder.baseLayer[i] === 'osmMapnik'){
+        baseLayer = new TileLayer({
+          baseLayer: true,
+          source: new OSM()
+        });
+      }
+      else if(mapBuilder.baseLayer[i] === 'osmStamenToner'){
+        baseLayer = new TileLayer({
+          source: new Stamen({
+            layer: 'toner'
+          })
+        });
+      }
+      else if(mapBuilder.baseLayer[i] === 'osmCyclemap'
+        && mapBuilder.hasOwnProperty('baseLayerKeyOSMCycleMap')){
+        baseLayer = new TileLayer({
+          source: new XYZ({
+            url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=' + mapBuilder.baseLayerKeyOSMCycleMap
+          })
+        });
+      }
+      else if((mapBuilder.baseLayer[i] === 'bingStreets'
+        || mapBuilder.baseLayer[i] === 'bingSatellite'
+        || mapBuilder.baseLayer[i] === 'bingHybrid')
+        && mapBuilder.hasOwnProperty('baseLayerKeyBing')){
+        var bingMapsCorrespondance = {
+          'bingStreets' : 'Road',
+          'bingSatellite' : 'Aerial',
+          'bingHybrid' : 'AerialWithLabels'
+        };
+        baseLayer = new TileLayer({
+          visible: false,
+          preload: Infinity,
+          source: new BingMaps({
+            key: mapBuilder.baseLayerKeyBing,
+            imagerySet: bingMapsCorrespondance[mapBuilder.baseLayer[i]]
+          })
+        });
+      }
+      else if((mapBuilder.baseLayer[i] === 'ignTerrain'
+        || mapBuilder.baseLayer[i] === 'ignStreets'
+        || mapBuilder.baseLayer[i] === 'ignSatellite'
+        || mapBuilder.baseLayer[i] === 'ignCadastral')
+        && mapBuilder.hasOwnProperty('baseLayerKeyIGN')){
+        var ignCorrespondance = {
+          'ignTerrain' : 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+          'ignStreets' : 'GEOGRAPHICALGRIDSYSTEMS.PLANIGN',
+          'ignSatellite' : 'ORTHOIMAGERY.ORTHOPHOTOS',
+          'ignCadastral' : 'CADASTRALPARCELS.PARCELS'
+        };
+        var resolutions = [];
+        var matrixIds = [];
+        var proj3857 = getProjection('EPSG:3857');
+        var maxResolution = getWidth(proj3857.getExtent()) / 256;
+
+        for (var i = 0; i < 18; i++) {
+          matrixIds[i] = i.toString();
+          resolutions[i] = maxResolution / Math.pow(2, i);
+        }
+
+        var tileGrid = new WMTSTileGrid({
+          origin: [-20037508, 20037508],
+          resolutions: resolutions,
+          matrixIds: matrixIds
+        });
+
+        var ign_source = new WMTS({
+          url: "https://gpp3-wxs.ign.fr/"+mapBuilder.baseLayerKeyIGN+"/wmts",
+          layer: ignCorrespondance[mapBuilder.baseLayer[i]],
+          matrixSet: 'PM',
+          format: 'image/jpeg',
+          projection: 'EPSG:3857',
+          tileGrid: tileGrid,
+          style: 'normal',
+          attributions: '<a href="http://www.geoportail.fr/" target="_blank">' +
+                '<img src="https://api.ign.fr/geoportail/api/js/latest/' +
+                'theme/geoportal/img/logo_gp.gif"></a>'
+        });
+
+        baseLayer = new TileLayer({
+          source: ign_source
+        });
+      }
+      else if(mapBuilder.baseLayer[i] === 'emptyBaselayer'){
+        baseLayer = new TileLayer({
+          title: "Fond vide",
+          baseLayer: true
+        });
       }
 
-      var tileGrid = new WMTSTileGrid({
-        origin: [-20037508, 20037508],
-        resolutions: resolutions,
-        matrixIds: matrixIds
-      });
+      if(baseLayer){
+        var visibility = $("#baseLayerSelect").find(":selected").val() == mapBuilder.baseLayer[i] ? true : false;
 
-      var ign_source = new WMTS({
-        url: "https://gpp3-wxs.ign.fr/"+mapBuilder.baseLayerKey+"/wmts",
-        layer: ignCorrespondance[mapBuilder.baseLayer],
-        matrixSet: 'PM',
-        format: 'image/jpeg',
-        projection: 'EPSG:3857',
-        tileGrid: tileGrid,
-        style: 'normal',
-        attributions: '<a href="http://www.geoportail.fr/" target="_blank">' +
-              '<img src="https://api.ign.fr/geoportail/api/js/latest/' +
-              'theme/geoportal/img/logo_gp.gif"></a>'
-      });
+        baseLayer.setProperties({
+          title: mapBuilder.baseLayer[i],
+          visible: visibility,
+          baseLayer: true // Add baseLayer property to treat those layers differently
+        });
 
-      var baseLayer = new TileLayer({
-        source: ign_source
-      });
-    }
-
-    if(baseLayer){
-      // Add baseLayer property to treat this layer differently
-      baseLayer.setProperties({baseLayer: true});
-      mapBuilder.map.addLayer(baseLayer);
+        mapBuilder.map.addLayer(baseLayer);
+      }
     }
   }
+
+  $("#baseLayerSelect").change(function() {
+    var baseLayerSelected = $(this).find(":selected").val();
+    mapBuilder.map.getLayers().forEach(function(layer) {
+      if(layer.getProperties().baseLayer){
+        layer.setVisible(layer.getProperties().title == baseLayerSelected);
+      }
+    });
+  });
 
   // Extent is set in mapBuilder.ini.php => fit view on it and override originalCenter and originalZoom
   if(mapBuilder.hasOwnProperty('extent')){

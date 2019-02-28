@@ -97,15 +97,40 @@ class defaultCtrl extends jController {
         $readConfigPath = parse_ini_file(jApp::configPath('mapBuilder.ini.php'), True);
         // Get original extent from ini file if set
         if(array_key_exists('extent', $readConfigPath)){
-            $rep->addJSCode("mapBuilder.extent = ".$readConfigPath['extent'].";");
+            $rep->addJSCode("mapBuilder.extent = [".$readConfigPath['extent']."];");
         }
         // Get base layer from ini file if set
         if(array_key_exists('baseLayer', $readConfigPath)){
             $rep->addJSCode("mapBuilder.baseLayer = '".$readConfigPath['baseLayer']."';");
+
+            jClasses::inc('mapBuilder~listBaseLayer');
+            $listBaseLayer = (new listBaseLayer(0))->getData(0);
+
+            $userListBaseLayer = explode(',', $readConfigPath['baseLayer']);
+
+            foreach ($listBaseLayer as $key => $value) {
+                if(!in_array($key, $userListBaseLayer)){
+                    unset($listBaseLayer[$key]);
+                }
+            }
+
+            $rep->body->assign('baseLayer', $listBaseLayer);
+        }
+        // Get default base layer from ini file if set
+        if(array_key_exists('baseLayerDefault', $readConfigPath)){
+            $rep->body->assign('baseLayerDefault', $readConfigPath['baseLayerDefault']);
         }
         // Get base layer key from ini file if set
-        if(array_key_exists('baseLayerKey', $readConfigPath)){
-            $rep->addJSCode("mapBuilder.baseLayerKey = '".$readConfigPath['baseLayerKey']."';");
+        if(array_key_exists('baseLayerKeyOSMCycleMap', $readConfigPath)){
+            $rep->addJSCode("mapBuilder.baseLayerKeyOSMCycleMap = '".$readConfigPath['baseLayerKeyOSMCycleMap']."';");
+        }
+        // Get base layer key from ini file if set
+        if(array_key_exists('baseLayerKeyBing', $readConfigPath)){
+            $rep->addJSCode("mapBuilder.baseLayerKeyBing = '".$readConfigPath['baseLayerKeyBing']."';");
+        }
+        // Get base layer key from ini file if set
+        if(array_key_exists('baseLayerKeyIGN', $readConfigPath)){
+            $rep->addJSCode("mapBuilder.baseLayerKeyIGN = '".$readConfigPath['baseLayerKeyIGN']."';");
         }
         // Get attributeTableTool key from ini file if set
         if(array_key_exists('attributeTableTool', $readConfigPath)){

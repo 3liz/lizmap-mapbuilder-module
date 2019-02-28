@@ -143,6 +143,12 @@ span.fancytree-drag-source.fancytree-drag-remove {
 
 #bottom-dock-window-buttons{padding: 2px;}
 
+#baseLayer{
+    margin-top: 10px;
+    border-top: 1px dashed black;
+    padding-left: 10px;
+}
+
 .nav-link, .nav-link:hover{color: white}
 
 #attributeLayersTabs{height: 40px}

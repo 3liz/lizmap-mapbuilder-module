@@ -13,7 +13,7 @@ class mapBuilderModuleUpgrader_acl extends jInstallerModule {
     public $targetVersions = array(
         '1.0.0-rc.13'
     );
-    public $date = '2019-02-07';
+    public $date = '2019-02-28';
 
     function install() {
         if ($this->firstExec('acl2') ) {

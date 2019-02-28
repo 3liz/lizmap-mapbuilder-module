@@ -11,9 +11,9 @@
 class mapBuilderModuleUpgrader_toggleattributetable extends jInstallerModule {
 
     public $targetVersions = array(
-        '1.0.0-rc.12'
+        '1.0.0-rc.13'
     );
-    public $date = '2019-02-06';
+    public $date = '2019-02-28';
 
     function install() {
         // Add new parameter in config file to toggle attribute table tool

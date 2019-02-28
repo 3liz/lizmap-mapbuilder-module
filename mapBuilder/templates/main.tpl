@@ -115,6 +115,14 @@
           </tr>
         </tbody>
       </table>
+      <div id="baseLayer">
+        {@view~map.baselayermenu.title@}
+        <select id="baseLayerSelect" class="custom-select custom-select-sm">
+        {foreach $baseLayer as $cle => $valeur}
+          <option {if $baseLayerDefault == $cle}selected{/if} value="{$cle}">{$valeur}</option>
+        {/foreach}
+        </select>
+      </div>
     </div>
     <div class="tab-pane fade" id="layerselection" role="tabpanel" aria-labelledby="layerselection-tab">
       <div class="dock-tab-title">{@mapBuilder~default.selector.layers.selection@}</div>
