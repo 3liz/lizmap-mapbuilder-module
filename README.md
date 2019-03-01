@@ -4,6 +4,7 @@ MapBuilder module
 Add this to `localconfig.ini.php` in `modules` section
 ```
 mapBuilder.access=2
+mapBuilderAdmin.access=2
 
 ```
 
