@@ -22,19 +22,28 @@ class mapBuilderViewListener extends jEventListener{
 
                 $extentArraySource = explode(",", $readConfigPath['extent']);
 
-                // Handle WGS84 bounds
-                $sourceMinPt = new proj4phpPoint( max($extentArraySource[0], -180.0), max($extentArraySource[1], -85.06) );
-                $sourceMaxPt = new proj4phpPoint( min($extentArraySource[2], 180.0), min($extentArraySource[3], 85.06) );
+                // Is extent valid ?
+                if(count($extentArraySource) == 4 && $extentArraySource === array_filter($extentArraySource, 'is_numeric')){
+                    // Cast as float
+                    $extentArraySource = array_map(floatval, $extentArraySource);
 
-                try {
-                    $destMinPt = $proj4->transform($sourceProj,$destProj,$sourceMinPt);
-                    $destMaxPt = $proj4->transform($sourceProj,$destProj,$sourceMaxPt);
+                    // Handle WGS84 bounds
+                    $sourceMinPt = new proj4phpPoint( max($extentArraySource[0], -180.0), max($extentArraySource[1], -85.06) );
+                    $sourceMaxPt = new proj4phpPoint( min($extentArraySource[2], 180.0), min($extentArraySource[3], 85.06) );
 
-                    $extent = implode(", ", array( $destMinPt->x, $destMinPt->y, $destMaxPt->x, $destMaxPt->y ));
+                    try {
+                        $destMinPt = $proj4->transform($sourceProj,$destProj,$sourceMinPt);
+                        $destMaxPt = $proj4->transform($sourceProj,$destProj,$sourceMaxPt);
 
-                } catch (Exception $e) {
-                    // Max extent in EPSG:3857 
-                    $extent = "-20026376.39,-20048966.10,20026376.39,20048966.10";
+                        $extent = implode(", ", array( $destMinPt->x, $destMinPt->y, $destMaxPt->x, $destMaxPt->y ));
+
+                    } catch (Exception $e) {
+                        // Max extent in EPSG:3857
+                        $extent = "-20026376.39,-20048966.10,20026376.39,20048966.10";
+                    }
+                }else{
+                    jMessage::add(jLocale::get("mapBuilder~default.extent.value.error"), error);
+                    $extent = jLocale::get("mapBuilder~default.extent.value.error");
                 }
             }
             
