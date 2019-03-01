@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="mapBuilder3liz.com" name="mapBuilder" createdate="2018-10-03">
-        <version date="2019-03-01">1.0.0-rc.15</version>
+        <version date="2019-03-01">1.0.0-rc.16</version>
         <label lang="en_US">mapBuilder</label>
         <description lang="en_US">Jelix module for Lizmap, which adds a map builder based on every repositories</description>
         <license>Mozilla Public License 2.0</license>
