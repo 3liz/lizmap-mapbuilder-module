@@ -22,8 +22,9 @@ class mapBuilderViewListener extends jEventListener{
 
                 $extentArraySource = explode(",", $readConfigPath['extent']);
 
-                $sourceMinPt = new proj4phpPoint( $extentArraySource[0], $extentArraySource[1] );
-                $sourceMaxPt = new proj4phpPoint( $extentArraySource[2], $extentArraySource[3] );
+                // Handle WGS84 bounds
+                $sourceMinPt = new proj4phpPoint( max($extentArraySource[0], -180.0), max($extentArraySource[1], -85.06) );
+                $sourceMaxPt = new proj4phpPoint( min($extentArraySource[2], 180.0), min($extentArraySource[3], 85.06) );
 
                 try {
                     $destMinPt = $proj4->transform($sourceProj,$destProj,$sourceMinPt);
