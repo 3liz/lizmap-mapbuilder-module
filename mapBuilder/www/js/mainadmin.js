@@ -34,6 +34,9 @@ $(function() {
 
   // Display original extent if set
   var extentString = $('#jforms_mapBuilderAdmin_config_extent').val();
+  // Set as readonly
+  $('#jforms_mapBuilderAdmin_config_extent').prop('readonly', true);
+  
   if(extentString !== ""){
     var extent = transformExtent(extentString.split(',').map(parseFloat), 'EPSG:4326', map.getView().getProjection())
     source.addFeature(
