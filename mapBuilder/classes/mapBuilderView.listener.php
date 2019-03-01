@@ -26,13 +26,14 @@ class mapBuilderViewListener extends jEventListener{
                 $sourceMaxPt = new proj4phpPoint( $extentArraySource[2], $extentArraySource[3] );
 
                 try {
-                    $destMinPt   = $proj4->transform($sourceProj,$destProj,$sourceMinPt);
-                    $destMaxPt   = $proj4->transform($sourceProj,$destProj,$sourceMaxPt);
+                    $destMinPt = $proj4->transform($sourceProj,$destProj,$sourceMinPt);
+                    $destMaxPt = $proj4->transform($sourceProj,$destProj,$sourceMaxPt);
 
                     $extent = implode(", ", array( $destMinPt->x, $destMinPt->y, $destMaxPt->x, $destMaxPt->y ));
 
                 } catch (Exception $e) {
-                    $extent = "";
+                    // Max extent in EPSG:3857 
+                    $extent = "-20026376.39,-20048966.10,20026376.39,20048966.10";
                 }
             }
             

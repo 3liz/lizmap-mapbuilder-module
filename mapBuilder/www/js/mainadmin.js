@@ -26,6 +26,7 @@ $(function() {
     layers: [raster, vector],
     target: 'map',
     view: new View({
+      extent: transformExtent([-180,-85.06,180,85.06], 'EPSG:4326', 'EPSG:3857'),
       center: [95022, 5922170],
       zoom: 5
     })

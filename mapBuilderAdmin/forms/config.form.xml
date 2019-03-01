@@ -4,7 +4,7 @@
 <group ref="mapBuilder">
   <label locale="mapBuilder~default.app.name" />
 
-  <input ref="extent" type="string" pattern="/^-?\d+\.?\d*,-?\d+\.?\d*,-?\d+\.?\d*,-?\d+\.?\d*$/">
+  <input ref="extent" type="string" pattern="/^-?\d{1,3}\.?\d*,-?\d{1,2}\.?\d*,-?\d{1,3}\.?\d*,-?\d{1,2}\.?\d*$/">
    <label locale="view~default.project.bbox.label" />
    <help locale="mapBuilderAdmin~admin.form.extent.help" />
   </input>
