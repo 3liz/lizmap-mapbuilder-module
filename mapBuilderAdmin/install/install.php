@@ -20,5 +20,19 @@ class mapBuilderAdminModuleInstaller extends jInstallerModule {
             jAcl2DbManager::addRight('admins', 'my.subject'); // for admin group
         }
         */
+        if ($this->entryPoint->getEpId() == 'admin') {
+            // check first if localconfig has already redefined the list of controllers
+            $adminControllers = $this->entryPoint->localConfigIni->getValue('admin', 'simple_urlengine_entrypoints');
+            if (!$adminControllers) {
+                // not in localconfig, retrieve list from mainconfig
+                $adminControllers = $this->entryPoint->configIni->getValue('admin', 'simple_urlengine_entrypoints');
+            }
+            $mbCtrl = 'mapBuilderAdmin~*@classic';
+            if (strpos($adminControllers, $mbCtrl) === false) {
+                // let's register mapBuilderAdmin controllers
+                $adminControllers .= ', '.$mbCtrl;
+                $this->entryPoint->localConfigIni->setValue('admin', $adminControllers, 'simple_urlengine_entrypoints');
+            }
+        }
     }
 }
