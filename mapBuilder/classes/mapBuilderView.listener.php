@@ -20,15 +20,20 @@ class mapBuilderViewListener extends jEventListener{
                 $sourceProj = new Proj4phpProj('EPSG:4326', $proj4);
                 $destProj  = new Proj4phpProj('EPSG:3857', $proj4);
 
-                $extentArraySource = explode(",", str_replace(array("[", "]"), "", $readConfigPath['extent']));
+                $extentArraySource = explode(",", $readConfigPath['extent']);
 
                 $sourceMinPt = new proj4phpPoint( $extentArraySource[0], $extentArraySource[1] );
-                $destMinPt   = $proj4->transform($sourceProj,$destProj,$sourceMinPt);
-
                 $sourceMaxPt = new proj4phpPoint( $extentArraySource[2], $extentArraySource[3] );
-                $destMaxPt   = $proj4->transform($sourceProj,$destProj,$sourceMaxPt);
 
-                $extent = implode(", ", array( $destMinPt->x, $destMinPt->y, $destMaxPt->x, $destMaxPt->y ));
+                try {
+                    $destMinPt   = $proj4->transform($sourceProj,$destProj,$sourceMinPt);
+                    $destMaxPt   = $proj4->transform($sourceProj,$destProj,$sourceMaxPt);
+
+                    $extent = implode(", ", array( $destMinPt->x, $destMinPt->y, $destMaxPt->x, $destMaxPt->y ));
+
+                } catch (Exception $e) {
+                    $extent = "";
+                }
             }
             
             $illustration = jApp::urlBasePath().'themes/'.jApp::config()->theme.'/css/img/250x250_mappemonde.png';
