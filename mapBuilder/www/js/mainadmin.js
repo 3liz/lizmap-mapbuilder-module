@@ -32,10 +32,11 @@ $(function() {
     })
   });
 
-  // Display original extent if set
-  var extentString = $('#jforms_mapBuilderAdmin_config_extent').val();
-  // Set as readonly
+  // Set extent input as readonly
   $('#jforms_mapBuilderAdmin_config_extent').prop('readonly', true);
+
+  // Display original extent on map if set
+  var extentString = $('#jforms_mapBuilderAdmin_config_extent').val();
   
   if(extentString !== ""){
     var extent = transformExtent(extentString.split(',').map(parseFloat), 'EPSG:4326', map.getView().getProjection())
@@ -63,10 +64,9 @@ $(function() {
 
   map.addInteraction(draw);
 
-  $('#saveExtent').on("click", function(e){
-    console.log($(this).data('extent'));
-  });
-
-  $("#map").data('map', map);
+  // Make OL map object accessible to help debugging 
+  if (!PRODUCTION) {
+    $("#map").data('map', map);
+  }
 
 });
