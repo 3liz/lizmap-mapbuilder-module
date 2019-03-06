@@ -64,6 +64,19 @@ $(function() {
 
   map.addInteraction(draw);
 
+  // Filter default baselayer choices based on selected baselayers
+  // Init
+  $('#jforms_mapBuilderAdmin_config_baseLayerDefault option').hide();
+
+  $('.jforms-ctl-baseLayer input:checked').each(function() {
+    $('#jforms_mapBuilderAdmin_config_baseLayerDefault option[value='+$(this).val()+']').show();
+  });
+
+  // Toggle on change
+  $('.jforms-ctl-baseLayer input').change(function() {
+    $('#jforms_mapBuilderAdmin_config_baseLayerDefault option[value='+$(this).val()+']').toggle($(this).is(':checked'));
+  });
+
   // Make OL map object accessible to help debugging 
   if (!PRODUCTION) {
     $("#map").data('map', map);
