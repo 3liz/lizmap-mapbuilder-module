@@ -98,13 +98,24 @@ $(function() {
     var myArray = [];
     if (Array.isArray(layer)) {
         layer.forEach(function(sublayer) {
+          // Layer name is used as a key in lizmap config
+          var sublayerName = sublayer.Name;
+
+          // If key is not present, it might because a shortname has been defined in QGIS
+          if(!cfg.layers.hasOwnProperty(sublayer.Name)){
+            for (var key in cfg.layers) {
+              if(cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname == sublayer.Name)){
+                 sublayerName = cfg.layers[key].name;
+               }
+            }
+          }
           // Filter layers in Hidden and Overview directory
           if(sublayer.hasOwnProperty('Title') && (sublayer.Title.toLowerCase() == 'hidden' || sublayer.Title.toLowerCase() == 'overview')){
             return;
           }
           // Filter layers not visible in legend or without geometry
-          if(sublayer.hasOwnProperty('Name') && cfg.layers.hasOwnProperty(sublayer.Name)
-            && (cfg.layers[sublayer.Name].displayInLegend == 'False' || cfg.layers[sublayer.Name].geometryType == 'none')){
+          if(sublayer.hasOwnProperty('Name') && cfg.layers.hasOwnProperty(sublayerName)
+            && (cfg.layers[sublayerName].displayInLegend == 'False' || cfg.layers[sublayerName].geometryType == 'none')){
               return;
           }
           var layers = buildLayerTree(sublayer, cfg);
@@ -113,7 +124,21 @@ $(function() {
         return myArray;
     }
 
-    var myObj = { title: cfg.layers[layer.Name].title, name : layer.Name, popup : cfg.layers[layer.Name].popup};
+    // Layer name is used as a key in lizmap config
+    var layerName = layer.Name;
+
+    // If key is not present, it might because a shortname has been defined in QGIS
+    if(!cfg.layers.hasOwnProperty(layer.Name)){
+      for (var key in cfg.layers) {
+        if(cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname == layer.Name)){
+           layerName = cfg.layers[key].name;
+         }
+      }
+    }
+
+    // Create node
+    var myObj = { title: cfg.layers[layerName].title, name : layerName, popup : cfg.layers[layerName].popup};
+
     if(layer.hasOwnProperty('Style')){
       myObj.style = layer.Style;
     }
@@ -126,18 +151,18 @@ $(function() {
     if(layer.hasOwnProperty('MaxScaleDenominator') && layer.MaxScaleDenominator !== undefined){
       myObj.maxScale = layer.MaxScaleDenominator;
     }
-    if(cfg.attributeLayers.hasOwnProperty(layer.Name) 
-      && cfg.attributeLayers[layer.Name].hideLayer != "True"
-      && cfg.attributeLayers[layer.Name].pivot != "True"){
+    if(cfg.attributeLayers.hasOwnProperty(layerName) 
+      && cfg.attributeLayers[layerName].hideLayer != "True"
+      && cfg.attributeLayers[layerName].pivot != "True"){
       myObj.hasAttributeTable = true;
     }
-    if(cfg.layers.hasOwnProperty(layer.Name) 
-      && cfg.layers[layer.Name].abstract != ""){
-      myObj.tooltip = cfg.layers[layer.Name].abstract;
+    if(cfg.layers.hasOwnProperty(layerName) 
+      && cfg.layers[layerName].abstract != ""){
+      myObj.tooltip = cfg.layers[layerName].abstract;
     }
     myArray.push(myObj);
     // Layer has children and is not a group as layer => folder
-    if (layer.hasOwnProperty('Layer') && cfg.layers[layer.Name].groupAsLayer == 'False') {
+    if (layer.hasOwnProperty('Layer') && cfg.layers[layerName].groupAsLayer == 'False') {
         myObj.folder = true;
         myObj.children = buildLayerTree(layer.Layer, cfg);
     }
