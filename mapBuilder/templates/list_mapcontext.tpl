@@ -10,7 +10,7 @@
 	      {if $loggedUser}
 	      	<button class="btn-mapcontext-del btn btn-mini" value="{$mc->id}" data-toggle="tooltip" title="{@mapBuilder~mapcontext.mymaps.button.del@}"><i class="fas fa-trash"></i></button>
 	      {/if}
-	      <button class="btn-mapcontext-run btn btn-mini" value="{$mc->id}" data-toggle="tooltip" title="{@mapBuilder~mapcontext.mymaps.button.run@}"><i class="fas fa-search-plus"></i></button>
+	      <button class="btn-mapcontext-run btn btn-mini" value="{$mc->id}" data-toggle="tooltip" title="{@mapBuilder~mapcontext.mymaps.button.run@}"><i class="fas fa-eye"></i></button>
 	    </td>
 	    <td>{if $mc->is_public}<i class="fas fa-share" data-toggle="tooltip" title="{@mapBuilder~mapcontext.public@}"></i>{/if}</td>
 	  </tr>
@@ -26,7 +26,7 @@
 	  <tr>
 	    <td>{$mc->name}</td>
 	    <td>
-	      <button class="btn-mapcontext-run btn btn-mini" value="{$mc->id}" data-toggle="tooltip" title="{@mapBuilder~mapcontext.mymaps.button.run@}"><i class="fas fa-search-plus"></i></button>
+	      <button class="btn-mapcontext-run btn btn-mini" value="{$mc->id}" data-toggle="tooltip" title="{@mapBuilder~mapcontext.mymaps.button.run@}"><i class="fas fa-eye"></i></button>
 	    </td>
 	  </tr>
 	  {/foreach}
