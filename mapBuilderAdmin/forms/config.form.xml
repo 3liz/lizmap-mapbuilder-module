@@ -1,43 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form xmlns="http://jelix.org/ns/forms/1.1">
 
-<group ref="mapBuilder">
-  <label locale="mapBuilder~default.app.name" />
+  <group ref="mapBuilder">
+    <label locale="mapBuilder~default.app.name" />
 
-  <input ref="extent" type="string" pattern="/^-?\d{1,3}\.?\d*,-?\d{1,2}\.?\d*,-?\d{1,3}\.?\d*,-?\d{1,2}\.?\d*$/">
-   <label locale="view~default.project.bbox.label" />
-   <help locale="mapBuilderAdmin~admin.form.extent.help" />
-  </input>
+    <menulist ref="repository">
+      <label locale="mapBuilderAdmin~admin.form.repository.label" />
+      <datasource class="mapBuilder~listRepositories" />
+      <help locale="mapBuilderAdmin~admin.form.repository.help" />
+    </menulist>
 
-  <checkboxes ref="baseLayer" required="true">
-    <label locale="view~map.baselayermenu.title" />
-    <datasource class="mapBuilder~listBaseLayer" />
-  </checkboxes>
+    <input ref="extent" type="string" pattern="/^-?\d{1,3}\.?\d*,-?\d{1,2}\.?\d*,-?\d{1,3}\.?\d*,-?\d{1,2}\.?\d*$/">
+      <label locale="view~default.project.bbox.label" />
+      <help locale="mapBuilderAdmin~admin.form.extent.help" />
+    </input>
 
-  <menulist ref="baseLayerDefault" required="true">
-    <label locale="mapBuilderAdmin~admin.form.baselayer.default" />
-    <datasource class="mapBuilder~listBaseLayer" />
-  </menulist>
+    <checkboxes ref="baseLayer" required="true">
+      <label locale="view~map.baselayermenu.title" />
+      <datasource class="mapBuilder~listBaseLayer" />
+    </checkboxes>
 
-  <input ref="baseLayerKeyOSMCycleMap" type="string">
-   <label locale="mapBuilderAdmin~admin.form.baselayer.key.osm.cyclemap" />
-  </input>
+    <menulist ref="baseLayerDefault" required="true">
+      <label locale="mapBuilderAdmin~admin.form.baselayer.default" />
+      <datasource class="mapBuilder~listBaseLayer" />
+    </menulist>
 
-  <input ref="baseLayerKeyBing" type="string">
-   <label locale="mapBuilderAdmin~admin.form.baselayer.key.bing" />
-  </input>
+    <input ref="baseLayerKeyOSMCycleMap" type="string">
+      <label locale="mapBuilderAdmin~admin.form.baselayer.key.osm.cyclemap" />
+    </input>
 
-  <input ref="baseLayerKeyIGN" type="string">
-   <label locale="mapBuilderAdmin~admin.form.baselayer.key.ign" />
-  </input>
+    <input ref="baseLayerKeyBing" type="string">
+      <label locale="mapBuilderAdmin~admin.form.baselayer.key.bing" />
+    </input>
 
-  <checkbox ref="attributeTableTool">
-   <label locale="mapBuilderAdmin~admin.form.attribute.isactive" />
-  </checkbox>
+    <input ref="baseLayerKeyIGN" type="string">
+      <label locale="mapBuilderAdmin~admin.form.baselayer.key.ign" />
+    </input>
 
-</group>
+    <checkbox ref="attributeTableTool">
+      <label locale="mapBuilderAdmin~admin.form.attribute.isactive" />
+    </checkbox>
 
-<submit ref="_submit">
+  </group>
+
+  <submit ref="_submit">
     <label locale="admin~admin.form.admin_services.submit.label"/>
-</submit>
+  </submit>
 </form>

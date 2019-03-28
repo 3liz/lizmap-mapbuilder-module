@@ -61,12 +61,22 @@ class defaultCtrl extends jController {
 
         $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/mapbuilder.js');
 
-        $nestedTree = array();
-        
-        $repositories = lizmap::getRepositoryList();
+        // Read mapBuilder configuration
+        $readConfigPath = parse_ini_file(jApp::configPath('mapBuilder.ini.php'), True);
 
-        // Build repository + project tree for FancyTree 
-        foreach ($repositories as $key => $repositoryName) {
+        // Build repository + project tree for FancyTree
+        $nestedTree = array();
+
+        $repositoryList = array();
+
+        // Get selected repository from ini file if set
+        if(array_key_exists('repository', $readConfigPath) && !is_null(lizmap::getRepository($readConfigPath['repository']))){
+            $repositoryList[] = $readConfigPath['repository'];
+        }else{
+            $repositoryList = lizmap::getRepositoryList();
+        }
+        
+        foreach ($repositoryList as $repositoryName) {
             $repository = lizmap::getRepository($repositoryName);
             if( jAcl2::check('lizmap.repositories.view', $repository->getKey() )){
                 $projects = $repository->getProjects();
@@ -93,8 +103,6 @@ class defaultCtrl extends jController {
         // Write tree as JSON
         $rep->addJSCode('var mapBuilder = {"layerStoreTree": '.json_encode($nestedTree).'};');
 
-        // Read mapBuilder configuration
-        $readConfigPath = parse_ini_file(jApp::configPath('mapBuilder.ini.php'), True);
         // Get original extent from ini file if set
         if(array_key_exists('extent', $readConfigPath)){
             $rep->addJSCode("mapBuilder.extent = [".$readConfigPath['extent']."];");
