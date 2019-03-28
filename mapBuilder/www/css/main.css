@@ -160,7 +160,7 @@ span.fancytree-drag-source.fancytree-drag-remove {
     overflow-y: auto;
 }
 
-.lizmapPopupDiv{padding: 5px 10px;background-color: #F0F0F0;}
+.lizmapPopupDiv{padding: 5px 10px;background-color: #F0F0F0;font-size: .8em;}
 
 .footer{position: absolute;bottom: 5px;right: 2px;width: 100%}
 
