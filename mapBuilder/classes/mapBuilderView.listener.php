@@ -25,7 +25,7 @@ class mapBuilderViewListener extends jEventListener{
                 // Is extent valid ?
                 if(count($extentArraySource) == 4 && $extentArraySource === array_filter($extentArraySource, 'is_numeric')){
                     // Cast as float
-                    $extentArraySource = array_map(floatval, $extentArraySource);
+                    $extentArraySource = array_map('floatval', $extentArraySource);
 
                     // Handle WGS84 bounds
                     $sourceMinPt = new proj4phpPoint( max($extentArraySource[0], -180.0), max($extentArraySource[1], -85.06) );
@@ -42,7 +42,7 @@ class mapBuilderViewListener extends jEventListener{
                         $extent = "-20026376.39,-20048966.10,20026376.39,20048966.10";
                     }
                 }else{
-                    jMessage::add(jLocale::get("mapBuilder~default.extent.value.error"), error);
+                    jMessage::add(jLocale::get("mapBuilder~default.extent.value.error"), 'error');
                     $extent = jLocale::get("mapBuilder~default.extent.value.error");
                 }
             }
