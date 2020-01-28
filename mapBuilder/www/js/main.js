@@ -1024,7 +1024,7 @@ $(function() {
     var scale = (mapBuilder.map.getView().getResolution() * 1000 * 90 * window.devicePixelRatio) / INCHTOMM;
 
     mapBuilder.map.getLayers().forEach(function(layer) {
-      if(layer.type == "IMAGE"){
+      if (layer instanceof ImageLayer){
         var layerSource = layer.getSource();
         legends[layer.getZIndex()] = layerSource.getUrl()+'&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER='+layerSource.getParams().LAYERS+'&STYLE='+layerSource.getParams().STYLES+'&FORMAT=image/png&TRANSPARENT=TRUE&WIDTH=150&ITEMFONTSIZE=9&SYMBOLSPACE=1&ICONLABELSPACE=2&DPI=96&LAYERSPACE=0&LAYERFONTBOLD=FALSE&SCALE='+scale;
       }
@@ -1048,13 +1048,13 @@ $(function() {
     $("#dock").show();
   });
 
-  $('#pdf-print-btn').on("click", function(e){
+  $('#pdf-print-btn').on("click", function(){
 
     $(this).addClass("disabled");
     document.body.style.cursor = 'progress';
 
     import(/* webpackChunkName: "jspdf" */ 'jspdf' ).then(({ default: jsPDF }) => {
-      var dims = {
+      const dims = {
          a0: [1189, 841],
          a1: [841, 594],
          a2: [594, 420],
@@ -1063,50 +1063,61 @@ $(function() {
          a5: [210, 148]
        };
 
-      var format = document.getElementById('format-pdf-print').value;
-      var resolution = document.getElementById('resolution-pdf-print').value;
-      var dim = dims[format];
-      var width = Math.round(dim[0] * resolution / INCHTOMM);
-      var height = Math.round(dim[1] * resolution / INCHTOMM);
-      var size = mapBuilder.map.getSize();
-      var extent = mapBuilder.map.getView().calculateExtent(size);
+      const format = document.getElementById('format-pdf-print').value;
+      const resolution = document.getElementById('resolution-pdf-print').value;
+      const dim = dims[format];
+      const width = Math.round(dim[0] * resolution / INCHTOMM);
+      const height = Math.round(dim[1] * resolution / INCHTOMM);
+      const size = mapBuilder.map.getSize();
+      const viewResolution = mapBuilder.map.getView().getResolution();
 
       // Note that when using import() on ES6 modules you must reference the .default property as it's the actual module object that will be returned when the promise is resolved.
       // => https://webpack.js.org/guides/lazy-loading/
-      var pdf = new jsPDF('landscape', 'mm', format);
+      const pdf = new jsPDF('landscape', 'mm', format);
       // Add title
       pdf.setFontSize(18);
       pdf.text($('#pdf-print-title').val(), 50, 10);
 
-      var offset = 25;
-      var maxWidthLegend = 0;
+      let offset = 25;
+      let maxWidthLegend = 0;
 
-      $( "#legend img" ).each(function( index, legend ) {
+      document.querySelectorAll("#legend img").forEach(function (legend) {
         pdf.addImage(legend, 'PNG', 0, offset * INCHTOMM/resolution);
         offset += legend.height;
 
-        if( legend.width > maxWidthLegend){
+        if(legend.width > maxWidthLegend){
           maxWidthLegend = legend.width;
         }
       });
 
-      // Add map and save pdf
-      mapBuilder.map.once('rendercomplete', function(event) {
-        var canvas = event.context.canvas;
-        var data = canvas.toDataURL('image/png');
-      
-        pdf.addImage(data, 'JPEG', maxWidthLegend * INCHTOMM/resolution, 20, dim[0] - (maxWidthLegend * INCHTOMM/resolution), dim[1]);
+      mapBuilder.map.once('rendercomplete', function () {
+        const mapCanvas = document.createElement('canvas');
+        mapCanvas.width = width;
+        mapCanvas.height = height;
+        const mapContext = mapCanvas.getContext('2d');
+        document.querySelectorAll('.ol-layer canvas').forEach(function (canvas) {
+          if (canvas.width > 0) {
+            const transform = canvas.style.transform;
+            // Get the transform parameters from the style's transform matrix
+            const matrix = transform.match(/^matrix\(([^\(]*)\)$/)[1].split(',').map(Number);
+            // Apply the transform to the export map context
+            CanvasRenderingContext2D.prototype.setTransform.apply(mapContext, matrix);
+            mapContext.drawImage(canvas, 0, 0);
+          }
+        });
+        pdf.addImage(mapCanvas.toDataURL('image/jpeg'), 'JPEG', maxWidthLegend * INCHTOMM/resolution, 20, dim[0], dim[1]);
         pdf.save('map.pdf');
         // Reset original map size
         mapBuilder.map.setSize(size);
-        mapBuilder.map.getView().fit(extent, {size: size});
+        mapBuilder.map.getView().setResolution(viewResolution);
         document.body.style.cursor = 'auto';
       });
 
       // Set print size
-      var printSize = [width - maxWidthLegend, height];
+      const printSize = [width - maxWidthLegend, height];
       mapBuilder.map.setSize(printSize);
-      mapBuilder.map.getView().fit(extent, {size: printSize});
+      const scaling = Math.min(width / size[0], height / size[1]);
+      mapBuilder.map.getView().setResolution(viewResolution / scaling);
     });
     $(this).removeClass("disabled");
   });
