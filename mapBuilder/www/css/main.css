@@ -221,3 +221,7 @@ span.fancytree-drag-source.fancytree-drag-remove {
 .ol-control.active{
 	background-color: black;
 }
+
+.ol-scale-line {
+    margin-left: 25px;
+}
