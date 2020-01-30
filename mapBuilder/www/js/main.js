@@ -530,18 +530,26 @@ $(function() {
       const promises = [
         new Promise(resolve => 
           $.get(url, function(capabilities) {
-              var result = parser.read(capabilities);
+            var result = parser.read(capabilities);
+            if (result.hasOwnProperty('Capability')){
               var node = result.Capability;
 
               // First layer is in fact project
               if (node.hasOwnProperty('Layer')) {
-                  resolve(node.Layer.Layer);
+                resolve(node.Layer.Layer);
               }
+            }else{
+              resolve(false);
+            }
           })
         ),
         new Promise(resolve => 
           $.getJSON(lizUrls.config,{"repository":repositoryId,"project":projectId},function(cfgData) {
-            resolve(cfgData);
+            if (cfgData){
+              resolve(cfgData);
+            }else{
+              resolve(false);
+            }
           })
         )
       ];
@@ -550,11 +558,17 @@ $(function() {
         if(! mapBuilder.hasOwnProperty('lizMap')){
           mapBuilder.lizMap = {};
         }
-        // Cache project config for later use
-        mapBuilder.lizMap[repositoryId + '|' + projectId] = {};
-        mapBuilder.lizMap[repositoryId + '|' + projectId].config = results[1];
 
-        return buildLayerTree(results[0], results[1]);
+        if (results[0] && results[1]){
+          // Cache project config for later use
+          mapBuilder.lizMap[repositoryId + '|' + projectId] = {};
+          mapBuilder.lizMap[repositoryId + '|' + projectId].config = results[1];
+
+          return buildLayerTree(results[0], results[1]);
+        }else{
+          // Return empty array when errors
+          return [];
+        }
       });
     },
     renderColumns: function(event, data) {
