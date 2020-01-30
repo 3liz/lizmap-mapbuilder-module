@@ -1,6 +1,8 @@
 MapBuilder module
 =================
 
+![demo](demo.jpg "3Liz Map Builder")
+
 Add this to `localconfig.ini.php` in `modules` section
 ```
 mapBuilder.access=2
