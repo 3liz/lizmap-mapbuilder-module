@@ -450,7 +450,7 @@ $(function() {
 
     mapBuilder.map.getLayers().forEach(function(layer) {
       if( !layer.getProperties().hasOwnProperty('baseLayer') && layer.values_.popup == "True"){
-        var url = layer.getSource().getGetFeatureInfoUrl(
+        var url = layer.getSource().getFeatureInfoUrl(
           evt.coordinate, viewResolution, projection,
           {
             'INFO_FORMAT': 'text/html',
