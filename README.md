@@ -5,7 +5,7 @@ MapBuilder module
 
 You can have a look at our [map builder demo](https://demo.lizmap.com/lizmap_3_2/index.php/mapBuilder/).
 
-###Installation
+### Installation
 
 Add this to `localconfig.ini.php` in `modules` section
 ```
