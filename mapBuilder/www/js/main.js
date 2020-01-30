@@ -137,30 +137,33 @@ $(function() {
     }
 
     // Create node
-    var myObj = { title: cfg.layers[layerName].title, name : layerName, popup : cfg.layers[layerName].popup};
+    if (cfg.layers.hasOwnProperty(layerName)){
+      var myObj = { title: cfg.layers[layerName].title, name: layerName, popup: cfg.layers[layerName].popup };
 
-    if(layer.hasOwnProperty('Style')){
-      myObj.style = layer.Style;
+      if (layer.hasOwnProperty('Style')) {
+        myObj.style = layer.Style;
+      }
+      if (layer.hasOwnProperty('EX_GeographicBoundingBox')) {
+        myObj.bbox = layer.EX_GeographicBoundingBox;
+      }
+      if (layer.hasOwnProperty('MinScaleDenominator') && layer.MinScaleDenominator !== undefined) {
+        myObj.minScale = layer.MinScaleDenominator;
+      }
+      if (layer.hasOwnProperty('MaxScaleDenominator') && layer.MaxScaleDenominator !== undefined) {
+        myObj.maxScale = layer.MaxScaleDenominator;
+      }
+      if (cfg.attributeLayers.hasOwnProperty(layerName)
+        && cfg.attributeLayers[layerName].hideLayer != "True"
+        && cfg.attributeLayers[layerName].pivot != "True") {
+        myObj.hasAttributeTable = true;
+      }
+      if (cfg.layers.hasOwnProperty(layerName)
+        && cfg.layers[layerName].abstract != "") {
+        myObj.tooltip = cfg.layers[layerName].abstract;
+      }
+      myArray.push(myObj);
     }
-    if(layer.hasOwnProperty('EX_GeographicBoundingBox')){
-      myObj.bbox = layer.EX_GeographicBoundingBox;
-    }
-    if(layer.hasOwnProperty('MinScaleDenominator') && layer.MinScaleDenominator !== undefined){
-      myObj.minScale = layer.MinScaleDenominator;
-    }
-    if(layer.hasOwnProperty('MaxScaleDenominator') && layer.MaxScaleDenominator !== undefined){
-      myObj.maxScale = layer.MaxScaleDenominator;
-    }
-    if(cfg.attributeLayers.hasOwnProperty(layerName) 
-      && cfg.attributeLayers[layerName].hideLayer != "True"
-      && cfg.attributeLayers[layerName].pivot != "True"){
-      myObj.hasAttributeTable = true;
-    }
-    if(cfg.layers.hasOwnProperty(layerName) 
-      && cfg.layers[layerName].abstract != ""){
-      myObj.tooltip = cfg.layers[layerName].abstract;
-    }
-    myArray.push(myObj);
+
     // Layer has children and is not a group as layer => folder
     if (layer.hasOwnProperty('Layer') && cfg.layers[layerName].groupAsLayer == 'False') {
         myObj.folder = true;
@@ -534,9 +537,13 @@ $(function() {
             if (result.hasOwnProperty('Capability')){
               var node = result.Capability;
 
-              // First layer is in fact project
               if (node.hasOwnProperty('Layer')) {
-                resolve(node.Layer.Layer);
+                // First layer is in fact project
+                if (node.Layer.hasOwnProperty('Layer')) {
+                  resolve(node.Layer.Layer);
+                } else { // Should not happen
+                  resolve(node.Layer);
+                }
               }
             }else{
               resolve(false);
