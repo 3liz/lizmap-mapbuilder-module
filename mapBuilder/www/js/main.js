@@ -286,6 +286,15 @@ $(function() {
     return zoomToOriginControl;
   }(Control));
 
+  // Hide header if h=0 in URL
+  const url = new URL(window.location.href);
+  if (url.searchParams.get('h') === '0'){
+    document.getElementById('header').style.display = "none";
+    document.getElementById('map').style.paddingTop = 0;
+    document.getElementById('mapmenu').style.paddingTop = 0;
+    document.getElementById('dock').style.top = 0;
+  }
+
   mapBuilder.map = new Map({
     target: 'map',
     controls: defaultControls({
