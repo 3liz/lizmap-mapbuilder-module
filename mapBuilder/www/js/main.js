@@ -18,12 +18,12 @@ import {getWidth} from 'ol/extent.js';
 
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
 import ImageWMS from 'ol/source/ImageWMS.js';
-import {transformExtent, Projection, fromLonLat, get as getProjection} from 'ol/proj.js';
+import {transformExtent, get as getProjection} from 'ol/proj.js';
 
-import {defaults as defaultInteractions, DragZoom} from 'ol/interaction.js';
+import {DragZoom} from 'ol/interaction.js';
 import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from 'ol/events/condition.js';
 
-import * as bottomDock from './modules/bottom-dock.js';
+import './modules/bottom-dock.js';
 
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
@@ -681,7 +681,7 @@ $(function() {
         nodeColumnIdx: 0     // render the node title into the first column
       },
       dnd5: {
-          dragStart: function(node, data) {
+          dragStart: function() {
             return true;
           },
           dragDrop: function(node, data) {
@@ -702,7 +702,7 @@ $(function() {
             // Refresh legends
             loadLegend();
           },
-          dragEnter: function(node, data) {
+          dragEnter: function() {
             // Don't allow dropping *over* a node (would create a child). Just
             // allow changing the order:
             return ["before", "after"];
@@ -1069,12 +1069,12 @@ $(function() {
   }
 
   // Open/Close dock behaviour
-  $('#dock-close > button').on("click", function(e){
+  $('#dock-close > button').on("click", function(){
     $('#mapmenu .dock').removeClass('active');
     $("#dock").hide();
   });
 
-  $('#mapmenu .nav-link').on('shown.bs.tab', function (e) {
+  $('#mapmenu .nav-link').on('shown.bs.tab', function() {
     $("#dock").show();
   });
 
