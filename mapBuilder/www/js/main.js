@@ -941,7 +941,9 @@ $(function() {
       });
 
       // Handle close tabs
-      $('#attributeLayersTabs .fa-times').on('click', function () {
+      $('#attributeLayersTabs .fa-times').on('click', function (e) {
+        e.preventDefault();
+
         var isActiveTab = $(this).closest('a').hasClass('active');
         var previousTab = $(this).closest('li').prev();
         var nextTab = $(this).closest('li').next();
