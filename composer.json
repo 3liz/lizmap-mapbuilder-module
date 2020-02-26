@@ -4,7 +4,7 @@
     "description": "Jelix module for Lizmap, which adds a map builder based on every repositories",
     "keywords": ["module", "jelix", "lizmap", "builder"],
     "homepage": "https://3liz.com",
-    "license": "Mozilla Public License 2.0 (MPL 2.0)",
+    "license": "MPL-2.0",
     "authors": [
         {
             "name": "Nicolas Boisteault",
