@@ -4,7 +4,7 @@
 * @package   lizmap
 * @subpackage mapBuilder
 * @author    3liz
-* @copyright 2019 3liz
+* @copyright 2019-2020 3liz
 * @link      https://3liz.com
 * @license    Mozilla Public License : http://www.mozilla.org/MPL/
  */

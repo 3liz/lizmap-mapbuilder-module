@@ -3,9 +3,9 @@
 * @package   lizmap
 * @subpackage mapBuilderAdmin
 * @author    your name
-* @copyright 2011-2018 3liz
+* @copyright 2018-2020 3liz
 * @link      http://3liz.com
-* @license    All rights reserved
+* @license    Mozilla Public License : http://www.mozilla.org/MPL/
 */
 
 class defaultCtrl extends jController {

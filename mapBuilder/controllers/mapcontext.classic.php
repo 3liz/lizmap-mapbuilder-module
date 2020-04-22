@@ -3,9 +3,9 @@
 * @package   lizmap
 * @subpackage mapBuilder
 * @author    3liz
-* @copyright 2011-2018 3liz
+* @copyright 2018-2020 3liz
 * @link      http://3liz.com
-* @license    All rights reserved
+* @license    Mozilla Public License : http://www.mozilla.org/MPL/
 */
 
 class mapcontextCtrl extends jController {
@@ -35,12 +35,12 @@ class mapcontextCtrl extends jController {
 
             // Access control
             $record->is_public = false;
-            
+
             if(jAcl2::check('mapBuilder.mapcontext.public.manage')){
                 $record->is_public = $this->param('is_public');
             }
             $record->mapcontext = $this->param('mapcontext');
-            
+
             // Save the new mapcontext
             $id = Null;
             try{
@@ -138,5 +138,5 @@ class mapcontextCtrl extends jController {
             return $rep;
         }
     }
-    
+
 }

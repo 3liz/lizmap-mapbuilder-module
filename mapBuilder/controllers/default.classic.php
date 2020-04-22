@@ -3,7 +3,7 @@
 * @package   lizmap
 * @subpackage mapBuilder
 * @author    3liz
-* @copyright 2011-2019 3liz
+* @copyright 2018-2020 3liz
 * @link      http://3liz.com
 * @license   Mozilla Public License : http://www.mozilla.org/MPL/
 */
@@ -75,7 +75,7 @@ class defaultCtrl extends jController {
         }else{
             $repositoryList = lizmap::getRepositoryList();
         }
-        
+
         foreach ($repositoryList as $repositoryName) {
             $repository = lizmap::getRepository($repositoryName);
             if( jAcl2::check('lizmap.repositories.view', $repository->getKey() )){
