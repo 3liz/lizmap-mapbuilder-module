@@ -7,12 +7,12 @@
     "watch": "webpack --watch --config webpack.dev.js"
   },
   "devDependencies": {
-    "webpack": "^4.41.5",
+    "webpack": "^4.43.0",
     "webpack-command": "^0.5.0",
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
     "jspdf": "^1.5.3",
-    "ol": "^6.1.1"
+    "ol": "^6.3.1"
   }
 }
