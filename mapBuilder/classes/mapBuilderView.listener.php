@@ -47,7 +47,7 @@ class mapBuilderViewListener extends jEventListener{
                 }
             }
             
-            $illustration = jApp::urlBasePath().'themes/'.jApp::config()->theme.'/css/img/250x250_mappemonde.png';
+            $illustration = jApp::urlBasePath().'themes/'.jApp::config()->theme.'/css/img/250x250_mappemonde.jpg';
 
             jClasses::inc('lizmapMainViewItem');
             $mrep = new lizmapMainViewItem('_map_builder_rep', $name);
