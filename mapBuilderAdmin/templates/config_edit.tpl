@@ -1,4 +1,3 @@
-{meta_html css $j_basepath.'mapBuilder/css/ol.css'}
 {meta_html js $j_basepath.'mapBuilder/js/mapbuilderadmin.js'}
 
 {jmessage_bootstrap}

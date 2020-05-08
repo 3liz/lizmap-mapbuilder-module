@@ -12,6 +12,14 @@ module.exports = {
     chunkFilename: '[name].bundle.js',
     filename: '[name].js'
   },
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
+  },
   externals: {
       jquery: 'jQuery'
     },

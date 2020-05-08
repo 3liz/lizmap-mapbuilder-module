@@ -3,6 +3,8 @@ __webpack_public_path__ = lizUrls.basepath+'mapBuilder/js/';
 
 import $ from 'jquery';
 
+import 'ol/ol.css';
+
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import {defaults as defaultControls, Control, ScaleLine} from 'ol/control.js';

@@ -192,7 +192,10 @@ span.fancytree-drag-source.fancytree-drag-remove {
 .hide{display: none;}
 
 /* Controls OL */
-.ol-zoom{left: unset;right: .5em;}
+.ol-zoom{
+    left: unset!important;
+    right: .5em!important;
+}
 
 .ol-drag-zoom {
 	top: 65px;
