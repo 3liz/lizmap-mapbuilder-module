@@ -9,6 +9,8 @@ You can have a look at our [map builder demo](https://demo.lizmap.com/mapbuilder
 
 ### Installation
 
+Unzip content in `lizmap/lizmap-modules/`
+
 Add this to `localconfig.ini.php` in `modules` section
 
 ```ini
