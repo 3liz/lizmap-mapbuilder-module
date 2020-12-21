@@ -142,7 +142,7 @@
           <tr>
             <td></td>
             <td class="changeOrder" title="{@mapBuilder~default.selection.order.change@}"></td>
-            <td class="deleteLayerButton" title="{@view~map.selectiontool.toolbar.action.type.minus@}"></td>
+            <td class="deleteLayerButton" title="{@view~dictionnary.selectiontool.toolbar.action.type.minus@}"></td>
             <td class="toggleVisibilityButton" title="{@view~dictionnary.tree.button.checkbox@}"></td>
             <td class="zoomToExtentButton" title="{@view~map.switcher.layer.zoomToExtent.title@}"></td>
             {if $attributeTableTool}

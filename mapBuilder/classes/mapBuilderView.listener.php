@@ -55,6 +55,7 @@ class mapBuilderViewListener extends jEventListener{
                 'map_builder',
                 $access,
                 $description,
+                '',
                 'EPSG:3857',
                 $extent,
                 jUrl::get('mapBuilder~default:index'),

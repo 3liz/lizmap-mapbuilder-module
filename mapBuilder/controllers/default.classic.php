@@ -31,7 +31,7 @@ class defaultCtrl extends jController {
 
         $rep->metaViewport = 'initial-scale=1.0, user-scalable=no, width=device-width, shrink-to-fit=no';
         // Assets
-        $rep->addCSSLink(jApp::urlBasePath().'css/main.css');
+        $rep->addCSSLink(jApp::urlBasePath().'assets/css/main.css');
         $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/css/fontawesome-free-web/css/all.min.css');
         $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/css/bootstrap.min.css');
         $rep->addCSSLink(jApp::urlBasePath().'mapBuilder/css/main.css');
