@@ -9,6 +9,9 @@ You can have a look at our [map builder demo](https://demo.lizmap.com/mapbuilder
 
 ### Installation
 
+* MapBuilder 2.0.0 is compatible with Lizmap Web Client >= 3.4.x
+* MapBuilder 1.1.x is compatible with Lizmap Web Client < 3.4 and >= 3.2.x
+
 Unzip content in `lizmap/lizmap-modules/`
 
 Add this to `localconfig.ini.php` in `modules` section
