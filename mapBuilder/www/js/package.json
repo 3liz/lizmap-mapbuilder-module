@@ -10,7 +10,7 @@
     "css-loader": "^3.5.3",
     "style-loader": "^1.2.1",
     "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.11",
+    "webpack-cli": "^4.2.0",
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
