@@ -9,45 +9,45 @@ export default $(function() {
     //   lizBottomDockTimeHoverIn = lizMap.config.options.bottomDockTimeHoverIn;
 
     $('#bottom-dock').hover(
-      // hover in
-      function() {
-        if(lizBottomDockTimer) {
-            clearTimeout(lizBottomDockTimer);
-            lizBottomDockTimer = null;
+        // hover in
+        function() {
+            if(lizBottomDockTimer) {
+                clearTimeout(lizBottomDockTimer);
+                lizBottomDockTimer = null;
+            }
+            $(this).removeClass('half-transparent');
+            lizBottomDockTimer = setTimeout(function() {
+                showBottomDockContent();
+                return false;
+            }, lizBottomDockTimeHoverIn);
+        },
+        // mouse out
+        function(){
+            if(lizBottomDockTimer) {
+                clearTimeout(lizBottomDockTimer);
+                lizBottomDockTimer = null;
+            }
+            $(this).addClass('half-transparent');
+            lizBottomDockTimer = setTimeout(function() {
+                // if ( !bottomDockGlued &&!lizMap.checkMobile()){
+                hideBottomDockContent();
+                // }
+                return false;
+            }, lizBottomDockTimeHoverOut);
         }
-        $(this).removeClass('half-transparent');
-        lizBottomDockTimer = setTimeout(function() {
-          showBottomDockContent();
-          return false;
-        }, lizBottomDockTimeHoverIn);
-      },
-      // mouse out
-      function(){
-        if(lizBottomDockTimer) {
-            clearTimeout(lizBottomDockTimer);
-            lizBottomDockTimer = null;
-        }
-        $(this).addClass('half-transparent');
-        lizBottomDockTimer = setTimeout(function() {
-          // if ( !bottomDockGlued &&!lizMap.checkMobile()){
-            hideBottomDockContent();
-          // }
-          return false;
-        }, lizBottomDockTimeHoverOut);
-      }
     );
 
     function showBottomDockContent(){
-      $('#bottom-dock').addClass('visible');
-      return false;
+        $('#bottom-dock').addClass('visible');
+        return false;
     }
     function hideBottomDockContent(){
-      $('#bottom-dock').removeClass('visible').focus();
-      return false;
+        $('#bottom-dock').removeClass('visible').focus();
+        return false;
     }
 
     $('#hideBottomDock').on("click", function(){
-      $('#bottom-dock').hide();
-      $('.bottom-dock').removeClass('active');
+        $('#bottom-dock').hide();
+        $('.bottom-dock').removeClass('active');
     });
 });

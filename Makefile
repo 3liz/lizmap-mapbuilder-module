@@ -1,2 +1,5 @@
 eslint:
-	npx eslint adresse/
+	npx eslint mapBuilder/
+
+eslint-fix:
+	npx eslint --fix mapBuilder/
