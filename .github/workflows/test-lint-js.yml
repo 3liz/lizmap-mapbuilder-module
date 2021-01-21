@@ -1,0 +1,23 @@
+name: Tests 🎳
+
+on:
+  push:
+#    paths:
+#      - '**.js'
+  pull_request:
+#    paths:
+#      - '**.js'
+
+jobs:
+  eslint:
+    name: "ESLint"
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Install modules
+      run: npm install
+
+    - name: Run ESLint
+      run: npx eslint mapBuilder/

@@ -1,0 +1,2 @@
+eslint:
+	npx eslint adresse/
