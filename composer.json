@@ -21,11 +21,6 @@
                 "mapBuilderAdmin/"
             ],
             "autoconfig-access-16" : {
-                "__any_app" : {
-                    "<modulename>": {
-                        "__global": 1
-                    }
-                },
                 "lizmap/lizmap-web-client" : {
                     "mapBuilder": {
                         "__global": 1,
