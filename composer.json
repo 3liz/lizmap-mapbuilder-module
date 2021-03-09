@@ -21,7 +21,7 @@
                 "mapBuilderAdmin/"
             ],
             "autoconfig-access-16" : {
-                "lizmap/lizmap-web-client" : {
+                "lizmap@3liz.com" : {
                     "mapBuilder": {
                         "__global": 1,
                         "index" : 2
