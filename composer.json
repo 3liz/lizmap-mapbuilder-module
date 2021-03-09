@@ -2,7 +2,7 @@
     "name": "lizmap/lizmap-mapbuilder-module",
     "type": "jelix-module",
     "description": "Jelix module for Lizmap, which adds a map builder based on every repositories",
-    "keywords": ["module", "jelix", "lizmap", "builder"],
+    "keywords": ["module", "jelix", "lizmap", "builder", "gis", "maps"],
     "homepage": "https://3liz.com",
     "license": "MPL-2.0",
     "authors": [
@@ -19,7 +19,23 @@
             "modules": [
                 "mapBuilder/",
                 "mapBuilderAdmin/"
-            ]
+            ],
+            "autoconfig-access-16" : {
+                "__any_app" : {
+                    "<modulename>": {
+                        "__global": 1
+                    }
+                },
+                "lizmap/lizmap-web-client" : {
+                    "mapBuilder": {
+                        "__global": 1,
+                        "index" : 2
+                    },
+                    "mapBuilderAdmin": {
+                        "admin" : 2
+                    }
+                }
+            }
         }
     }
 }
