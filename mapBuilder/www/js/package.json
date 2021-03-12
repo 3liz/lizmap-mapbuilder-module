@@ -14,7 +14,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.3.1",
     "ol": "^6.3.1"
   }
 }
