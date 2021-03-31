@@ -9,26 +9,30 @@ You can have a look at our [map builder demo](https://demo.lizmap.com/mapbuilder
 
 ### Installation
 
-Unzip content in `lizmap/lizmap-modules/`
+* Download the zip archive from the [release page into github](https://github.com/3liz/lizmap-mapbuilder-module/releases).
+* Extract files from the archive and copy directories `mapBuilder` and `mapBuilderAdmin` into `lizmap/lizmap-modules/` of Lizmap.
+* Edit the following files from  `lizmap/var/config/`:
 
-Add this to `localconfig.ini.php` in `modules` section
+Add this to `localconfig.ini.php` into the `[modules]` section
 
 ```ini
 mapBuilder.access=1
 mapBuilderAdmin.access=1
 ```
 
-Add this to `index/config.ini.php` in `modules` section
+Add this to `index/config.ini.php` into the `[modules]` section
 
 ```ini
+
 mapBuilder.access=2
 ```
 
-Add this to `admin/config.ini.php` in `modules` section
+Add this to `admin/config.ini.php` into the `[modules]` section
 
 ```ini
 mapBuilderAdmin.access=2
 ```
+
 
 Then execute Lizmap install scripts
 

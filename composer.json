@@ -19,7 +19,19 @@
             "modules": [
                 "mapBuilder/",
                 "mapBuilderAdmin/"
-            ]
+            ],
+            "autoconfig-access-16" : {
+                "lizmap@3liz.com" : {
+                    "mapBuilder": {
+                        "__global": 1,
+                        "index" : 2
+                    },
+                    "mapBuilderAdmin": {
+                        "__global": 1,
+                        "admin" : 2
+                    }
+                }
+            }
         }
     }
 }
