@@ -27,6 +27,7 @@
                         "index" : 2
                     },
                     "mapBuilderAdmin": {
+                        "__global": 1,
                         "admin" : 2
                     }
                 }
