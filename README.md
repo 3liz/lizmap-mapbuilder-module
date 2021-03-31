@@ -7,6 +7,10 @@ You can have a look at our [map builder demo](https://demo.lizmap.com/mapbuilder
 * Local Urbanism Plan project
 * Combine these two projects into a single one using the Map Builder
 
+
+This version is working only with Lizmap 3.3. To use MapBuilder with Lizmap 3.4,
+Use mapBuilder 2.0 or higher.
+
 ### Installation
 
 * Download the zip archive from the [release page into github](https://github.com/3liz/lizmap-mapbuilder-module/releases).
