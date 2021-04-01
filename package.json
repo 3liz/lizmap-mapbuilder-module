@@ -1,0 +1,22 @@
+{
+  "name": "lizmap-mapbuilder-module",
+  "version": "1.0.0",
+  "description": "![demo](demo.jpg \"3Liz Map Builder\")",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3liz/lizmap-mapbuilder-module.git"
+  },
+  "author": "3liz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/3liz/lizmap-mapbuilder-module/issues"
+  },
+  "homepage": "https://github.com/3liz/lizmap-mapbuilder-module#readme",
+  "dependencies": {
+    "eslint": "^7.18.0"
+  }
+}

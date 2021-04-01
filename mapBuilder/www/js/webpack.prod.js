@@ -1,31 +1,31 @@
 const webpack = require('webpack');
 
 module.exports = {
-  mode: 'production',
-  devtool: 'source-map',
-  entry: {
-    mapbuilder: './main.js',
-    mapbuilderadmin: './mainadmin.js'
-  },
-  output: {
-    path: __dirname+'/dist/',
-    chunkFilename: '[name].bundle.js',
-    filename: '[name].js'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      },
-    ],
-  },
-  externals: {
-      jquery: 'jQuery'
+    mode: 'production',
+    devtool: 'source-map',
+    entry: {
+        mapbuilder: './main.js',
+        mapbuilderadmin: './mainadmin.js'
     },
-  plugins: [
-    new webpack.DefinePlugin({
-      PRODUCTION: JSON.stringify(true)
-    })
-  ]
+    output: {
+        path: __dirname+'/dist/',
+        chunkFilename: '[name].bundle.js',
+        filename: '[name].js'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
+            },
+        ],
+    },
+    externals: {
+        jquery: 'jQuery'
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            PRODUCTION: JSON.stringify(true)
+        })
+    ]
 };
