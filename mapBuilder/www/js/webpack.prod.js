@@ -16,7 +16,10 @@ module.exports = {
     ],
   },
   externals: {
-      jquery: 'jQuery'
+      jquery: 'jQuery',
+      canvg: "canvg",
+      html2canvas: "html2canvas",
+      dompurify: "dompurify"
     },
   plugins: [
     new webpack.DefinePlugin({
