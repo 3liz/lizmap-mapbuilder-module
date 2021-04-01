@@ -7,11 +7,6 @@ module.exports = {
     mapbuilder: './main.js',
     mapbuilderadmin: './mainadmin.js'
   },
-  output: {
-    path: __dirname+'/dist/',
-    chunkFilename: '[name].bundle.js',
-    filename: '[name].js'
-  },
   module: {
     rules: [
       {
