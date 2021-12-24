@@ -83,7 +83,7 @@ class defaultCtrl extends jController {
                 $projectArray = array();
                 foreach ($projects as $project) {
                     $projectArray[] = [
-                        "title" => $project->getData('title'),
+                        "title" => $project->getData('title'), // deprecated, use getTitle() for lizmap >=3.5
                         "folder" => true,
                         "lazy" => true,
                         "repository" => $repositoryName,
@@ -92,7 +92,7 @@ class defaultCtrl extends jController {
                 }
 
                 $nestedTree[] = [
-                    "title" => $repository->getData('label'),
+                    "title" => $repository->getData('label'), // deprecated, use getLabel() for lizmap >=3.5
                     "folder" => true,
                     "children" => $projectArray
                 ];
