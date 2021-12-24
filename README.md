@@ -7,7 +7,7 @@ You can have a look at our [map builder demo](https://demo.lizmap.com/mapbuilder
 * Local Urbanism Plan project
 * Combine these two projects into a single one using the Map Builder
 
-* MapBuilder 2.0.0 is compatible with Lizmap Web Client >= 3.4.x
+* MapBuilder 2.0.0 is compatible with Lizmap Web Client 3.4 and 3.5
 * MapBuilder 1.1.x is compatible with Lizmap Web Client 3.3 and 3.2
 
 ## Installation
