@@ -23,6 +23,13 @@ class defaultCtrl extends jController {
 
         $rep = $this->getResponse('html', true);// true désactive le template général
 
+        $configFile = jApp::configPath('mapBuilder.ini.php');
+        if (!file_exists($configFile)) {
+            $rep = $this->getResponse('basichtml', true);
+            $rep->addContent('<p>MapBuilder is not configured correctly. Its configuration file is missing.</p>');
+            return $rep;
+        }
+
         // Get lizmap services
         $services = lizmap::getServices();
 
@@ -61,7 +68,7 @@ class defaultCtrl extends jController {
         $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/mapbuilder.js');
 
         // Read mapBuilder configuration
-        $readConfigPath = parse_ini_file(jApp::configPath('mapBuilder.ini.php'), True);
+        $readConfigPath = parse_ini_file($configFile, True);
 
         // Build repository + project tree for FancyTree
         $nestedTree = array();
