@@ -1,5 +1,8 @@
 # MapBuilder module
 
+[![Release 🚀](https://github.com/3liz/lizmap-mapbuilder-module/actions/workflows/release.yml/badge.svg)](https://github.com/3liz/lizmap-mapbuilder-module/actions/workflows/release.yml)
+[![Packagist](https://img.shields.io/packagist/v/lizmap/lizmap-mapbuilder-module)](https://packagist.org/packages/lizmap/lizmap-mapbuilder-module)
+
 ![demo](demo.jpg "3Liz Map Builder")
 
 You can have a look at our [map builder demo](https://demo.lizmap.com/mapbuilder/).
@@ -17,9 +20,9 @@ with [Composer](https://getcomposer.org), the package manager for PHP.
 If you can't use it or if you are using Lizmap 3.3 or lower, use the manual way to
 install the module (jump to the corresponding section below)
 
-### Automatic install with Composer and lizmap 3.4 or higher
+### Automatic installation with Composer and lizmap 3.4 or higher
 
-* into `lizmap/my-packages`, create the file `composer.json` (if it doesn't exists)
+* into `lizmap/my-packages`, create the file `composer.json` (if it doesn't exist)
   by copying the file `composer.json.dist`, and install the modules with Composer:
 
 ```bash
@@ -40,7 +43,7 @@ php lizmap/install/installer.php
 
 ### Manual installation into lizmap 3.3 or 3.4 without Composer
 
-* Download the zip archive from the [release page into github](https://github.com/3liz/lizmap-mapbuilder-module/releases).
+* Download the zip archive from the [release page into GitHub](https://github.com/3liz/lizmap-mapbuilder-module/releases).
 * Extract files from the archive and copy directories `mapBuilder` and `mapBuilderAdmin` into `lizmap/lizmap-modules/` of Lizmap.
 * Edit the following files from  `lizmap/var/config/`:
 
@@ -54,7 +57,6 @@ mapBuilderAdmin.access=1
 Add this to `index/config.ini.php` into the `[modules]` section
 
 ```ini
-
 mapBuilder.access=2
 ```
 
@@ -73,6 +75,3 @@ php lizmap/install/installer.php
 ```
 
 * Go to the administration of Lizmap with your browser to configure mapBuilder
-
-
-
