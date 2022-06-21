@@ -10,7 +10,7 @@ You can have a look at our [map builder demo](https://demo.lizmap.com/mapbuilder
 * Local Urbanism Plan project
 * Combine these two projects into a single one using the Map Builder
 
-* MapBuilder 2.0.0 is compatible with Lizmap Web Client 3.4 and 3.5
+* MapBuilder 2.0.0 is compatible with Lizmap Web Client 3.4, 3.5 and experimentaly with Lizmap 3.6
 * MapBuilder 1.1.x is compatible with Lizmap Web Client 3.3 and 3.2
 
 ## Installation
@@ -31,6 +31,14 @@ composer require --working-dir=lizmap/my-packages "lizmap/lizmap-mapbuilder-modu
 ```
 
 * Then execute Lizmap install scripts into `lizmap/install/` :
+
+With Lizmap 3.6 and higher, first execute:
+
+```bash
+php lizmap/install/configure.php
+```
+
+then, for Lizmap 3.4 and higher:
 
 ```bash
 php lizmap/install/installer.php

@@ -8,7 +8,9 @@
 * @license    Mozilla Public License : http://www.mozilla.org/MPL/
 */
 
-
+/**
+ * @deprecated for Lizmap 3.4/3.5 only
+ */
 class mapBuilderAdminModuleInstaller extends jInstallerModule {
 
     function install() {
