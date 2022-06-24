@@ -30,20 +30,21 @@ cp -n lizmap/my-packages/composer.json.dist lizmap/my-packages/composer.json
 composer require --working-dir=lizmap/my-packages "lizmap/lizmap-mapbuilder-module"
 ```
 
-* Then execute Lizmap install scripts into `lizmap/install/` :
+* Then go into `lizmap/install/` and execute Lizmap install scripts :
 
 With Lizmap 3.6 and higher, first execute:
 
 ```bash
-php lizmap/install/configure.php
+php configure.php mapBuilder
+php configure.php mapBuilderAdmin
 ```
 
-then, for Lizmap 3.4 and higher:
+then, for Lizmap 3.4, 3.5, 3.6 and higher:
 
 ```bash
-php lizmap/install/installer.php
-./lizmap/install/clean_vartmp.sh
-./lizmap/install/set_rights.sh
+php installer.php
+./clean_vartmp.sh
+./set_rights.sh
 ```
 
 * Go to the administration of Lizmap with your browser to configure mapBuilder
@@ -77,9 +78,9 @@ mapBuilderAdmin.access=2
 * Then execute Lizmap install scripts into `lizmap/install/` :
 
 ```bash
-php lizmap/install/installer.php
-./lizmap/install/clean_vartmp.sh
-./lizmap/install/set_rights.sh
+php installer.php
+./clean_vartmp.sh
+./set_rights.sh
 ```
 
 * Go to the administration of Lizmap with your browser to configure mapBuilder
