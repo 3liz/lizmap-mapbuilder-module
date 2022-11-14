@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+* The module is compatible with Lizmap 3.6
+
 ### Fixed
 
 * Check the existence of the configuration file 
