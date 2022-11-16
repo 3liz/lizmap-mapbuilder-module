@@ -20,11 +20,11 @@ class mapBuilderModuleInstaller extends  \Jelix\Installer\Module\Installer
         $helpers->database()->useDbProfile('auth');
 
         // Add rights group
-        jAcl2DbManager::addSubjectGroup ('mapBuilder.subject.group', 'mapBuilder~default.acl.subject.group.name');
+        jAcl2DbManager::createRightGroup('mapBuilder.subject.group', 'mapBuilder~default.acl.subject.group.name');
 
         // Add right subject
-        jAcl2DbManager::addSubject( 'mapBuilder.access', 'mapBuilder~default.acl.subject.access.name', 'mapBuilder.subject.group');
-        jAcl2DbManager::addSubject( 'mapBuilder.mapcontext.public.manage', 'mapBuilder~default.acl.subject.mapcontext.public.manage', 'mapBuilder.subject.group');
+        jAcl2DbManager::createRight('mapBuilder.access', 'mapBuilder~default.acl.subject.access.name', 'mapBuilder.subject.group');
+        jAcl2DbManager::createRight('mapBuilder.mapcontext.public.manage', 'mapBuilder~default.acl.subject.mapcontext.public.manage', 'mapBuilder.subject.group');
 
         // Add rights on group admins
         jAcl2DbManager::addRight('admins', 'mapBuilder.access');
