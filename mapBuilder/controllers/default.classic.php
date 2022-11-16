@@ -23,7 +23,7 @@ class defaultCtrl extends jController {
 
         $rep = $this->getResponse('html', true);// true désactive le template général
 
-        $configFile = jApp::configPath('mapBuilder.ini.php');
+        $configFile = jApp::varconfigPath('mapBuilder.ini.php');
         if (!file_exists($configFile)) {
             $rep = $this->getResponse('basichtml', true);
             $rep->addContent('<p>MapBuilder is not configured correctly. Its configuration file is missing.</p>');
