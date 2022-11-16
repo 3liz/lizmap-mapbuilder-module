@@ -27,7 +27,7 @@ install the module (jump to the corresponding section below)
 
 ```bash
 cp -n lizmap/my-packages/composer.json.dist lizmap/my-packages/composer.json
-composer require --working-dir=lizmap/my-packages "lizmap/lizmap-mapbuilder-module"
+composer require --working-dir=lizmap/my-packages "lizmap/lizmap-mapbuilder-module=2.0.*"
 ```
 
 * Then go into `lizmap/install/` and execute Lizmap install scripts :
@@ -43,7 +43,7 @@ php installer.php
 
 ### Manual installation into lizmap 3.3 or 3.4 without Composer
 
-* Download the zip archive from the [release page into GitHub](https://github.com/3liz/lizmap-mapbuilder-module/releases).
+* Download the zip archive of version 2.0 from the [release page into GitHub](https://github.com/3liz/lizmap-mapbuilder-module/releases).
 * Extract files from the archive and copy directories `mapBuilder` and `mapBuilderAdmin` into `lizmap/lizmap-modules/` of Lizmap.
 * Edit the following files from  `lizmap/var/config/`:
 
