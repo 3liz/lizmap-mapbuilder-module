@@ -19,7 +19,6 @@ class listBaseLayer implements jIFormsDatasource
       'bingStreets' => 'Bing Streets',
       'bingSatellite' => 'Bing Satellite',
       'bingHybrid' => 'Bing Hybrid',
-      'ignTerrain' => 'IGN Terrain',
       'ignStreets' => 'IGN Streets',
       'ignSatellite' => 'IGN Satellite',
       'ignCadastral' => 'IGN Cadastral',
