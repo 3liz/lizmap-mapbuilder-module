@@ -24,9 +24,9 @@ class configCtrl extends jController {
 
   function __construct( $request ) {
     parent::__construct( $request );
-    $monfichier = jApp::configPath('mapBuilder.ini.php');
-    $this->ini = new jIniFileModifier ($monfichier);
-  }
+        $monfichier = jApp::varconfigPath('mapBuilder.ini.php');
+        $this->ini = new \Jelix\IniFile\IniModifier($monfichier);
+    }
 
   /**
   * mapBuilder administration

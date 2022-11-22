@@ -17,7 +17,7 @@ class mapBuilderModuleUpgrader_toggleattributetable extends jInstallerModule {
 
     function install() {
         // Add new parameter in config file to toggle attribute table tool
-        $ini = new jIniFileModifier (jApp::configPath('mapBuilder.ini.php'));
+        $ini = new jIniFileModifier(jApp::varconfigPath('mapBuilder.ini.php'));
         $ini->setValue('attributeTableTool', 'true');
         $ini->save();
     }

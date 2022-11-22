@@ -12,7 +12,7 @@ class mapBuilderViewListener extends jEventListener{
             // Default extent is metropolitan France in EPSG:3857.
             $extent = '-517635.63,6742470.88,1013007.37,4957918.98';
             // Read mapBuilder configuration
-            $configFile = jApp::configPath('mapBuilder.ini.php');
+            $configFile = jApp::varconfigPath('mapBuilder.ini.php');
             if (!file_exists($configFile)) {
                 jLog::log('Configuration file mapBuilder.ini.php is missing', 'error');
                 return;

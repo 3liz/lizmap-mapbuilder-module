@@ -23,7 +23,6 @@ class mapBuilderModuleConfigurator extends \Jelix\Installer\Module\Configurator
         $helpers->copyDirectoryContent('../www/js/dist', \jApp::wwwPath('mapBuilder/js'));
 
         // Copy conf file
-        $helpers->copyDirectoryContent('conf', \jApp::configPath());
+        $helpers->copyDirectoryContent('conf', \jApp::varconfigPath());
     }
-
 }

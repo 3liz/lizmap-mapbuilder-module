@@ -9,6 +9,7 @@
  */
 use Jelix\Installer\Module\API\ConfigurationHelpers;
 use Jelix\Routing\UrlMapping\EntryPointUrlModifier;
+use Jelix\Routing\UrlMapping\MapEntry\MapInclude;
 
 class mapBuilderAdminModuleConfigurator extends \Jelix\Installer\Module\Configurator
 {
