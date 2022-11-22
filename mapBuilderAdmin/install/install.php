@@ -8,6 +8,9 @@
 * @license    Mozilla Public License : http://www.mozilla.org/MPL/
 */
 
+/**
+ * Installer for Lizmap 3.6+
+ */
 class mapBuilderAdminModuleInstaller extends \Jelix\Installer\Module\Installer
 {
     public function install(Jelix\Installer\Module\API\InstallHelpers $helpers)

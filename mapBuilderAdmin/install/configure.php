@@ -11,6 +11,9 @@ use Jelix\Installer\Module\API\ConfigurationHelpers;
 use Jelix\Routing\UrlMapping\EntryPointUrlModifier;
 use Jelix\Routing\UrlMapping\MapEntry\MapInclude;
 
+/**
+ * Configurator for Lizmap 3.6+
+ */
 class mapBuilderAdminModuleConfigurator extends \Jelix\Installer\Module\Configurator
 {
     public function getDefaultParameters()

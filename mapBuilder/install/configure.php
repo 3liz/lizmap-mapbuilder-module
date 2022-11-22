@@ -9,6 +9,9 @@
  */
 use Jelix\Installer\Module\API\ConfigurationHelpers;
 
+/**
+ * Configurator for Lizmap 3.6+
+ */
 class mapBuilderModuleConfigurator extends \Jelix\Installer\Module\Configurator
 {
     public function getDefaultParameters()
@@ -21,8 +24,5 @@ class mapBuilderModuleConfigurator extends \Jelix\Installer\Module\Configurator
         // Copy CSS and JS assets
         $helpers->copyDirectoryContent('../www/css', \jApp::wwwPath('mapBuilder/css'));
         $helpers->copyDirectoryContent('../www/js/dist', \jApp::wwwPath('mapBuilder/js'));
-
-        // Copy conf file
-        $helpers->copyDirectoryContent('conf', \jApp::varconfigPath());
     }
 }

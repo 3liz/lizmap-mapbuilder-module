@@ -8,6 +8,9 @@
 * @license   Mozilla Public License : http://www.mozilla.org/MPL/
 */
 
+/**
+ * @deprecated for Lizmap 3.4/3.5 only
+ */
 class mapBuilderModuleInstaller extends jInstallerModule {
 
     function install() {
@@ -16,7 +19,7 @@ class mapBuilderModuleInstaller extends jInstallerModule {
         $this->copyDirectoryContent('../www/js/dist', jApp::wwwPath('mapBuilder/js'));
 
         // Copy conf file
-        $this->copyDirectoryContent('conf', jApp::configPath());
+        $this->copyDirectoryContent('conf', jApp::varConfigPath());
 
         // SQL for map context
         if ($this->firstDbExec()) {
