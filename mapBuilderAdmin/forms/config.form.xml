@@ -33,10 +33,6 @@
       <label locale="mapBuilderAdmin~admin.form.baselayer.key.bing" />
     </input>
 
-    <input ref="baseLayerKeyIGN" type="string">
-      <label locale="mapBuilderAdmin~admin.form.baselayer.key.ign" />
-    </input>
-
     <checkbox ref="attributeTableTool">
       <label locale="mapBuilderAdmin~admin.form.attribute.isactive" />
     </checkbox>

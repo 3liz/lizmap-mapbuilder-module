@@ -320,23 +320,23 @@ $(function() {
 
   // baseLayer is set in mapBuilder.ini.php
   if(mapBuilder.hasOwnProperty('baseLayer')){
-    mapBuilder.baseLayer = mapBuilder.baseLayer.split(',');
+    const baseLayerNames = mapBuilder.baseLayer.split(',');
 
-    for (var i = 0; i < mapBuilder.baseLayer.length; i++) {
+    for (const baseLayerName of baseLayerNames) {
       var baseLayer = null;
-      if(mapBuilder.baseLayer[i] === 'osmMapnik'){
+      if(baseLayerName === 'osmMapnik'){
         baseLayer = new TileLayer({
           source: new OSM()
         });
       }
-      else if(mapBuilder.baseLayer[i] === 'osmStamenToner'){
+      else if(baseLayerName === 'osmStamenToner'){
         baseLayer = new TileLayer({
           source: new Stamen({
             layer: 'toner'
           })
         });
       }
-      else if(mapBuilder.baseLayer[i] === 'osmCyclemap'
+      else if(baseLayerName === 'osmCyclemap'
         && mapBuilder.hasOwnProperty('baseLayerKeyOSMCycleMap')){
         baseLayer = new TileLayer({
           source: new XYZ({
@@ -344,9 +344,9 @@ $(function() {
           })
         });
       }
-      else if((mapBuilder.baseLayer[i] === 'bingStreets'
-        || mapBuilder.baseLayer[i] === 'bingSatellite'
-        || mapBuilder.baseLayer[i] === 'bingHybrid')
+      else if((baseLayerName === 'bingStreets'
+        || baseLayerName === 'bingSatellite'
+        || baseLayerName === 'bingHybrid')
         && mapBuilder.hasOwnProperty('baseLayerKeyBing')){
         var bingMapsCorrespondance = {
           'bingStreets' : 'Road',
@@ -358,27 +358,38 @@ $(function() {
           preload: Infinity,
           source: new BingMaps({
             key: mapBuilder.baseLayerKeyBing,
-            imagerySet: bingMapsCorrespondance[mapBuilder.baseLayer[i]]
+            imagerySet: bingMapsCorrespondance[baseLayerName]
           })
         });
       }
-      else if((mapBuilder.baseLayer[i] === 'ignTerrain'
-        || mapBuilder.baseLayer[i] === 'ignStreets'
-        || mapBuilder.baseLayer[i] === 'ignSatellite'
-        || mapBuilder.baseLayer[i] === 'ignCadastral')
-        && mapBuilder.hasOwnProperty('baseLayerKeyIGN')){
+      else if((baseLayerName === 'ignTerrain'
+        || baseLayerName === 'ignStreets'
+        || baseLayerName === 'ignSatellite'
+        || baseLayerName === 'ignCadastral')){
         var ignCorrespondance = {
-          'ignTerrain' : 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
-          'ignStreets' : 'GEOGRAPHICALGRIDSYSTEMS.PLANIGN',
-          'ignSatellite' : 'ORTHOIMAGERY.ORTHOPHOTOS',
-          'ignCadastral' : 'CADASTRALPARCELS.PARCELS'
+          ignStreets : 'GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2',
+          ignSatellite : 'ORTHOIMAGERY.ORTHOPHOTOS',
+          ignCadastral : 'CADASTRALPARCELS.PARCELLAIRE_EXPRESS'
         };
+
+        var ignImageFormat = {
+          ignStreets : 'image/png',
+          ignSatellite : 'image/jpeg',
+          ignCadastral : 'image/png'
+        };
+
+        var ignZoomLevels = {
+          ignStreets : 20,
+          ignSatellite : 22,
+          ignCadastral : 20
+        };
+
         var resolutions = [];
         var matrixIds = [];
         var proj3857 = getProjection('EPSG:3857');
         var maxResolution = getWidth(proj3857.getExtent()) / 256;
 
-        for (var i = 0; i < 18; i++) {
+        for (var i = 0; i < ignZoomLevels[baseLayerName]; i++) {
           matrixIds[i] = i.toString();
           resolutions[i] = maxResolution / Math.pow(2, i);
         }
@@ -390,32 +401,32 @@ $(function() {
         });
 
         var ign_source = new WMTS({
-          url: "https://gpp3-wxs.ign.fr/"+mapBuilder.baseLayerKeyIGN+"/wmts",
-          layer: ignCorrespondance[mapBuilder.baseLayer[i]],
+          url: "https://wxs.ign.fr/essentiels/geoportail/wmts",
+          layer: ignCorrespondance[baseLayerName],
           matrixSet: 'PM',
-          format: 'image/jpeg',
+          format: ignImageFormat[baseLayerName],
           projection: 'EPSG:3857',
           tileGrid: tileGrid,
           style: 'normal',
-          attributions: '<a href="http://www.geoportail.fr/" target="_blank">' +
-                '<img src="https://api.ign.fr/geoportail/api/js/latest/' +
-                'theme/geoportal/img/logo_gp.gif"></a>'
+          attributions: `<a href="https://www.ign.fr/" target="_blank">
+          <img src="https://wxs.ign.fr/static/logos/IGN/IGN.gif" 
+          title="Institut national de l'information géographique et forestière" alt="IGN"></a>`
         });
 
         baseLayer = new TileLayer({
           source: ign_source
         });
       }
-      else if(mapBuilder.baseLayer[i] === 'emptyBaselayer'){
+      else if(baseLayerName === 'emptyBaselayer'){
         baseLayer = new TileLayer({
         });
       }
 
       if(baseLayer){
-        var visibility = $("#baseLayerSelect").find(":selected").val() == mapBuilder.baseLayer[i] ? true : false;
+        var visibility = $("#baseLayerSelect").find(":selected").val() == baseLayerName ? true : false;
 
         baseLayer.setProperties({
-          title: mapBuilder.baseLayer[i],
+          title: baseLayerName,
           visible: visibility,
           baseLayer: true // Add baseLayer property to treat those layers differently
         });
