@@ -1,0 +1,4 @@
+.env
+lizmap/www/
+lizmap/var/
+lizmap/qgis-server-plugins
