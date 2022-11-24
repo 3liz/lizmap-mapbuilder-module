@@ -36,6 +36,8 @@ class defaultCtrl extends jController {
         $title = jLocale::get('mapBuilder~default.app.name');;
         $rep->title = $title;
 
+        $rep->favicon = jApp::urlBasePath().'assets/favicon/favicon.ico';
+
         $rep->metaViewport = 'initial-scale=1.0, user-scalable=no, width=device-width, shrink-to-fit=no';
         // Assets
         $rep->addCSSLink(jApp::urlBasePath().'assets/css/main.css');
