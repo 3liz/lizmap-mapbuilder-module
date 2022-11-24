@@ -24,17 +24,27 @@ Steps:
 
 For more information, refer to the [docker compose documentation](https://docs.docker.com/compose/)
 
-# Javascript build
+## Javascript build
 
 Javascript has to be built with webpack.
 
-## Development
+### Development
 
 Run `npm run watch` in `mapBuilder/www/js/` directory. Files will be built and put in `tests/lizmap/www/mapBuilder/js/`.
 
-## Production
+### Production
 
 When ready for production run `npm run build` in `mapBuilder/www/js/` directory. Files will be built and put in `mapBuilder/www/js/dist/`.
+
+## Add some demo projects
+
+```bash
+cd tests/instances
+git clone git@github.com:3liz/lizmap-web-client-demo.git
+cp -R lizmap-web-client-demo/*/* .
+```
+
+Limitation: only projects with files database will work currently. Others need sql to loaded in the docker container and the PG_SERVICE environment variable set.
 
 ## Access to the dockerized PostgreSQL instance
 
