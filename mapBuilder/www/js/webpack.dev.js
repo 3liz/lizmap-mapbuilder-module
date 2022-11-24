@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
   mode: 'development',
@@ -6,6 +7,10 @@ module.exports = {
   entry: {
     mapbuilder: './main.js',
     mapbuilderadmin: './mainadmin.js'
+  },
+  output: {
+    filename: '[name].js',
+    path : path.resolve(__dirname, '../../../tests/lizmap/www/mapBuilder/js'),
   },
   module: {
     rules: [

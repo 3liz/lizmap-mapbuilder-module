@@ -24,6 +24,18 @@ Steps:
 
 For more information, refer to the [docker compose documentation](https://docs.docker.com/compose/)
 
+# Javascript build
+
+Javascript has to be built with webpack.
+
+## Development
+
+Run `npm run watch` in `mapBuilder/www/js/` directory. Files will be built and put in `tests/lizmap/www/mapBuilder/js/`.
+
+## Production
+
+When ready for production run `npm run build` in `mapBuilder/www/js/` directory. Files will be built and put in `mapBuilder/www/js/dist/`.
+
 ## Access to the dockerized PostgreSQL instance
 
 You can access the docker PostgreSQL test database `lizmap` from your host by configuring a
