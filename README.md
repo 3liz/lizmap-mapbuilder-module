@@ -34,8 +34,8 @@ composer require --working-dir=lizmap/my-packages "lizmap/lizmap-mapbuilder-modu
 * Then go into `lizmap/install/` and execute Lizmap install scripts :
 
 ```bash
-php configure.php mapBuilder
-php configure.php mapBuilderAdmin
+php configurator.php mapBuilder
+php configurator.php mapBuilderAdmin
 php installer.php
 ./clean_vartmp.sh
 ./set_rights.sh
@@ -53,8 +53,8 @@ then execute previous commands from `lizmap/install/`.
 * Then execute Lizmap install scripts into `lizmap/install/` :
 
 ```bash
-php configure.php mapBuilder
-php configure.php mapBuilderAdmin
+php configurator.php mapBuilder
+php configurator.php mapBuilderAdmin
 php installer.php
 ./clean_vartmp.sh
 ./set_rights.sh
