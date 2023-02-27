@@ -5,11 +5,11 @@
         <label lang="en_US">mapBuilderAdmin</label>
         <description lang="en_US">Jelix module for Lizmap, administration of mapBuilder module</description>
         <license>Mozilla Public License 2.0</license>
-        <copyright>2020-2022 3liz</copyright>
+        <copyright>2020-2023 3liz</copyright>
         <creator name="Nicolas Boisteault" email="nboisteault@3liz.com" />
         <homepageURL>https://3liz.com</homepageURL>
     </info>
     <dependencies>
-        <module name="mapBuilder" minversion="2.1.0-beta.1" maxversion="2.1.*"/>
+        <module name="mapBuilder" minversion="2.1.0-beta.1" maxversion="2.*"/>
     </dependencies>
 </module>
