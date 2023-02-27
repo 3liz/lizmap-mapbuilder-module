@@ -4,6 +4,12 @@
 
 ### Added
 
+## 2.1.1 - 2023-02-27
+
+### Added
+
+* Increase required lizmap max version to 3.7
+
 ## 2.1.0 - 2022-12-15
 
 ### Added
