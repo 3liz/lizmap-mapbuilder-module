@@ -4,6 +4,12 @@
 
 ### Added
 
+## 2.1.2 - 2024-01-08
+
+### Fixed
+
+* errors while loading proj4Php for Lizmap > 3.7
+
 ## 2.1.1 - 2023-02-27
 
 ### Added
