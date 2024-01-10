@@ -21,15 +21,15 @@ class mapBuilderViewListener extends jEventListener{
             // Get original extent from ini file if set
             if(array_key_exists('extent', $readConfigPath)){
                 // Reproject extent in ini file from EPSG:4326 to EPSG:3857.
-                if (! class_exists('Proj4phpProj') ) {
-                    // proj4php > 2.0
+                if (class_exists('Proj4php') ) { // lizmap 3.6
+                    $proj4 = new \Proj4php();
+                    $sourceProj = new \Proj4phpProj('EPSG:4326', $proj4);
+                    $destProj = new \Proj4phpProj('EPSG:3857', $proj4);
+                } else {
+                    // proj4php > 2.0, lizmap 3.7+
                     $proj4 = new \proj4php\Proj4php();
                     $sourceProj = new \proj4php\Proj('EPSG:4326', $proj4);
                     $destProj = new \proj4php\Proj('EPSG:3857', $proj4);
-                } else {
-                    $proj4 = new Proj4php();
-                    $sourceProj = new Proj4Proj('EPSG:4326', $proj4);
-                    $destProj = new Proj4Proj('EPSG:3857', $proj4);
                 }
                 $extentArraySource = explode(",", $readConfigPath['extent']);
 
@@ -39,13 +39,13 @@ class mapBuilderViewListener extends jEventListener{
                     $extentArraySource = array_map('floatval', $extentArraySource);
 
                     // Handle WGS84 bounds
-                    if (! class_exists('Proj4phpPoint') ) {
-                        // proj4php >2.0
+                    if (class_exists('proj4phpPoint') ) { // lizmap 3.6
+                        $sourceMinPt = new \proj4phpPoint(max($extentArraySource[0], -180.0), max($extentArraySource[1], -85.06));
+                        $sourceMaxPt = new \proj4phpPoint(min($extentArraySource[2], 180.0), min($extentArraySource[3], 85.06));
+                    } else {
+                        // proj4php >2.0, lizmap 3.7+
                         $sourceMinPt = new \proj4php\Point(max($extentArraySource[0], -180.0), max($extentArraySource[1], -85.06));
                         $sourceMaxPt = new \proj4php\Point(min($extentArraySource[2], 180.0), min($extentArraySource[3], 85.06));
-                    } else {
-                        $sourceMinPt = new Proj4phpPoint(max($extentArraySource[0], -180.0), max($extentArraySource[1], -85.06));
-                        $sourceMaxPt = new Proj4phpPoint(min($extentArraySource[2], 180.0), min($extentArraySource[3], 85.06));
                     }
                     try {
                         $destMinPt = $proj4->transform($sourceProj,$destProj,$sourceMinPt);
