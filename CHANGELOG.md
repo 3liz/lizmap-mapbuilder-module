@@ -4,6 +4,13 @@
 
 ### Added
 
+## 2.1.3 - 2024-01-10
+
+### Fixed
+
+* fix latest bug: it was still there 
+
+
 ## 2.1.2 - 2024-01-08
 
 ### Fixed
