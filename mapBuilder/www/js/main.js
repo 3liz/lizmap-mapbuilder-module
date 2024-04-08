@@ -261,55 +261,7 @@ $(function() {
         // Refresh legends
         loadLegend();
     }
-
-    /*
-      var dragZoomControl = (function (Control) {
-        function dragZoomControl(opt_options) {
-          var options = opt_options || {};
-
-          var button = document.createElement('button');
-          button.className = 'fas fa-square';
-          button.title = lizDict['zoomrectangle'];
-
-          var element = document.createElement('div');
-          element.className = 'ol-drag-zoom ol-unselectable ol-control';
-          element.appendChild(button);
-
-          Control.call(this, {
-            element: element,
-            target: options.target
-          });
-
-          button.addEventListener('click', this.handleDragZoom.bind(this), false);
-        }
-
-        if ( Control ) dragZoomControl.__proto__ = Control;
-        dragZoomControl.prototype = Object.create( Control && Control.prototype );
-        dragZoomControl.prototype.constructor = dragZoomControl;
-
-        dragZoomControl.prototype.handleDragZoom = function handleDragZoom () {
-          if($(this.element).hasClass('active')){
-            $(this.element).removeClass('active');
-
-            this.getMap().getInteractions().forEach(function(interaction) {
-              if(interaction instanceof DragZoom){
-                interaction.condition_ = shiftKeyOnlyCondition;
-              }
-            });
-          }else{
-            $(this.element).addClass('active');
-
-            this.getMap().getInteractions().forEach(function(interaction) {
-              if(interaction instanceof DragZoom){
-                interaction.condition_ = alwaysCondition;
-              }
-            });
-          }
-        };
-
-        return dragZoomControl;
-      }(Control));
-    */
+    
     var dragZoomControl = class DragZoomControl extends Control {
         constructor(opt_options) {
             var options = opt_options || {};
@@ -350,41 +302,6 @@ $(function() {
             }
         }
     }
-    /*
-      var zoomToOriginControl = (function (Control) {
-        function zoomToOriginControl(opt_options) {
-          var options = opt_options || {};
-
-          var button = document.createElement('button');
-          button.className = 'fas fa-expand-arrows-alt';
-          button.title = lizDict['zoominitial'];
-
-          var element = document.createElement('div');
-          element.className = 'ol-zoom-origin ol-unselectable ol-control';
-          element.appendChild(button);
-
-          Control.call(this, {
-            element: element,
-            target: options.target
-          });
-
-          button.addEventListener('click', this.handleZoomToOrigin.bind(this), false);
-        }
-
-        if ( Control ) zoomToOriginControl.__proto__ = Control;
-        zoomToOriginControl.prototype = Object.create( Control && Control.prototype );
-        zoomToOriginControl.prototype.constructor = zoomToOriginControl;
-
-        zoomToOriginControl.prototype.handleZoomToOrigin = function handleZoomToOrigin () {
-          this.getMap().getView().setCenter(originalCenter);
-          this.getMap().getView().setZoom(originalZoom);
-        };
-
-        return zoomToOriginControl;
-      }(Control));
-
-      */
-
     var zoomToOriginControl = class ZoomToOriginControl extends Control {
 
         constructor(opt_options) {
