@@ -11,7 +11,7 @@ import {defaults as defaultControls, Control, ScaleLine} from 'ol/control.js';
 import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
 
 import OSM from 'ol/source/OSM.js';
-import Stamen from 'ol/source/Stamen.js';
+import StadiaMaps from 'ol/source/StadiaMaps.js';
 import XYZ from 'ol/source/XYZ.js';
 import BingMaps from 'ol/source/BingMaps.js';
 import WMTS from 'ol/source/WMTS.js';
@@ -208,7 +208,7 @@ $(function() {
       // Refresh legends
       loadLegend();
   }
-
+/*
   var dragZoomControl = (function (Control) {
     function dragZoomControl(opt_options) {
       var options = opt_options || {};
@@ -255,6 +255,47 @@ $(function() {
 
     return dragZoomControl;
   }(Control));
+*/
+  var dragZoomControl = class DragZoomControl extends Control {
+    constructor(opt_options) {
+      var options = opt_options || {};
+
+      var button = document.createElement('button');
+      button.className = 'fas fa-square';
+      button.title = lizDict['zoomrectangle'];
+
+      var element = document.createElement('div');
+      element.className = 'ol-drag-zoom ol-unselectable ol-control';
+      element.appendChild(button);
+
+      super({
+        element: element,
+        target: options.target,
+      });
+
+      button.addEventListener('click', this.handleDragZoom.bind(this), false);
+    }
+
+    handleDragZoom() {
+      if ($(this.element).hasClass('active')) {
+        $(this.element).removeClass('active');
+
+        this.getMap().getInteractions().forEach(function (interaction) {
+          if (interaction instanceof DragZoom) {
+            interaction.condition_ = shiftKeyOnlyCondition;
+          }
+        });
+      } else {
+        $(this.element).addClass('active');
+
+        this.getMap().getInteractions().forEach(function (interaction) {
+          if (interaction instanceof DragZoom) {
+            interaction.condition_ = alwaysCondition;
+          }
+        });
+      }
+    }
+  }
 
   var zoomToOriginControl = (function (Control) {
     function zoomToOriginControl(opt_options) {
@@ -331,7 +372,7 @@ $(function() {
       }
       else if(baseLayerName === 'osmStamenToner'){
         baseLayer = new TileLayer({
-          source: new Stamen({
+          source: new StadiaMaps({
             layer: 'toner'
           })
         });
