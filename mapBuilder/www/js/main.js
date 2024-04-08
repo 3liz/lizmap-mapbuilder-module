@@ -261,7 +261,7 @@ $(function() {
         // Refresh legends
         loadLegend();
     }
-    
+
     var dragZoomControl = class DragZoomControl extends Control {
         constructor(opt_options) {
             var options = opt_options || {};
@@ -283,8 +283,11 @@ $(function() {
         }
 
         handleDragZoom() {
-            if ($(this.element).hasClass('active')) {
-                $(this.element).removeClass('active');
+
+            var element = document.querySelector(".ol-drag-zoom.ol-unselectable.ol-control");
+
+            if (element.classList.contains('active')) {
+                element.classList.remove('active');
 
                 this.getMap().getInteractions().forEach(function (interaction) {
                     if (interaction instanceof DragZoom) {
@@ -292,7 +295,7 @@ $(function() {
                     }
                 });
             } else {
-                $(this.element).addClass('active');
+                element.classList.add('active');
 
                 this.getMap().getInteractions().forEach(function (interaction) {
                     if (interaction instanceof DragZoom) {
