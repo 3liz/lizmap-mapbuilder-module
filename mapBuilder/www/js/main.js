@@ -41,138 +41,191 @@ if (PRODUCTION) {
 
 $(function() {
 
-  function performCleanName(aName) {
-    var accentMap = {
-        "à": "a",    "á": "a",    "â": "a",    "ã": "a",    "ä": "a",    "ç": "c",    "è": "e",    "é": "e",    "ê": "e",    "ë": "e",    "ì": "i",    "í": "i",    "î": "i",    "ï": "i",    "ñ": "n",    "ò": "o",    "ó": "o",    "ô": "o",    "õ": "o",    "ö": "o",    "ù": "u",    "ú": "u",    "û": "u",    "ü": "u",    "ý": "y",    "ÿ": "y",
-        "À": "A",    "Á": "A",    "Â": "A",    "Ã": "A",    "Ä": "A",    "Ç": "C",    "È": "E",    "É": "E",    "Ê": "E",    "Ë": "E",    "Ì": "I",    "Í": "I",    "Î": "I",    "Ï": "I",    "Ñ": "N",    "Ò": "O",    "Ó": "O",    "Ô": "O",    "Õ": "O",    "Ö": "O",    "Ù": "U",    "Ú": "U",    "Û": "U",    "Ü": "U",    "Ý": "Y",
-        "-":" ", "'": " ", "(": " ", ")": " "};
-    var normalize = function( term ) {
-        var ret = "";
-        for ( var i = 0; i < term.length; i++ ) {
-            ret += accentMap[ term.charAt(i) ] || term.charAt(i);
-        }
-        return ret;
-    };
-    var theCleanName = normalize(aName);
-    var reg = new RegExp('\\W', 'g');
-    return theCleanName.replace(reg, '_');
-  }
-
-  function mAddMessage( aMessage, aType, aClose, aTimer ) {
-    var mType = 'info';
-    var mTypeList = ['info', 'danger', 'success'];
-    var mClose = false;
-    var mDismissible = '';
-
-    if ( $.inArray(aType, mTypeList) != -1 )
-      mType = aType;
-
-    if ( aClose ){
-      mClose = true;
-      mDismissible = 'alert-dismissible';
+    function performCleanName(aName) {
+        var accentMap = {
+            "à": "a",
+            "á": "a",
+            "â": "a",
+            "ã": "a",
+            "ä": "a",
+            "ç": "c",
+            "è": "e",
+            "é": "e",
+            "ê": "e",
+            "ë": "e",
+            "ì": "i",
+            "í": "i",
+            "î": "i",
+            "ï": "i",
+            "ñ": "n",
+            "ò": "o",
+            "ó": "o",
+            "ô": "o",
+            "õ": "o",
+            "ö": "o",
+            "ù": "u",
+            "ú": "u",
+            "û": "u",
+            "ü": "u",
+            "ý": "y",
+            "ÿ": "y",
+            "À": "A",
+            "Á": "A",
+            "Â": "A",
+            "Ã": "A",
+            "Ä": "A",
+            "Ç": "C",
+            "È": "E",
+            "É": "E",
+            "Ê": "E",
+            "Ë": "E",
+            "Ì": "I",
+            "Í": "I",
+            "Î": "I",
+            "Ï": "I",
+            "Ñ": "N",
+            "Ò": "O",
+            "Ó": "O",
+            "Ô": "O",
+            "Õ": "O",
+            "Ö": "O",
+            "Ù": "U",
+            "Ú": "U",
+            "Û": "U",
+            "Ü": "U",
+            "Ý": "Y",
+            "-": " ",
+            "'": " ",
+            "(": " ",
+            ")": " "
+        };
+        var normalize = function (term) {
+            var ret = "";
+            for (var i = 0; i < term.length; i++) {
+                ret += accentMap[term.charAt(i)] || term.charAt(i);
+            }
+            return ret;
+        };
+        var theCleanName = normalize(aName);
+        var reg = new RegExp('\\W', 'g');
+        return theCleanName.replace(reg, '_');
     }
 
-    var html = '<div class="alert alert-'+mType+' '+mDismissible+' fade show" role="alert">';
+    function mAddMessage(aMessage, aType, aClose, aTimer) {
+        var mType = 'info';
+        var mTypeList = ['info', 'danger', 'success'];
+        var mClose = false;
+        var mDismissible = '';
 
-    html += aMessage;
+        if ($.inArray(aType, mTypeList) != -1)
+            mType = aType;
 
-    if ( mClose ){
-      html += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\
+        if (aClose) {
+            mClose = true;
+            mDismissible = 'alert-dismissible';
+        }
+
+        var html = '<div class="alert alert-' + mType + ' ' + mDismissible + ' fade show" role="alert">';
+
+        html += aMessage;
+
+        if (mClose) {
+            html += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\
                 <span aria-hidden="true">&times;</span>\
               </button>';
+        }
+
+        html += '</div>';
+
+        var elt = $(html);
+        $('#message').append(elt);
+
+        if (aTimer !== undefined) {
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, aTimer);
+        }
+
+        return elt;
     }
-    
-    html += '</div>';
 
-    var elt = $(html);
-    $('#message').append(elt);
+    function buildLayerTree(layer, cfg) {
+        var myArray = [];
+        if (Array.isArray(layer)) {
+            layer.forEach(function (sublayer) {
+                // Layer name is used as a key in lizmap config
+                var sublayerName = sublayer.Name;
 
-    if(aTimer !== undefined){
-      setTimeout(function() {
-        $(".alert").alert('close');
-      }, aTimer);
-    }
+                // If key is not present, it might because a shortname has been defined in QGIS
+                if (!cfg.layers.hasOwnProperty(sublayer.Name)) {
+                    for (var key in cfg.layers) {
+                        if (cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname == sublayer.Name)) {
+                            sublayerName = cfg.layers[key].name;
+                        }
+                    }
+                }
+                // Filter layers in Hidden and Overview directory
+                if (sublayer.hasOwnProperty('Title') && (sublayer.Title.toLowerCase() == 'hidden' || sublayer.Title.toLowerCase() == 'overview')) {
+                    return;
+                }
+                // Filter layers not visible in legend or without geometry
+                if (sublayer.hasOwnProperty('Name') && cfg.layers.hasOwnProperty(sublayerName)
+                    && (cfg.layers[sublayerName].displayInLegend == 'False' || cfg.layers[sublayerName].geometryType == 'none')) {
+                    return;
+                }
+                var layers = buildLayerTree(sublayer, cfg);
+                myArray = myArray.concat(layers);
+            });
+            return myArray;
+        }
 
-    return elt;
-  }
+        // Layer name is used as a key in lizmap config
+        var layerName = layer.Name;
 
-  function buildLayerTree(layer, cfg) {
-    var myArray = [];
-    if (Array.isArray(layer)) {
-        layer.forEach(function(sublayer) {
-          // Layer name is used as a key in lizmap config
-          var sublayerName = sublayer.Name;
-
-          // If key is not present, it might because a shortname has been defined in QGIS
-          if(!cfg.layers.hasOwnProperty(sublayer.Name)){
+        // If key is not present, it might because a shortname has been defined in QGIS
+        if (!cfg.layers.hasOwnProperty(layer.Name)) {
             for (var key in cfg.layers) {
-              if(cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname == sublayer.Name)){
-                 sublayerName = cfg.layers[key].name;
-               }
+                if (cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname == layer.Name)) {
+                    layerName = cfg.layers[key].name;
+                }
             }
-          }
-          // Filter layers in Hidden and Overview directory
-          if(sublayer.hasOwnProperty('Title') && (sublayer.Title.toLowerCase() == 'hidden' || sublayer.Title.toLowerCase() == 'overview')){
-            return;
-          }
-          // Filter layers not visible in legend or without geometry
-          if(sublayer.hasOwnProperty('Name') && cfg.layers.hasOwnProperty(sublayerName)
-            && (cfg.layers[sublayerName].displayInLegend == 'False' || cfg.layers[sublayerName].geometryType == 'none')){
-              return;
-          }
-          var layers = buildLayerTree(sublayer, cfg);
-          myArray = myArray.concat(layers);
-        });
+        }
+
+        // Create node
+        if (cfg.layers.hasOwnProperty(layerName)) {
+            var myObj = {title: cfg.layers[layerName].title, name: layerName, popup: cfg.layers[layerName].popup};
+
+            if (layer.hasOwnProperty('Style')) {
+                myObj.style = layer.Style;
+            }
+            if (layer.hasOwnProperty('EX_GeographicBoundingBox')) {
+                myObj.bbox = layer.EX_GeographicBoundingBox;
+            }
+            if (layer.hasOwnProperty('MinScaleDenominator') && layer.MinScaleDenominator !== undefined) {
+                myObj.minScale = layer.MinScaleDenominator;
+            }
+            if (layer.hasOwnProperty('MaxScaleDenominator') && layer.MaxScaleDenominator !== undefined) {
+                myObj.maxScale = layer.MaxScaleDenominator;
+            }
+            if (cfg.attributeLayers.hasOwnProperty(layerName)
+                && cfg.attributeLayers[layerName].hideLayer != "True"
+                && cfg.attributeLayers[layerName].pivot != "True") {
+                myObj.hasAttributeTable = true;
+            }
+            if (cfg.layers.hasOwnProperty(layerName)
+                && cfg.layers[layerName].abstract != "") {
+                myObj.tooltip = cfg.layers[layerName].abstract;
+            }
+            myArray.push(myObj);
+        }
+
+        // Layer has children and is not a group as layer => folder
+        if (layer.hasOwnProperty('Layer') && cfg.layers[layerName].groupAsLayer == 'False') {
+            myObj.folder = true;
+            myObj.children = buildLayerTree(layer.Layer, cfg);
+        }
         return myArray;
     }
-
-    // Layer name is used as a key in lizmap config
-    var layerName = layer.Name;
-
-    // If key is not present, it might because a shortname has been defined in QGIS
-    if(!cfg.layers.hasOwnProperty(layer.Name)){
-      for (var key in cfg.layers) {
-        if(cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname == layer.Name)){
-           layerName = cfg.layers[key].name;
-         }
-      }
-    }
-
-    // Create node
-    if (cfg.layers.hasOwnProperty(layerName)){
-      var myObj = { title: cfg.layers[layerName].title, name: layerName, popup: cfg.layers[layerName].popup };
-
-      if (layer.hasOwnProperty('Style')) {
-        myObj.style = layer.Style;
-      }
-      if (layer.hasOwnProperty('EX_GeographicBoundingBox')) {
-        myObj.bbox = layer.EX_GeographicBoundingBox;
-      }
-      if (layer.hasOwnProperty('MinScaleDenominator') && layer.MinScaleDenominator !== undefined) {
-        myObj.minScale = layer.MinScaleDenominator;
-      }
-      if (layer.hasOwnProperty('MaxScaleDenominator') && layer.MaxScaleDenominator !== undefined) {
-        myObj.maxScale = layer.MaxScaleDenominator;
-      }
-      if (cfg.attributeLayers.hasOwnProperty(layerName)
-        && cfg.attributeLayers[layerName].hideLayer != "True"
-        && cfg.attributeLayers[layerName].pivot != "True") {
-        myObj.hasAttributeTable = true;
-      }
-      if (cfg.layers.hasOwnProperty(layerName)
-        && cfg.layers[layerName].abstract != "") {
-        myObj.tooltip = cfg.layers[layerName].abstract;
-      }
-      myArray.push(myObj);
-    }
-
-    // Layer has children and is not a group as layer => folder
-    if (layer.hasOwnProperty('Layer') && cfg.layers[layerName].groupAsLayer == 'False') {
-        myObj.folder = true;
-        myObj.children = buildLayerTree(layer.Layer, cfg);
-    }
-    return myArray;
-  }
 
   // refresh #layerSelected tree to reflect OL layer's state
   function refreshLayerSelected() {
@@ -205,88 +258,80 @@ $(function() {
         $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
       }
 
-      // Refresh legends
-      loadLegend();
-  }
-
-  var dragZoomControl = (function (Control) {
-    function dragZoomControl(opt_options) {
-      var options = opt_options || {};
-
-      var button = document.createElement('button');
-      button.className = 'fas fa-square';
-      button.title = lizDict['zoomrectangle'];
-
-      var element = document.createElement('div');
-      element.className = 'ol-drag-zoom ol-unselectable ol-control';
-      element.appendChild(button);
-
-      Control.call(this, {
-        element: element,
-        target: options.target
-      });
-
-      button.addEventListener('click', this.handleDragZoom.bind(this), false);
+        // Refresh legends
+        loadLegend();
     }
 
-    if ( Control ) dragZoomControl.__proto__ = Control;
-    dragZoomControl.prototype = Object.create( Control && Control.prototype );
-    dragZoomControl.prototype.constructor = dragZoomControl;
+    var dragZoomControl = class DragZoomControl extends Control {
+        constructor(opt_options) {
+            var options = opt_options || {};
 
-    dragZoomControl.prototype.handleDragZoom = function handleDragZoom () {
-      if($(this.element).hasClass('active')){
-        $(this.element).removeClass('active');
+            var button = document.createElement('button');
+            button.className = 'fas fa-square';
+            button.title = lizDict['zoomrectangle'];
 
-        this.getMap().getInteractions().forEach(function(interaction) {
-          if(interaction instanceof DragZoom){
-            interaction.condition_ = shiftKeyOnlyCondition;
-          }
-        });
-      }else{
-        $(this.element).addClass('active');
+            var element = document.createElement('div');
+            element.className = 'ol-drag-zoom ol-unselectable ol-control';
+            element.appendChild(button);
 
-        this.getMap().getInteractions().forEach(function(interaction) {
-          if(interaction instanceof DragZoom){
-            interaction.condition_ = alwaysCondition;
-          }
-        });
-      }
-    };
+            super({
+                element: element,
+                target: options.target,
+            });
 
-    return dragZoomControl;
-  }(Control));
+            button.addEventListener('click', this.handleDragZoom.bind(this), false);
+        }
 
-  var zoomToOriginControl = (function (Control) {
-    function zoomToOriginControl(opt_options) {
-      var options = opt_options || {};
+        handleDragZoom() {
 
-      var button = document.createElement('button');
-      button.className = 'fas fa-expand-arrows-alt';
-      button.title = lizDict['zoominitial'];
+            var element = document.querySelector(".ol-drag-zoom.ol-unselectable.ol-control");
 
-      var element = document.createElement('div');
-      element.className = 'ol-zoom-origin ol-unselectable ol-control';
-      element.appendChild(button);
+            if (element.classList.contains('active')) {
+                element.classList.remove('active');
 
-      Control.call(this, {
-        element: element,
-        target: options.target
-      });
+                this.getMap().getInteractions().forEach(function (interaction) {
+                    if (interaction instanceof DragZoom) {
+                        interaction.condition_ = shiftKeyOnlyCondition;
+                    }
+                });
+            } else {
+                element.classList.add('active');
 
-      button.addEventListener('click', this.handleZoomToOrigin.bind(this), false);
+                this.getMap().getInteractions().forEach(function (interaction) {
+                    if (interaction instanceof DragZoom) {
+                        interaction.condition_ = alwaysCondition;
+                    }
+                });
+            }
+        }
     }
+    var zoomToOriginControl = class ZoomToOriginControl extends Control {
 
-    if ( Control ) zoomToOriginControl.__proto__ = Control;
-    zoomToOriginControl.prototype = Object.create( Control && Control.prototype );
-    zoomToOriginControl.prototype.constructor = zoomToOriginControl;
+        constructor(opt_options) {
 
-    zoomToOriginControl.prototype.handleZoomToOrigin = function handleZoomToOrigin () {
-      this.getMap().getView().setCenter(originalCenter);
-      this.getMap().getView().setZoom(originalZoom);
-    };
+            var options = opt_options || {};
 
-    return zoomToOriginControl;
-  }(Control));
+            var button = document.createElement('button');
+            button.className = 'fas fa-expand-arrows-alt';
+            button.title = lizDict['zoominitial'];
+
+            var element = document.createElement('div');
+            element.className = 'ol-zoom-origin ol-unselectable ol-control';
+            element.appendChild(button);
+
+            super({
+                element: element,
+                target: options.target,
+            });
+
+            button.addEventListener('click', this.handleZoomToOrigin.bind(this), false);
+        }
+
+        handleZoomToOrigin() {
+            this.getMap().getView().setCenter(originalCenter);
+            this.getMap().getView().setZoom(originalZoom);
+        };
+    }
 
   // Hide header if h=0 in URL
   const url = new URL(window.location.href);
@@ -496,7 +541,7 @@ $(function() {
     var promises = [];
     for (var i = getFeatureInfos.length - 1; i >= 0; i--) {
       if(getFeatureInfos[i] !== undefined){
-        promises.push(new Promise(resolve => 
+        promises.push(new Promise(resolve =>
           $.get(getFeatureInfos[i], function(gfi) {
             resolve(gfi);
           })
@@ -553,7 +598,7 @@ $(function() {
       var parser = new WMSCapabilities();
 
       const promises = [
-        new Promise(resolve => 
+        new Promise(resolve =>
           $.get(url, function(capabilities) {
             var result = parser.read(capabilities);
             if (result.hasOwnProperty('Capability')){
@@ -572,7 +617,7 @@ $(function() {
             }
           })
         ),
-        new Promise(resolve => 
+        new Promise(resolve =>
           $.getJSON(lizUrls.config,{"repository":repositoryId,"project":projectId},function(cfgData) {
             if (cfgData){
               resolve(cfgData);
@@ -744,7 +789,7 @@ $(function() {
         }else{
           nodeRow.find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>");
         }
-        
+
         nodeRow.find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
 
         // Add button to display layer's attribute table if eligible
@@ -834,7 +879,7 @@ $(function() {
     var projectId = node.data.projectId;
 
     const promises = [
-      new Promise(resolve => 
+      new Promise(resolve =>
         // GetFeature request
         $.getJSON(lizUrls.wms, {
            'repository':repositoryId
@@ -849,7 +894,7 @@ $(function() {
           resolve(features);
         })
       ),
-      new Promise(resolve => 
+      new Promise(resolve =>
         // DescribeFeatureType request to get aliases
         $.getJSON(lizUrls.wms, {
            'repository':repositoryId
@@ -1216,7 +1261,7 @@ $(function() {
     $.ajax({
       url: lizUrls.mapcontext_add,
       type:"POST",
-      data: { 
+      data: {
         name: $("#mapcontext-name").val(),
         is_public: $("#publicmapcontext").is(':checked'),
         mapcontext: JSON.stringify(mapContext)
@@ -1270,7 +1315,7 @@ $(function() {
           mapBuilder.map.getView().setCenter(mapcontext.center);
           mapBuilder.map.getView().setZoom(mapcontext.zoom);
 
-          // Load layers if present 
+          // Load layers if present
           if(mapcontext.layers.length > 0){
             for (var i = 0; i < mapcontext.layers.length; i++) {
               var layerContext = mapcontext.layers[i];
