@@ -384,14 +384,6 @@ $(function() {
           })
         });
       }
-      else if(baseLayerName === 'osmCyclemap'
-        && mapBuilder.hasOwnProperty('baseLayerKeyOSMCycleMap')){
-        baseLayer = new TileLayer({
-          source: new XYZ({
-            url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=' + mapBuilder.baseLayerKeyOSMCycleMap
-          })
-        });
-      }
       else if((baseLayerName === 'bingStreets'
         || baseLayerName === 'bingSatellite'
         || baseLayerName === 'bingHybrid')
