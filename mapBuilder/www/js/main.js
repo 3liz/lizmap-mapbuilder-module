@@ -117,7 +117,7 @@ $(function() {
         var mClose = false;
         var mDismissible = '';
 
-        if ($.inArray(aType, mTypeList) != -1)
+        if (mTypeList.indexOf(aType) !== -1)
             mType = aType;
 
         if (aClose) {
@@ -137,12 +137,12 @@ $(function() {
 
         html += '</div>';
 
-        var elt = $(html);
-        $('#message').append(elt);
+        var elt = html;
+        document.querySelector('#message').insertAdjacentHTML("beforeend", elt);
 
         if (aTimer !== undefined) {
             setTimeout(function () {
-                $(".alert").alert('close');
+                document.querySelector(".alert").alert('close');
             }, aTimer);
         }
 
@@ -460,7 +460,8 @@ $(function() {
       }
 
       if(baseLayer){
-        var visibility = $("#baseLayerSelect").find(":selected").val() == baseLayerName ? true : false;
+        var baseLayerSelect = document.querySelector('#baseLayerSelect')
+        var visibility = baseLayerSelect.options[baseLayerSelect.selectedIndex].value === baseLayerName;
 
         baseLayer.setProperties({
           title: baseLayerName,
@@ -473,8 +474,9 @@ $(function() {
     }
   }
 
-  $("#baseLayerSelect").change(function() {
-    var baseLayerSelected = $(this).find(":selected").val();
+  document.querySelector("#baseLayerSelect").addEventListener("change", function() {
+    var baseLayerSelect = this;
+    var baseLayerSelected = baseLayerSelect.options[baseLayerSelect.selectedIndex].value;
     mapBuilder.map.getLayers().forEach(function(layer) {
       if(layer.getProperties().baseLayer){
         layer.setVisible(layer.getProperties().title == baseLayerSelected);
@@ -491,8 +493,8 @@ $(function() {
   }
 
   function onMoveEnd(evt) {
-    if($(".ol-drag-zoom").hasClass("active")){
-      $(".ol-drag-zoom.active").removeClass("active");
+    if(document.querySelector(".ol-drag-zoom").classList.contains("active")){
+      document.querySelector(".ol-drag-zoom.active").classList.remove("active");
 
       evt.map.getInteractions().forEach(function(interaction) {
         if(interaction instanceof DragZoom){
@@ -548,16 +550,17 @@ $(function() {
       }
 
       document.getElementById('popup-content').innerHTML = popupHTML;
+      var popupDisplayTab = document.querySelector('#popup-display-tab');
       // Display if not empty
-      if(popupHTML != ''){
+      if(popupHTML !== ''){
         // Show popup tab
-        $('#popup-display-tab').removeClass('d-none');
+        popupDisplayTab.classList.remove('d-none');
         $('#popup-display-tab').tab('show');
-        $('#popup-display-tab').focus();
+        popupDisplayTab.focus();
       }else{
-        if($('#popup-display').hasClass('active')){
-          $('#popup-display-tab').addClass('d-none');
-          $("#dock").hide();
+        if(document.querySelector('#popup-display').classList.contains("active")){
+          popupDisplayTab.classList.add('d-none');
+          document.querySelector("#dock").style.display = 'none';
         }
       }
     });
@@ -639,88 +642,97 @@ $(function() {
     },
     renderColumns: function(event, data) {
       var node = data.node,
-      $tdList = $(node.tr).find(">td");
-
+      tdList = node.tr.querySelectorAll(`:scope ${">td"}`);
       // Style list
       if(node.data.hasOwnProperty('style')){
         var styleOption = "";
         node.data.style.forEach(function(style) {
           styleOption += "<option>"+style.Name+"</option>";
         });
-        $tdList.eq(1).html("<select class='layerStyles custom-select custom-select-sm'>"+styleOption+"</select>");
+        tdList[1].innerHTML = "<select class='layerStyles custom-select custom-select-sm'>"+styleOption+"</select>";
       }
       // Add button for layers (level 1 => repositories, 2 => projects)
       if(node.getLevel() > 2 && node.children == null){
-        $tdList.eq(2).html("<button type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>");
+        tdList[2].innerHTML = "<button type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>";
       }
     }
   });
 
   /* Handle custom addLayerButton clicks */
-  $('#layerStore').on("click", ".addLayerButton", function(e){
-    var node = $.ui.fancytree.getNode(e);
+  document.querySelector('#layerStore').addEventListener('click', function(e) {
+    if (e.target.closest('.addLayerButton')) {
+      var node = $.ui.fancytree.getNode(e.target);
+      var parentList = node.getParentList();
+      // We get repositoryId and projectId from parents node in the tree
+      var repositoryId = parentList[1].data.repository;
+      var projectId = parentList[1].data.project;
 
-    var parentList = node.getParentList();
-    // We get repositoryId and projectId from parents node in the tree
-    var repositoryId = parentList[1].data.repository;
-    var projectId = parentList[1].data.project;
+      var newLayer = new ImageLayer({
+        title: node.title,
+        repositoryId: repositoryId,
+        projectId: projectId,
+        bbox: node.data.bbox,
+        popup: node.data.popup,
+        hasAttributeTable: node.data.hasAttributeTable,
+        source: new ImageWMS({
+          url: lizUrls.wms+'?repository=' + repositoryId + '&project=' + projectId,
+          params: {
+            'LAYERS': node.data.name,
+            'STYLES': $(node.tr).find(">td .layerStyles :selected").text()
+          },
+          serverType: 'qgis'
+          })
+      });
 
-    var newLayer = new ImageLayer({
-      title: node.title,
-      repositoryId: repositoryId,
-      projectId: projectId,
-      bbox: node.data.bbox,
-      popup: node.data.popup,
-      hasAttributeTable: node.data.hasAttributeTable,
-      source: new ImageWMS({
-        url: lizUrls.wms+'?repository=' + repositoryId + '&project=' + projectId,
-        params: {
-          'LAYERS': node.data.name,
-          'STYLES': $(node.tr).find(">td .layerStyles :selected").text()
-        },
-        serverType: 'qgis'
-      })
-    });
+        // Set min/max resolution if min/max scale are defined in getCapabilities
+        if(node.data.hasOwnProperty('minScale')){
+            newLayer.setMinResolution(node.data.minScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
+        }
+        if(node.data.hasOwnProperty('maxScale')){
+            newLayer.setMaxResolution(node.data.maxScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
+        }
 
-    // Set min/max resolution if min/max scale are defined in getCapabilities
-    if(node.data.hasOwnProperty('minScale')){
-      newLayer.setMinResolution(node.data.minScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
+        var maxZindex = -1;
+        // Get maximum Z-index to put new layer at top of the stack
+        mapBuilder.map.getLayers().forEach(function(layer) {
+            var zIndex = layer.getZIndex();
+            if(zIndex !== undefined && zIndex > maxZindex){
+                maxZindex = zIndex;
+            }
+        });
+
+        if(maxZindex > -1){
+            newLayer.setZIndex(maxZindex + 1);
+        }else{
+            newLayer.setZIndex(0);
+        }
+
+        // Show layer is loading
+        newLayer.getSource().on('imageloadstart', function(event) {
+            var span1 = document.createElement('span');
+            span1.classList.add('spinner-grow', 'spinner-grow-sm');
+            span1.setAttribute('title', lizDict['selector.layers.loading'] + '...');
+            span1.setAttribute('role', 'status');
+
+            var span2 = document.createElement('span');
+            span2.classList.add('sr-only');
+            span2.textContent = lizDict['selector.layers.loading'] + '...';
+
+            span1.appendChild(span2);
+
+            var layersLoading = document.getElementById('layers-loading');
+            layersLoading.insertBefore(span1, layersLoading.firstChild);
+        });
+
+        // Show layer had loaded
+        newLayer.getSource().on('imageloadend', function(event) {
+            document.querySelector("#layers-loading > .spinner-grow:first-child").remove();
+        });
+
+        mapBuilder.map.addLayer(newLayer);
+        refreshLayerSelected();
+        e.stopPropagation();  // prevent fancytree activate for this row
     }
-    if(node.data.hasOwnProperty('maxScale')){
-      newLayer.setMaxResolution(node.data.maxScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
-    }
-
-    var maxZindex = -1;
-    // Get maximum Z-index to put new layer at top of the stack
-    mapBuilder.map.getLayers().forEach(function(layer) {
-      var zIndex = layer.getZIndex();
-      if(zIndex !== undefined && zIndex > maxZindex){
-        maxZindex = zIndex;
-      }
-    });
-
-    if(maxZindex > -1){
-      newLayer.setZIndex(maxZindex + 1);
-    }else{
-      newLayer.setZIndex(0);
-    }
-
-    // Show layer is loading
-    newLayer.getSource().on('imageloadstart', function(event) {
-      $('#layers-loading').prepend('\
-        <span class="spinner-grow spinner-grow-sm" title="'+lizDict['selector.layers.loading']+'..." role="status">\
-          <span class="sr-only">'+lizDict['selector.layers.loading']+'...</span>\
-        </span>');
-    });
-
-    // Show layer had loaded
-    newLayer.getSource().on('imageloadend', function(event) {
-      $('#layers-loading > .spinner-grow:first').remove();
-    });
-
-    mapBuilder.map.addLayer(newLayer);
-    refreshLayerSelected();
-    e.stopPropagation();  // prevent fancytree activate for this row
   });
 
 
@@ -761,8 +773,7 @@ $(function() {
       renderColumns: function(event, data) {
         var node = data.node;
         var nodeRow = $(node.tr);
-        nodeRow.find(".layerSelectedStyles").text(node.data.styles);
-
+        node.tr.querySelectorAll(`:scope ${".layerSelectedStyles"}`)[0].textContent = node.data.styles;
         var opacity = 0;
         var visible = true;
 
@@ -774,29 +785,38 @@ $(function() {
           }
         }
 
-        nodeRow.find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-trash'></i></button>");
+        node.tr.querySelector(".deleteLayerButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-trash'></i></button>"
 
         if(visible){
-          nodeRow.find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye'></i></button>");
+          node.tr.querySelector(".toggleVisibilityButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-eye'></i></button>"
         }else{
-          nodeRow.find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>");
+          node.tr.querySelector(".toggleVisibilityButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>"
         }
-
-        nodeRow.find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
+        node.tr.querySelector(".zoomToExtentButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>"
 
         // Add button to display layer's attribute table if eligible
-        if(nodeRow.find(".displayDataButton").length == 1 && node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable !== undefined){
+        if(node.tr.querySelectorAll('.displayDataButton').length === 1 && node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable !== undefined){
           var disabled = '';
 
-          if($("#attributeLayersTabs .nav-link [data-ol_uid='"+node.data.ol_uid+"']").length != 0){
+          // original statement : $("#attributeLayersTabs .nav-link [data-ol_uid='"+node.data.ol_uid+"']").length
+
+          var navLinks = document.getElementById('attributeLayersTabs').querySelectorAll('.nav-link');
+          var el = [];
+
+          navLinks.forEach(function(navLink) {
+              if (navLink.getAttribute('data-ol_uid') === node.data.ol_uid) {
+                  el.push(navLink);
+              }
+          });
+
+          if(el.length !== 0){
             disabled = 'disabled';
           }
 
-          nodeRow.find(".displayDataButton").html("<button type='button' "+disabled+" class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>");
+          node.tr.querySelector(".displayDataButton").innerHTML = "<button type='button' \"+disabled+\" class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>";
         }
-
-        nodeRow.find(".changeOrder").html("<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>");
-        nodeRow.find(".toggleInfos").html("<button class='btn btn-sm'><i class='fas fa-info'></i></button>");
+        node.tr.querySelector(".changeOrder").innerHTML = "<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>";
+        node.tr.querySelector(".toggleInfos").innerHTML = "<button class='btn btn-sm'><i class='fas fa-info'></i></button>";
 
         var buttons = "";
         for (var i = 1; i < 6; i++) {
@@ -804,19 +824,32 @@ $(function() {
           buttons += "<button type='button' class='btn "+active+"'>"+(i*20)+"</button>";
         }
 
-        nodeRow.find(".changeOpacityButton").html('<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>');
+        node.tr.querySelector(".changeOpacityButton").innerHTML ='<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>';
 
-        if($(".layerSelectedStyles:visible").length > 0){
-          $("#layerSelected td.hide").show();
+          var layerSelectedStyles = document.querySelectorAll('.layerSelectedStyles');
+
+          var layerSelectedStylesVisible = Array.from(layerSelectedStyles).filter(function(element) {
+              var computedStyle = window.getComputedStyle(element);
+              return computedStyle.display !== 'none';
+          });
+
+        if(layerSelectedStylesVisible.length > 0){
+          var list = document.getElementById("layerSelected").querySelectorAll("td.hide")
+          list.forEach(function (list) {
+              list.style.display = 'table-cell';
+          });
         }else{
-          $("#layerSelected td.hide").hide();
+            var list = document.getElementById("layerSelected").querySelectorAll("td.hide")
+            list.forEach(function (list) {
+                list.style.display = 'none';
+            });
         }
       }
   });
 
   $('#layerSelected').on("click", ".deleteLayerButton button", function(e){
     var node = $.ui.fancytree.getNode(e);
-
+console.log(node);
     var layers = mapBuilder.map.getLayers().getArray();
     for (var i = 0; i < layers.length; i++) {
       if(layers[i].ol_uid == node.data.ol_uid){
@@ -859,10 +892,9 @@ $(function() {
   });
 
   $('#layerSelected').on("click", ".attributeLayerButton", function(e){
-    $('#attribute-btn').addClass("active");
+    document.getElementById("attribute-btn").classList.add("active");
 
-    // Disable button to avoid multiple calls
-    $(this).prop("disabled",true);
+    e.target.closest(".attributeLayerButton").disabled = true;
 
     var node = $.ui.fancytree.getNode(e);
 
@@ -968,22 +1000,32 @@ $(function() {
       attributeHTMLTable += '</table>';
 
       // Hide other tabs before appending
-      $('#attributeLayersTabs .nav-link').removeClass('active');
-      $('#attributeLayersContent .tab-pane').removeClass('show active');
+      var navLinks = document.querySelectorAll('#attributeLayersTabs .nav-link');
 
-      $('#attributeLayersTabs').append('\
+      navLinks.forEach(function(navLink) {
+        navLink.classList.remove('active');
+      });
+
+      var tabPane = document.querySelectorAll('#attributeLayersContent .tab-pane');
+
+      tabPane.forEach(function(tabPane) {
+        tabPane.classList.remove('show');
+        tabPane.classList.remove('active');
+      });
+
+      document.getElementById("attributeLayersTabs").insertAdjacentHTML("beforeend",'\
           <li class="nav-item">\
             <a class="nav-link active" href="#attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tab">'+node.title+'&nbsp;<i data-ol_uid="' + node.data.ol_uid + '" class="fas fa-times"></i></a>\
           </li>'
-        );
+      );
 
-      $('#attributeLayersContent').append('\
+      document.getElementById("attributeLayersContent").insertAdjacentHTML("beforeend",'\
           <div class="tab-pane fade show active" id="attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tabpanel">\
             <div class="table">\
             '+attributeHTMLTable+'\
             </div>\
           </div>'
-        );
+      );
 
       $('#attributeLayersTabs a').on('click', function (e) {
         e.preventDefault();
