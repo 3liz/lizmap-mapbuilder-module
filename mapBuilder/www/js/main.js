@@ -440,7 +440,7 @@ $(function() {
         });
 
         var ign_source = new WMTS({
-          url: "https://wxs.ign.fr/essentiels/geoportail/wmts",
+          url: "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile",
           layer: ignCorrespondance[baseLayerName],
           matrixSet: 'PM',
           format: ignImageFormat[baseLayerName],
