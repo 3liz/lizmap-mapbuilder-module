@@ -13,7 +13,7 @@ class listBaseLayer implements jIFormsDatasource
 
     $this->data = array(
       'osmMapnik' => 'OSM Mapnik',
-      'osmStamenToner' => 'OSM Stamen Toner',
+      'osmStadiaMapsToner' => 'OSM StadiaMaps Toner',
       'osmCyclemap' => 'OSM Cyclemap',
       'bingStreets' => 'Bing Streets',
       'bingSatellite' => 'Bing Satellite',
