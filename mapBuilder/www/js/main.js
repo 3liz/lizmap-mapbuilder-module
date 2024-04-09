@@ -142,7 +142,10 @@ $(function() {
 
         if (aTimer !== undefined) {
             setTimeout(function () {
-                document.querySelector(".alert").alert('close');
+                var alertElement = document.querySelector(".alert");
+                if (alertElement !== null) {
+                    alertElement.classList.remove("show");
+                }
             }, aTimer);
         }
 
