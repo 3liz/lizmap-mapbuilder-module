@@ -380,7 +380,7 @@ $(function() {
       else if(baseLayerName === 'osmStadiaMapsToner'){
         baseLayer = new TileLayer({
           source: new StadiaMaps({
-            layer: 'stamen_toner'
+            layer: 'stamen_toner_lite'
           })
         });
       }
