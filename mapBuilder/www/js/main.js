@@ -12,7 +12,6 @@ import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
 
 import OSM from 'ol/source/OSM.js';
 import StadiaMaps from 'ol/source/StadiaMaps.js';
-import XYZ from 'ol/source/XYZ.js';
 import BingMaps from 'ol/source/BingMaps.js';
 import WMTS from 'ol/source/WMTS.js';
 import WMTSTileGrid from 'ol/tilegrid/WMTS.js';
