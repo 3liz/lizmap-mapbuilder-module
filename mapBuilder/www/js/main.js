@@ -117,7 +117,7 @@ $(function() {
         var mClose = false;
         var mDismissible = '';
 
-        if ($.inArray(aType, mTypeList) != -1)
+        if (mTypeList.indexOf(aType) !== -1)
             mType = aType;
 
         if (aClose) {
@@ -137,12 +137,12 @@ $(function() {
 
         html += '</div>';
 
-        var elt = $(html);
-        $('#message').append(elt);
+        var elt = html;
+        document.querySelector('#message').insertAdjacentHTML("beforeend", elt);
 
         if (aTimer !== undefined) {
             setTimeout(function () {
-                $(".alert").alert('close');
+                document.querySelector(".alert").alert('close');
             }, aTimer);
         }
 
