@@ -25,10 +25,6 @@
       <datasource class="mapBuilder~listBaseLayer" />
     </menulist>
 
-    <input ref="baseLayerKeyOSMCycleMap" type="string">
-      <label locale="mapBuilderAdmin~admin.form.baselayer.key.osm.cyclemap" />
-    </input>
-
     <input ref="baseLayerKeyBing" type="string">
       <label locale="mapBuilderAdmin~admin.form.baselayer.key.bing" />
     </input>

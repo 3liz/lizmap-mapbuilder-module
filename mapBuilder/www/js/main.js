@@ -11,7 +11,7 @@ import {defaults as defaultControls, Control, ScaleLine} from 'ol/control.js';
 import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
 
 import OSM from 'ol/source/OSM.js';
-import Stamen from 'ol/source/Stamen.js';
+import StadiaMaps from 'ol/source/StadiaMaps.js';
 import XYZ from 'ol/source/XYZ.js';
 import BingMaps from 'ol/source/BingMaps.js';
 import WMTS from 'ol/source/WMTS.js';
@@ -374,18 +374,10 @@ $(function() {
           source: new OSM()
         });
       }
-      else if(baseLayerName === 'osmStamenToner'){
+      else if(baseLayerName === 'osmStadiaMapsToner'){
         baseLayer = new TileLayer({
-          source: new Stamen({
-            layer: 'toner'
-          })
-        });
-      }
-      else if(baseLayerName === 'osmCyclemap'
-        && mapBuilder.hasOwnProperty('baseLayerKeyOSMCycleMap')){
-        baseLayer = new TileLayer({
-          source: new XYZ({
-            url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=' + mapBuilder.baseLayerKeyOSMCycleMap
+          source: new StadiaMaps({
+            layer: 'stamen_toner_lite'
           })
         });
       }

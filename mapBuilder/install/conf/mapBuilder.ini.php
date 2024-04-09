@@ -13,9 +13,6 @@ baseLayer=osmMapnik
 ;; set default base layer
 baseLayerDefault=osmMapnik
 
-;; set your osmCyclemap API key if needed
-baseLayerKeyOSMCycleMap=
-
 ;; set your Bing API key if needed
 baseLayerKeyBing=
 
