@@ -644,19 +644,18 @@ $(function() {
     },
     renderColumns: function(event, data) {
       var node = data.node,
-      $tdList = $(node.tr).find(">td");
-
+      tdList = node.tr.querySelectorAll(`:scope ${">td"}`);
       // Style list
       if(node.data.hasOwnProperty('style')){
         var styleOption = "";
         node.data.style.forEach(function(style) {
           styleOption += "<option>"+style.Name+"</option>";
         });
-        $tdList.eq(1).html("<select class='layerStyles custom-select custom-select-sm'>"+styleOption+"</select>");
+        tdList[1].innerHTML = "<select class='layerStyles custom-select custom-select-sm'>"+styleOption+"</select>";
       }
       // Add button for layers (level 1 => repositories, 2 => projects)
       if(node.getLevel() > 2 && node.children == null){
-        $tdList.eq(2).html("<button type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>");
+        tdList[2].innerHTML = "<button type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>";
       }
     }
   });
