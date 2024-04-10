@@ -495,8 +495,8 @@ $(function() {
   }
 
   function onMoveEnd(evt) {
-    if($(".ol-drag-zoom").hasClass("active")){
-      $(".ol-drag-zoom.active").removeClass("active");
+    if(document.querySelector(".ol-drag-zoom").classList.contains("active")){
+      document.querySelector(".ol-drag-zoom.active").classList.remove("active");
 
       evt.map.getInteractions().forEach(function(interaction) {
         if(interaction instanceof DragZoom){
