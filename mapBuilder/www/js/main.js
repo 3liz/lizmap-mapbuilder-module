@@ -462,7 +462,8 @@ $(function() {
       }
 
       if(baseLayer){
-        var visibility = $("#baseLayerSelect").find(":selected").val() == baseLayerName ? true : false;
+        var baseLayerSelect = document.querySelector('#baseLayerSelect')
+        var visibility = baseLayerSelect.options[baseLayerSelect.selectedIndex].value === baseLayerName;
 
         baseLayer.setProperties({
           title: baseLayerName,
