@@ -552,16 +552,17 @@ $(function() {
       }
 
       document.getElementById('popup-content').innerHTML = popupHTML;
+      var popupDisplayTab = document.querySelector('#popup-display-tab');
       // Display if not empty
-      if(popupHTML != ''){
+      if(popupHTML !== ''){
         // Show popup tab
-        $('#popup-display-tab').removeClass('d-none');
+        popupDisplayTab.classList.remove('d-none');
         $('#popup-display-tab').tab('show');
-        $('#popup-display-tab').focus();
+        popupDisplayTab.focus();
       }else{
-        if($('#popup-display').hasClass('active')){
-          $('#popup-display-tab').addClass('d-none');
-          $("#dock").hide();
+        if(document.querySelector('#popup-display').classList.contains("active")){
+          popupDisplayTab.classList.add('d-none');
+          document.querySelector("#dock").style.display = 'none';
         }
       }
     });
