@@ -481,7 +481,7 @@ $(function() {
     var baseLayerSelected = baseLayerSelect.options[baseLayerSelect.selectedIndex].value;
     mapBuilder.map.getLayers().forEach(function(layer) {
       if(layer.getProperties().baseLayer){
-        layer.setVisible(layer.getProperties().title == baseLayerSelected);
+        layer.setVisible(layer.getProperties().title === baseLayerSelected);
       }
     });
   });
