@@ -776,8 +776,7 @@ $(function() {
       renderColumns: function(event, data) {
         var node = data.node;
         var nodeRow = $(node.tr);
-        nodeRow.find(".layerSelectedStyles").text(node.data.styles);
-
+        node.tr.querySelectorAll(`:scope ${".layerSelectedStyles"}`)[0].textContent = node.data.styles;
         var opacity = 0;
         var visible = true;
 
