@@ -662,8 +662,6 @@ $(function() {
   });
 
   /* Handle custom addLayerButton clicks */
-
-
   document.querySelector('#layerStore').addEventListener('click', function(e) {
     if (e.target.closest('.addLayerButton')) {
       var node = $.ui.fancytree.getNode(e.target);
@@ -714,15 +712,24 @@ $(function() {
 
         // Show layer is loading
         newLayer.getSource().on('imageloadstart', function(event) {
-            $('#layers-loading').prepend('\
-        <span class="spinner-grow spinner-grow-sm" title="'+lizDict['selector.layers.loading']+'..." role="status">\
-          <span class="sr-only">'+lizDict['selector.layers.loading']+'...</span>\
-        </span>');
+            var span1 = document.createElement('span');
+            span1.classList.add('spinner-grow', 'spinner-grow-sm');
+            span1.setAttribute('title', lizDict['selector.layers.loading'] + '...');
+            span1.setAttribute('role', 'status');
+
+            var span2 = document.createElement('span');
+            span2.classList.add('sr-only');
+            span2.textContent = lizDict['selector.layers.loading'] + '...';
+
+            span1.appendChild(span2);
+
+            var layersLoading = document.getElementById('layers-loading');
+            layersLoading.insertBefore(span1, layersLoading.firstChild);
         });
 
         // Show layer had loaded
         newLayer.getSource().on('imageloadend', function(event) {
-            $('#layers-loading > .spinner-grow:first').remove();
+            document.querySelector("#layers-loading > .spinner-grow:first-child").remove();
         });
 
         mapBuilder.map.addLayer(newLayer);
