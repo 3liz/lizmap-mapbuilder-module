@@ -787,18 +787,17 @@ $(function() {
           }
         }
 
-        nodeRow.find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-trash'></i></button>");
+        node.tr.querySelector(".deleteLayerButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-trash'></i></button>"
 
         if(visible){
-          nodeRow.find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye'></i></button>");
+          node.tr.querySelector(".toggleVisibilityButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-eye'></i></button>"
         }else{
-          nodeRow.find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>");
+          node.tr.querySelector(".toggleVisibilityButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>"
         }
-
-        nodeRow.find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
+        node.tr.querySelector(".zoomToExtentButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>"
 
         // Add button to display layer's attribute table if eligible
-        if(nodeRow.find(".displayDataButton").length == 1 && node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable !== undefined){
+        if(node.tr.querySelectorAll('.displayDataButton').length === 1 && node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable !== undefined){
           var disabled = '';
 
           if($("#attributeLayersTabs .nav-link [data-ol_uid='"+node.data.ol_uid+"']").length != 0){
