@@ -26,8 +26,6 @@ import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from '
 
 import './modules/bottom-dock.js';
 
-import 'bootstrap';
-
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
 var originalZoom = 6;
