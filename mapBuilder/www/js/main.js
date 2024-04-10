@@ -644,8 +644,7 @@ $(function() {
     },
     renderColumns: function(event, data) {
       var node = data.node,
-      $tdList = $(node.tr).find(">td");
-
+      $tdList = node.tr.querySelectorAll(`:scope ${">td"}`);
       // Style list
       if(node.data.hasOwnProperty('style')){
         var styleOption = "";
