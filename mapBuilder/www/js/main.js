@@ -462,7 +462,8 @@ $(function() {
       }
 
       if(baseLayer){
-        var visibility = $("#baseLayerSelect").find(":selected").val() == baseLayerName ? true : false;
+        var baseLayerSelect = document.querySelector('#baseLayerSelect')
+        var visibility = baseLayerSelect.options[baseLayerSelect.selectedIndex].value === baseLayerName;
 
         baseLayer.setProperties({
           title: baseLayerName,
@@ -475,11 +476,12 @@ $(function() {
     }
   }
 
-  $("#baseLayerSelect").change(function() {
-    var baseLayerSelected = $(this).find(":selected").val();
+  document.querySelector("#baseLayerSelect").addEventListener("change", function() {
+    var baseLayerSelect = this;
+    var baseLayerSelected = baseLayerSelect.options[baseLayerSelect.selectedIndex].value;
     mapBuilder.map.getLayers().forEach(function(layer) {
       if(layer.getProperties().baseLayer){
-        layer.setVisible(layer.getProperties().title == baseLayerSelected);
+        layer.setVisible(layer.getProperties().title === baseLayerSelected);
       }
     });
   });
@@ -493,8 +495,8 @@ $(function() {
   }
 
   function onMoveEnd(evt) {
-    if($(".ol-drag-zoom").hasClass("active")){
-      $(".ol-drag-zoom.active").removeClass("active");
+    if(document.querySelector(".ol-drag-zoom").classList.contains("active")){
+      document.querySelector(".ol-drag-zoom.active").classList.remove("active");
 
       evt.map.getInteractions().forEach(function(interaction) {
         if(interaction instanceof DragZoom){
@@ -550,16 +552,17 @@ $(function() {
       }
 
       document.getElementById('popup-content').innerHTML = popupHTML;
+      var popupDisplayTab = document.querySelector('#popup-display-tab');
       // Display if not empty
-      if(popupHTML != ''){
+      if(popupHTML !== ''){
         // Show popup tab
-        $('#popup-display-tab').removeClass('d-none');
+        popupDisplayTab.classList.remove('d-none');
         $('#popup-display-tab').tab('show');
-        $('#popup-display-tab').focus();
+        popupDisplayTab.focus();
       }else{
-        if($('#popup-display').hasClass('active')){
-          $('#popup-display-tab').addClass('d-none');
-          $("#dock").hide();
+        if(document.querySelector('#popup-display').classList.contains("active")){
+          popupDisplayTab.classList.add('d-none');
+          document.querySelector("#dock").style.display = 'none';
         }
       }
     });
@@ -659,70 +662,73 @@ $(function() {
   });
 
   /* Handle custom addLayerButton clicks */
-  $('#layerStore').on("click", ".addLayerButton", function(e){
-    var node = $.ui.fancytree.getNode(e);
 
-    var parentList = node.getParentList();
-    // We get repositoryId and projectId from parents node in the tree
-    var repositoryId = parentList[1].data.repository;
-    var projectId = parentList[1].data.project;
 
-    var newLayer = new ImageLayer({
-      title: node.title,
-      repositoryId: repositoryId,
-      projectId: projectId,
-      bbox: node.data.bbox,
-      popup: node.data.popup,
-      hasAttributeTable: node.data.hasAttributeTable,
-      source: new ImageWMS({
-        url: lizUrls.wms+'?repository=' + repositoryId + '&project=' + projectId,
-        params: {
-          'LAYERS': node.data.name,
-          'STYLES': $(node.tr).find(">td .layerStyles :selected").text()
-        },
-        serverType: 'qgis'
-      })
-    });
+  document.querySelector('#layerStore').addEventListener('click', function(e) {
+    if (e.target.closest('.addLayerButton')) {
+      var node = $.ui.fancytree.getNode(e.target);
+      var parentList = node.getParentList();
+      // We get repositoryId and projectId from parents node in the tree
+      var repositoryId = parentList[1].data.repository;
+      var projectId = parentList[1].data.project;
 
-    // Set min/max resolution if min/max scale are defined in getCapabilities
-    if(node.data.hasOwnProperty('minScale')){
-      newLayer.setMinResolution(node.data.minScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
-    }
-    if(node.data.hasOwnProperty('maxScale')){
-      newLayer.setMaxResolution(node.data.maxScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
-    }
+      var newLayer = new ImageLayer({
+        title: node.title,
+        repositoryId: repositoryId,
+        projectId: projectId,
+        bbox: node.data.bbox,
+        popup: node.data.popup,
+        hasAttributeTable: node.data.hasAttributeTable,
+        source: new ImageWMS({
+          url: lizUrls.wms+'?repository=' + repositoryId + '&project=' + projectId,
+          params: {
+            'LAYERS': node.data.name,
+            'STYLES': $(node.tr).find(">td .layerStyles :selected").text()
+          },
+          serverType: 'qgis'
+          })
+      });
 
-    var maxZindex = -1;
-    // Get maximum Z-index to put new layer at top of the stack
-    mapBuilder.map.getLayers().forEach(function(layer) {
-      var zIndex = layer.getZIndex();
-      if(zIndex !== undefined && zIndex > maxZindex){
-        maxZindex = zIndex;
-      }
-    });
+        // Set min/max resolution if min/max scale are defined in getCapabilities
+        if(node.data.hasOwnProperty('minScale')){
+            newLayer.setMinResolution(node.data.minScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
+        }
+        if(node.data.hasOwnProperty('maxScale')){
+            newLayer.setMaxResolution(node.data.maxScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
+        }
 
-    if(maxZindex > -1){
-      newLayer.setZIndex(maxZindex + 1);
-    }else{
-      newLayer.setZIndex(0);
-    }
+        var maxZindex = -1;
+        // Get maximum Z-index to put new layer at top of the stack
+        mapBuilder.map.getLayers().forEach(function(layer) {
+            var zIndex = layer.getZIndex();
+            if(zIndex !== undefined && zIndex > maxZindex){
+                maxZindex = zIndex;
+            }
+        });
 
-    // Show layer is loading
-    newLayer.getSource().on('imageloadstart', function(event) {
-      $('#layers-loading').prepend('\
+        if(maxZindex > -1){
+            newLayer.setZIndex(maxZindex + 1);
+        }else{
+            newLayer.setZIndex(0);
+        }
+
+        // Show layer is loading
+        newLayer.getSource().on('imageloadstart', function(event) {
+            $('#layers-loading').prepend('\
         <span class="spinner-grow spinner-grow-sm" title="'+lizDict['selector.layers.loading']+'..." role="status">\
           <span class="sr-only">'+lizDict['selector.layers.loading']+'...</span>\
         </span>');
-    });
+        });
 
-    // Show layer had loaded
-    newLayer.getSource().on('imageloadend', function(event) {
-      $('#layers-loading > .spinner-grow:first').remove();
-    });
+        // Show layer had loaded
+        newLayer.getSource().on('imageloadend', function(event) {
+            $('#layers-loading > .spinner-grow:first').remove();
+        });
 
-    mapBuilder.map.addLayer(newLayer);
-    refreshLayerSelected();
-    e.stopPropagation();  // prevent fancytree activate for this row
+        mapBuilder.map.addLayer(newLayer);
+        refreshLayerSelected();
+        e.stopPropagation();  // prevent fancytree activate for this row
+    }
   });
 
 
