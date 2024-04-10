@@ -475,8 +475,9 @@ $(function() {
     }
   }
 
-  $("#baseLayerSelect").change(function() {
-    var baseLayerSelected = $(this).find(":selected").val();
+  document.querySelector("#baseLayerSelect").addEventListener("change", function() {
+    var baseLayerSelect = this;
+    var baseLayerSelected = baseLayerSelect.options[baseLayerSelect.selectedIndex].value;
     mapBuilder.map.getLayers().forEach(function(layer) {
       if(layer.getProperties().baseLayer){
         layer.setVisible(layer.getProperties().title == baseLayerSelected);
