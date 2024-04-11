@@ -800,15 +800,25 @@ $(function() {
         if(node.tr.querySelectorAll('.displayDataButton').length === 1 && node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable !== undefined){
           var disabled = '';
 
-          if($("#attributeLayersTabs .nav-link [data-ol_uid='"+node.data.ol_uid+"']").length != 0){
+          // original statement : $("#attributeLayersTabs .nav-link [data-ol_uid='"+node.data.ol_uid+"']").length
+
+          var navLinks = document.getElementById('attributeLayersTabs').querySelectorAll('.nav-link');
+          var el = [];
+
+          navLinks.forEach(function(navLink) {
+              if (navLink.getAttribute('data-ol_uid') === node.data.ol_uid) {
+                  el.push(navLink);
+              }
+          });
+
+          if(el.length !== 0){
             disabled = 'disabled';
           }
 
-          nodeRow.find(".displayDataButton").html("<button type='button' "+disabled+" class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>");
+          node.tr.querySelector(".displayDataButton").innerHTML = "<button type='button' \"+disabled+\" class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>";
         }
-
-        nodeRow.find(".changeOrder").html("<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>");
-        nodeRow.find(".toggleInfos").html("<button class='btn btn-sm'><i class='fas fa-info'></i></button>");
+        node.tr.querySelector(".changeOrder").innerHTML = "<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>";
+        node.tr.querySelector(".toggleInfos").innerHTML = "<button class='btn btn-sm'><i class='fas fa-info'></i></button>";
 
         var buttons = "";
         for (var i = 1; i < 6; i++) {
@@ -816,19 +826,32 @@ $(function() {
           buttons += "<button type='button' class='btn "+active+"'>"+(i*20)+"</button>";
         }
 
-        nodeRow.find(".changeOpacityButton").html('<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>');
+        node.tr.querySelector(".changeOpacityButton").innerHTML ='<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>';
 
-        if($(".layerSelectedStyles:visible").length > 0){
-          $("#layerSelected td.hide").show();
+          var layerSelectedStyles = document.querySelectorAll('.layerSelectedStyles');
+
+          var layerSelectedStylesVisible = Array.from(layerSelectedStyles).filter(function(element) {
+              var computedStyle = window.getComputedStyle(element);
+              return computedStyle.display !== 'none';
+          });
+
+        if(layerSelectedStylesVisible.length > 0){
+          var list = document.getElementById("layerSelected").querySelectorAll("td.hide")
+          list.forEach(function (list) {
+              list.style.display = 'table-cell';
+          });
         }else{
-          $("#layerSelected td.hide").hide();
+            var list = document.getElementById("layerSelected").querySelectorAll("td.hide")
+            list.forEach(function (list) {
+                list.style.display = 'none';
+            });
         }
       }
   });
 
   $('#layerSelected').on("click", ".deleteLayerButton button", function(e){
     var node = $.ui.fancytree.getNode(e);
-
+console.log(node);
     var layers = mapBuilder.map.getLayers().getArray();
     for (var i = 0; i < layers.length; i++) {
       if(layers[i].ol_uid == node.data.ol_uid){
@@ -871,10 +894,9 @@ $(function() {
   });
 
   $('#layerSelected').on("click", ".attributeLayerButton", function(e){
-    $('#attribute-btn').addClass("active");
-
-    // Disable button to avoid multiple calls
-    $(this).prop("disabled",true);
+    document.getElementById("attribute-btn").classList.add("active");
+    console.log("ici");
+    e.target.closest(".attributeLayerButton").disabled = true;
 
     var node = $.ui.fancytree.getNode(e);
 
@@ -980,22 +1002,32 @@ $(function() {
       attributeHTMLTable += '</table>';
 
       // Hide other tabs before appending
-      $('#attributeLayersTabs .nav-link').removeClass('active');
-      $('#attributeLayersContent .tab-pane').removeClass('show active');
+      var navLinks = document.querySelectorAll('#attributeLayersTabs .nav-link');
 
-      $('#attributeLayersTabs').append('\
+      navLinks.forEach(function(navLink) {
+        navLink.classList.remove('active');
+      });
+
+      var tabPane = document.querySelectorAll('#attributeLayersContent .tab-pane');
+
+      tabPane.forEach(function(tabPane) {
+        tabPane.classList.remove('show');
+        tabPane.classList.remove('active');
+      });
+
+      document.getElementById("attributeLayersTabs").insertAdjacentHTML("beforeend",'\
           <li class="nav-item">\
             <a class="nav-link active" href="#attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tab">'+node.title+'&nbsp;<i data-ol_uid="' + node.data.ol_uid + '" class="fas fa-times"></i></a>\
           </li>'
-        );
+      );
 
-      $('#attributeLayersContent').append('\
+      document.getElementById("attributeLayersContent").insertAdjacentHTML("beforeend",'\
           <div class="tab-pane fade show active" id="attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tabpanel">\
             <div class="table">\
             '+attributeHTMLTable+'\
             </div>\
           </div>'
-        );
+      );
 
       $('#attributeLayersTabs a').on('click', function (e) {
         e.preventDefault();
