@@ -27,6 +27,8 @@ import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from '
 
 import './modules/bottom-dock.js';
 
+import {AttributeTable} from "./components/AttributeTable";
+
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
 var originalZoom = 6;
@@ -849,7 +851,7 @@ $(function() {
 
   $('#layerSelected').on("click", ".deleteLayerButton button", function(e){
     var node = $.ui.fancytree.getNode(e);
-console.log(node);
+
     var layers = mapBuilder.map.getLayers().getArray();
     for (var i = 0; i < layers.length; i++) {
       if(layers[i].ol_uid == node.data.ol_uid){
@@ -959,45 +961,8 @@ console.log(node);
         }
       }
 
-      var attributeHTMLTable = '<table class="table">';
-
-      // Add table header
-      attributeHTMLTable += '<tr><th></th>';
-      for (var i = 0; i < visibleProperties.length; i++) {
-        var columnName = aliases[visibleProperties[i]] != "" ? aliases[visibleProperties[i]] : visibleProperties[i];
-        attributeHTMLTable += '<th>'+ columnName +'</th>';
-      }
-      attributeHTMLTable += '</tr>';
-
-      // Add data
-      for (var i = 0; i < features.length; i++) {
-        var feature = features[i];
-
-        attributeHTMLTable += '<tr><td><button type="button" title="'+lizDict['zoomin']+'" class="btn btn-sm zoomToFeatureExtent" data-feature-extent="'+JSON.stringify(feature.bbox)+'"><i class="fas fa-search-plus"></i></button></td>';
-        for (var j = 0; j < visibleProperties.length; j++) {
-          var propertieValue = feature.properties[visibleProperties[j]];
-
-          // Replace url or media by link
-          if(typeof propertieValue === 'string'){
-            if( propertieValue.substr(0,6) == 'media/' || propertieValue.substr(0,6) == '/media/' ){
-                var rdata = propertieValue;
-                if( propertieValue.substr(0,6) == '/media/' )
-                    rdata = propertieValue.slice(1);
-                propertieValue = '<a href="' + lizUrls.media + '?repository='+repositoryId+'&project='+projectId+'&path=/' + rdata + '" target="_blank">'+aliases[visibleProperties[j]]+'</a>';
-            }
-            else if( propertieValue.substr(0,4) == 'http' || propertieValue.substr(0,3) == 'www' ){
-                var rdata = propertieValue;
-                if(propertieValue.substr(0,3) == 'www')
-                    rdata = 'http://' + propertieValue;
-                propertieValue = '<a href="' + rdata + '" target="_blank">' + propertieValue + '</a>';
-            }
-          }
-          attributeHTMLTable += '<td>'+ propertieValue +'</td>';
-        }
-        attributeHTMLTable += '</tr>';
-      }
-
-      attributeHTMLTable += '</table>';
+      // Elements : [repositoryId, projectId, layerName, features, aliases, visibleProperties]
+      var elements = [repositoryId, projectId, layerName, features, aliases, visibleProperties];
 
       // Hide other tabs before appending
       var navLinks = document.querySelectorAll('#attributeLayersTabs .nav-link');
@@ -1019,20 +984,28 @@ console.log(node);
           </li>'
       );
 
-      document.getElementById("attributeLayersContent").insertAdjacentHTML("beforeend",'\
-          <div class="tab-pane fade show active" id="attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tabpanel">\
-            <div class="table">\
-            '+attributeHTMLTable+'\
-            </div>\
-          </div>'
-      );
+      const container = document.getElementById('attributeLayersContent');
+
+      const addToContainer = (elements) => {
+          const attributeTable = new AttributeTable(elements);
+          container.appendChild(attributeTable);
+          attributeTable.updateContent();
+      };
+
+      if (document.getElementById("attributeLayersContent").innerHTML === "") {
+          const attributeTable = new AttributeTable(elements);
+          container.appendChild(attributeTable);
+          attributeTable.updateContent();
+      } else {
+          addToContainer(elements);
+      }
 
       $('#attributeLayersTabs a').on('click', function (e) {
         e.preventDefault();
         $(this).tab('show');
       });
 
-      // Handle close tabs
+        // Handle close tabs
       $('#attributeLayersTabs .fa-times').on('click', function (e) {
         e.preventDefault();
 
@@ -1054,7 +1027,7 @@ console.log(node);
         });
 
         // Hide bottom dock
-        if($('#attributeLayersContent').html().trim() == ""){
+        if($('#attributeLayersContent').text().trim() === ""){
           $('#bottom-dock').hide();
           $('#attribute-btn').removeClass("active");
         }
@@ -1398,7 +1371,7 @@ console.log(node);
   }
 
   $('#attribute-btn').on("click", function(e){
-    if($('#attributeLayersContent').html().trim() != ""){
+    if($('#attributeLayersContent').text().trim() != ""){
       $('#bottom-dock').show();
       $(this).addClass('active');
     }
