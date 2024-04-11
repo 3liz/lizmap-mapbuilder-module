@@ -895,7 +895,7 @@ console.log(node);
 
   $('#layerSelected').on("click", ".attributeLayerButton", function(e){
     document.getElementById("attribute-btn").classList.add("active");
-    console.log("ici");
+
     e.target.closest(".attributeLayerButton").disabled = true;
 
     var node = $.ui.fancytree.getNode(e);
