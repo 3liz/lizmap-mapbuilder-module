@@ -851,7 +851,7 @@ $(function() {
 
   $('#layerSelected').on("click", ".deleteLayerButton button", function(e){
     var node = $.ui.fancytree.getNode(e);
-console.log(node);
+
     var layers = mapBuilder.map.getLayers().getArray();
     for (var i = 0; i < layers.length; i++) {
       if(layers[i].ol_uid == node.data.ol_uid){
@@ -1029,12 +1029,50 @@ console.log(node);
           </div>'
       );
 
+      var all = document.querySelectorAll("#attributeLayersTabs a");
+
+      for (var indice = 1; indice < all.length; indice++) {
+          (function(ind) {
+              all[ind].addEventListener('click', function (e) {
+                  e.preventDefault();
+                  var activeA = document.querySelector("#attributeLayersTabs a.active");
+                  activeA.classList.remove("active");
+
+                  var active = document.querySelector("#attributeLayersContent .active.show");
+                  active.classList.remove("show");
+                  active.classList.remove("active");
+
+                  // nouveau <a>
+                  e.target.classList.add("active");
+
+                  var nouveau = document.querySelector("#attributeLayersContent").children[ind-1];
+                  nouveau.classList.add("active");
+                  nouveau.classList.add("show");
+              });
+          })(indice);
+      }
+/*
       $('#attributeLayersTabs a').on('click', function (e) {
         e.preventDefault();
         $(this).tab('show');
       });
+*/
+        document.querySelectorAll('#attributeLayersTabs .fa-times').forEach(function(icon) {
+            icon.addEventListener('click', function(e) {
+                e.preventDefault();
 
-      // Handle close tabs
+                var isActiveTab = e.target.closest('a').classList.contains('active');
+                var previousTab = e.target.closest('li').previousElementSibling;
+                var nextTab = e.target.closest('li').nextElementSibling;
+console.log("-----DOM-----")
+                console.log(isActiveTab);
+                console.log(previousTab);
+                console.log(nextTab);
+                console.log("-------------")
+                e.stopPropagation()
+            });
+        });
+        // Handle close tabs
       $('#attributeLayersTabs .fa-times').on('click', function (e) {
         e.preventDefault();
 
