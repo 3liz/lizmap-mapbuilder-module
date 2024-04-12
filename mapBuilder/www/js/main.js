@@ -7,7 +7,7 @@ import 'ol/ol.css';
 
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
-import {defaults as defaultControls, Control, ScaleLine} from 'ol/control.js';
+import {Control, defaults as defaultControls, ScaleLine} from 'ol/control.js';
 import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
 
 import OSM from 'ol/source/OSM.js';
@@ -19,12 +19,14 @@ import {getWidth} from 'ol/extent.js';
 
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
 import ImageWMS from 'ol/source/ImageWMS.js';
-import {transformExtent, get as getProjection} from 'ol/proj.js';
+import {get as getProjection, transformExtent} from 'ol/proj.js';
 
 import {DragZoom} from 'ol/interaction.js';
 import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from 'ol/events/condition.js';
 
 import './modules/bottom-dock.js';
+
+import {html, render} from 'lit-html';
 
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
@@ -961,45 +963,61 @@ $(function() {
         }
       }
 
-      var attributeHTMLTable = '<table class="table">';
-
-      // Add table header
-      attributeHTMLTable += '<tr><th></th>';
+      //Headers
+      var columnName = [];
       for (var i = 0; i < visibleProperties.length; i++) {
-        var columnName = aliases[visibleProperties[i]] != "" ? aliases[visibleProperties[i]] : visibleProperties[i];
-        attributeHTMLTable += '<th>'+ columnName +'</th>';
+          columnName.push(aliases[visibleProperties[i]] !== "" ? aliases[visibleProperties[i]] : visibleProperties[i]);
       }
-      attributeHTMLTable += '</tr>';
 
-      // Add data
+      //Data
+      var lignes = [];
+
       for (var i = 0; i < features.length; i++) {
-        var feature = features[i];
+          var feature = features[i];
+          lignes.push(html`<tr>`)
+          lignes.push(html`
+                  <td>
+                      <button type="button" title="${lizDict['zoomin']}" class="btn btn-sm zoomToFeatureExtent"
+                              data-feature-extent="${JSON.stringify(feature.bbox)}">
+                          <i class="fas fa-search-plus"></i>
+                      </button>
+                  </td>
+          `);
 
-        attributeHTMLTable += '<tr><td><button type="button" title="'+lizDict['zoomin']+'" class="btn btn-sm zoomToFeatureExtent" data-feature-extent="'+JSON.stringify(feature.bbox)+'"><i class="fas fa-search-plus"></i></button></td>';
-        for (var j = 0; j < visibleProperties.length; j++) {
-          var propertieValue = feature.properties[visibleProperties[j]];
+          for (var j = 0; j < visibleProperties.length; j++) {
+              var propertieValue = feature.properties[visibleProperties[j]];
 
-          // Replace url or media by link
-          if(typeof propertieValue === 'string'){
-            if( propertieValue.substr(0,6) == 'media/' || propertieValue.substr(0,6) == '/media/' ){
-                var rdata = propertieValue;
-                if( propertieValue.substr(0,6) == '/media/' )
-                    rdata = propertieValue.slice(1);
-                propertieValue = '<a href="' + lizUrls.media + '?repository='+repositoryId+'&project='+projectId+'&path=/' + rdata + '" target="_blank">'+aliases[visibleProperties[j]]+'</a>';
-            }
-            else if( propertieValue.substr(0,4) == 'http' || propertieValue.substr(0,3) == 'www' ){
-                var rdata = propertieValue;
-                if(propertieValue.substr(0,3) == 'www')
-                    rdata = 'http://' + propertieValue;
-                propertieValue = '<a href="' + rdata + '" target="_blank">' + propertieValue + '</a>';
-            }
+              // Replace url or media by link
+              if(typeof propertieValue === 'string'){
+                  if( propertieValue.slice(0,6) === 'media/' || propertieValue.slice(0,6) === '/media/' ){
+                      var rdata = propertieValue;
+                      if( propertieValue.slice(0,6) === '/media/' )
+                          rdata = propertieValue.slice(1);
+                      lignes.push(html`
+                          <td>
+                              <a href="${lizUrls.media}?repository=${repositoryId}&project=${projectId}&path=/${rdata}"
+                                 target="_blank">${aliases[visibleProperties[j]]}</a>
+                          </td>`);
+                  }
+                  else if( propertieValue.slice(0,4) === 'http' || propertieValue.slice(0,3) === 'www' ){
+                      var rdata = propertieValue;
+                      if(propertieValue.slice(0,3) === 'www')
+                          rdata = 'http://' + propertieValue;
+                      lignes.push(html`
+                          <td>
+                              <a href="${rdata}" target="_blank">${propertieValue}</a>
+                          </td>`);
+                  } else {
+                      lignes.push(html`
+                          <td>${propertieValue}</td>`);
+                  }
+              } else {
+                  lignes.push(html`
+                      <td>${propertieValue}</td>`);
+              }
           }
-          attributeHTMLTable += '<td>'+ propertieValue +'</td>';
-        }
-        attributeHTMLTable += '</tr>';
+          lignes.push(html`</tr>`);
       }
-
-      attributeHTMLTable += '</table>';
 
       // Hide other tabs before appending
       var navLinks = document.querySelectorAll('#attributeLayersTabs .nav-link');
@@ -1021,14 +1039,42 @@ $(function() {
           </li>'
       );
 
-      document.getElementById("attributeLayersContent").insertAdjacentHTML("beforeend",'\
-          <div class="tab-pane fade show active" id="attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tabpanel">\
-            <div class="table">\
-            '+attributeHTMLTable+'\
-            </div>\
-          </div>'
-      );
+      //Template Attribute Table
+      const mainTemplate = html`
+          <div class="tab-pane fade show active" id="attributeLayer-${repositoryId}-${projectId}-${layerName}"
+               role="tabpanel">
+              <div class="table">
+                  <table class="table">
+                      <tbody>
+                      <tr>
+                          <th></th>
+                          ${columnName.map((name) =>
+          html`
+                                      <th>${name}</th>
+                                  `
+      )}
+                      </tr>
+                      ${lignes}
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      `;
 
+      const container = document.getElementById('attributeLayersContent');
+
+      const addToContainer = (newTemplate) => {
+          const fragment = document.createElement('div');
+          render(newTemplate, fragment);
+          const newContent = Array.from(fragment.children).map(child => child.outerHTML).join('');
+          container.innerHTML += newContent;
+      };
+
+      if (document.getElementById("attributeLayersContent").innerHTML === "") {
+          render(mainTemplate,container);
+      } else {
+          addToContainer(mainTemplate);
+      }
 
       $('#attributeLayersTabs a').on('click', function (e) {
         e.preventDefault();
@@ -1057,7 +1103,7 @@ $(function() {
         });
 
         // Hide bottom dock
-        if($('#attributeLayersContent').html().trim() == ""){
+        if($('#attributeLayersContent').text().trim() === ""){
           $('#bottom-dock').hide();
           $('#attribute-btn').removeClass("active");
         }
@@ -1401,7 +1447,7 @@ $(function() {
   }
 
   $('#attribute-btn').on("click", function(e){
-    if($('#attributeLayersContent').html().trim() != ""){
+    if($('#attributeLayersContent').text().trim() != ""){
       $('#bottom-dock').show();
       $(this).addClass('active');
     }
