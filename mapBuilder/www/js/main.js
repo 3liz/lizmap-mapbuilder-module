@@ -26,7 +26,7 @@ import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from '
 
 import './modules/bottom-dock.js';
 
-import {html, render} from 'lit-html';
+import {AttributeTable} from "./components/AttributeTable";
 
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
@@ -963,61 +963,8 @@ $(function() {
         }
       }
 
-      //Headers
-      var columnName = [];
-      for (var i = 0; i < visibleProperties.length; i++) {
-          columnName.push(aliases[visibleProperties[i]] !== "" ? aliases[visibleProperties[i]] : visibleProperties[i]);
-      }
-
-      //Data
-      var lignes = [];
-
-      for (var i = 0; i < features.length; i++) {
-          var feature = features[i];
-          lignes.push(html`<tr>`)
-          lignes.push(html`
-                  <td>
-                      <button type="button" title="${lizDict['zoomin']}" class="btn btn-sm zoomToFeatureExtent"
-                              data-feature-extent="${JSON.stringify(feature.bbox)}">
-                          <i class="fas fa-search-plus"></i>
-                      </button>
-                  </td>
-          `);
-
-          for (var j = 0; j < visibleProperties.length; j++) {
-              var propertieValue = feature.properties[visibleProperties[j]];
-
-              // Replace url or media by link
-              if(typeof propertieValue === 'string'){
-                  if( propertieValue.slice(0,6) === 'media/' || propertieValue.slice(0,6) === '/media/' ){
-                      var rdata = propertieValue;
-                      if( propertieValue.slice(0,6) === '/media/' )
-                          rdata = propertieValue.slice(1);
-                      lignes.push(html`
-                          <td>
-                              <a href="${lizUrls.media}?repository=${repositoryId}&project=${projectId}&path=/${rdata}"
-                                 target="_blank">${aliases[visibleProperties[j]]}</a>
-                          </td>`);
-                  }
-                  else if( propertieValue.slice(0,4) === 'http' || propertieValue.slice(0,3) === 'www' ){
-                      var rdata = propertieValue;
-                      if(propertieValue.slice(0,3) === 'www')
-                          rdata = 'http://' + propertieValue;
-                      lignes.push(html`
-                          <td>
-                              <a href="${rdata}" target="_blank">${propertieValue}</a>
-                          </td>`);
-                  } else {
-                      lignes.push(html`
-                          <td>${propertieValue}</td>`);
-                  }
-              } else {
-                  lignes.push(html`
-                      <td>${propertieValue}</td>`);
-              }
-          }
-          lignes.push(html`</tr>`);
-      }
+      // Elements : [repositoryId, projectId, layerName, features, aliases, visibleProperties]
+      var elements = [repositoryId, projectId, layerName, features, aliases, visibleProperties];
 
       // Hide other tabs before appending
       var navLinks = document.querySelectorAll('#attributeLayersTabs .nav-link');
@@ -1039,41 +986,20 @@ $(function() {
           </li>'
       );
 
-      //Template Attribute Table
-      const mainTemplate = html`
-          <div class="tab-pane fade show active" id="attributeLayer-${repositoryId}-${projectId}-${layerName}"
-               role="tabpanel">
-              <div class="table">
-                  <table class="table">
-                      <tbody>
-                      <tr>
-                          <th></th>
-                          ${columnName.map((name) =>
-          html`
-                                      <th>${name}</th>
-                                  `
-      )}
-                      </tr>
-                      ${lignes}
-                      </tbody>
-                  </table>
-              </div>
-          </div>
-      `;
-
       const container = document.getElementById('attributeLayersContent');
 
-      const addToContainer = (newTemplate) => {
-          const fragment = document.createElement('div');
-          render(newTemplate, fragment);
-          const newContent = Array.from(fragment.children).map(child => child.outerHTML).join('');
-          container.innerHTML += newContent;
+      const addToContainer = (elements) => {
+          const attributeTable = new AttributeTable(elements);
+          container.appendChild(attributeTable);
+          attributeTable.updateContent();
       };
 
       if (document.getElementById("attributeLayersContent").innerHTML === "") {
-          render(mainTemplate,container);
+          const attributeTable = new AttributeTable(elements);
+          container.appendChild(attributeTable);
+          attributeTable.updateContent();
       } else {
-          addToContainer(mainTemplate);
+          addToContainer(elements);
       }
 
       $('#attributeLayersTabs a').on('click', function (e) {
