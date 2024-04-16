@@ -112,25 +112,25 @@ $(function() {
         return theCleanName.replace(reg, '_');
     }
 
-    function mAddMessage(aMessage, aType, aClose, aTimer) {
+    function mAddMessage( aMessage, aType, aClose, aTimer ) {
         var mType = 'info';
         var mTypeList = ['info', 'danger', 'success'];
         var mClose = false;
         var mDismissible = '';
 
-        if (mTypeList.indexOf(aType) !== -1)
+        if ( $.inArray(aType, mTypeList) != -1 )
             mType = aType;
 
-        if (aClose) {
+        if ( aClose ){
             mClose = true;
             mDismissible = 'alert-dismissible';
         }
 
-        var html = '<div class="alert alert-' + mType + ' ' + mDismissible + ' fade show" role="alert">';
+        var html = '<div class="alert alert-'+mType+' '+mDismissible+' fade show" role="alert">';
 
         html += aMessage;
 
-        if (mClose) {
+        if ( mClose ){
             html += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\
                 <span aria-hidden="true">&times;</span>\
               </button>';
@@ -138,15 +138,12 @@ $(function() {
 
         html += '</div>';
 
-        var elt = html;
-        document.querySelector('#message').insertAdjacentHTML("beforeend", elt);
+        var elt = $(html);
+        $('#message').append(elt);
 
-        if (aTimer !== undefined) {
-            setTimeout(function () {
-                var alertElement = document.querySelector(".alert");
-                if (alertElement !== null) {
-                    alertElement.classList.remove("show");
-                }
+        if(aTimer !== undefined){
+            setTimeout(function() {
+                $(".alert").alert('close');
             }, aTimer);
         }
 
@@ -163,18 +160,18 @@ $(function() {
                 // If key is not present, it might because a shortname has been defined in QGIS
                 if (!cfg.layers.hasOwnProperty(sublayer.Name)) {
                     for (var key in cfg.layers) {
-                        if (cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname == sublayer.Name)) {
+                        if (cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname === sublayer.Name)) {
                             sublayerName = cfg.layers[key].name;
                         }
                     }
                 }
                 // Filter layers in Hidden and Overview directory
-                if (sublayer.hasOwnProperty('Title') && (sublayer.Title.toLowerCase() == 'hidden' || sublayer.Title.toLowerCase() == 'overview')) {
+                if (sublayer.hasOwnProperty('Title') && (sublayer.Title.toLowerCase() === 'hidden' || sublayer.Title.toLowerCase() === 'overview')) {
                     return;
                 }
                 // Filter layers not visible in legend or without geometry
                 if (sublayer.hasOwnProperty('Name') && cfg.layers.hasOwnProperty(sublayerName)
-                    && (cfg.layers[sublayerName].displayInLegend == 'False' || cfg.layers[sublayerName].geometryType == 'none')) {
+                    && (cfg.layers[sublayerName].displayInLegend === 'False' || cfg.layers[sublayerName].geometryType === 'none')) {
                     return;
                 }
                 var layers = buildLayerTree(sublayer, cfg);
@@ -1029,9 +1026,9 @@ $(function() {
         });
 
         // Hide bottom dock
-        if($('#attributeLayersContent').text().trim() === ""){
-          $('#bottom-dock').hide();
-          $('#attribute-btn').removeClass("active");
+        if(document.getElementById("attributeLayersContent").textContent.trim() === ""){
+          document.getElementById("bottom-dock").style.display = 'none';
+          document.getElementById("attribute-btn").classList.remove("active");
         }
 
         // Active another sibling tab if current was active
@@ -1050,7 +1047,7 @@ $(function() {
         mapBuilder.map.getView().fit(transformExtent(bbox, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
       });
 
-      $('#bottom-dock').show();
+      document.getElementById("bottom-dock").style.display = 'block';
     });
   });
 
@@ -1078,7 +1075,7 @@ $(function() {
     }
     // UI
     $(this).siblings().removeClass("active");
-    $(this).addClass("active");
+    this.classList.add("active");
     e.stopPropagation();  // prevent fancytree activate for this row
   });
 
