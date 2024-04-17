@@ -732,6 +732,9 @@ $(function() {
 
         mapBuilder.map.addLayer(newLayer);
         refreshLayerSelected();
+
+        mAddMessage(lizDict['layer.added'], 'success', true, 1000);
+
         e.stopPropagation();  // prevent fancytree activate for this row
     }
   });
@@ -858,6 +861,9 @@ $(function() {
       }
     }
     refreshLayerSelected();
+
+    mAddMessage(lizDict['layer.deleted'], 'success', true, 1000);
+
     e.stopPropagation();  // prevent fancytree activate for this row
   });
 
@@ -1294,6 +1300,7 @@ $(function() {
           dataType:"html",
           success: function( data ){
             setMapContextContent(data);
+            mAddMessage(lizDict['geobookmark.deleted'], 'success', true, 1000);
           }
         });
       }
