@@ -140,7 +140,7 @@
       <select id="resolution-pdf-print" class="custom-select" data-toggle="tooltip" title="{@mapBuilder~pdfprint.resolution@}">
         <option value="72">72 dpi</option>
         <option value="150">150 dpi</option>
-        <option value="300">300 dpi</option>
+        <option value="255">255 dpi</option>
       </select>
       <button id="pdf-print-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">{@view~map.print.toolbar.title@}</button>
     </div>

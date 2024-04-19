@@ -1,4 +1,6 @@
 // it is important to set global var before any imports
+import {map} from "lit-html/directives/map.js";
+
 __webpack_public_path__ = lizUrls.basepath+'mapBuilder/js/';
 
 import $ from 'jquery';
@@ -9,16 +11,19 @@ import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import {defaults as defaultControls, Control, ScaleLine} from 'ol/control.js';
 import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
+import {getDistance} from "ol/sphere";
 
 import OSM from 'ol/source/OSM.js';
+import XYZ from 'ol/source/XYZ.js';
 import StadiaMaps from 'ol/source/StadiaMaps.js';
 import BingMaps from 'ol/source/BingMaps.js';
+import {quadKey} from 'ol/source/BingMaps.js';
 import WMTS from 'ol/source/WMTS.js';
 import WMTSTileGrid from 'ol/tilegrid/WMTS.js';
 import {getWidth} from 'ol/extent.js';
 
 import ImageWMS from 'ol/source/ImageWMS.js';
-import {transformExtent, get as getProjection} from 'ol/proj.js';
+import {transformExtent, get as getProjection, transform, toLonLat} from 'ol/proj.js';
 
 import {DragZoom} from 'ol/interaction.js';
 import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from 'ol/events/condition.js';
@@ -27,6 +32,9 @@ import './modules/bottom-dock.js';
 
 import {LayerStore} from "./components/LayerStore";
 import {addElementToLayerArray} from "./modules/LayerSelection/LayerSelection.js";
+import {CustomProgress} from "./inkmapComponents/ProgressBar";
+
+import {getJobStatus, queuePrint} from '@camptocamp/inkmap';
 
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
@@ -546,77 +554,186 @@ $(function() {
     $("#dock").show();
   });
 
-  $('#pdf-print-btn').on("click", function(){
+  $('#pdf-print-btn').on("click", async function(){
 
     $(this).addClass("disabled");
     document.body.style.cursor = 'progress';
 
-    import(/* webpackChunkName: "jspdf" */ 'jspdf' ).then(({ default: jsPDF }) => {
-      const dims = {
-         a0: [1189, 841],
-         a1: [841, 594],
-         a2: [594, 420],
-         a3: [420, 297],
-         a4: [297, 210],
-         a5: [210, 148]
-       };
+    import(/* webpackChunkName: "jspdf" */ 'jspdf' ).then(async ({default: jsPDF}) => {
+        const dims = {
+            a0: [1189, 841],
+            a1: [841, 594],
+            a2: [594, 420],
+            a3: [420, 297],
+            a4: [297, 210],
+            a5: [210, 148]
+        };
 
-      const format = document.getElementById('format-pdf-print').value;
-      const resolution = document.getElementById('resolution-pdf-print').value;
-      const dim = dims[format];
-      const width = Math.round(dim[0] * resolution / INCHTOMM);
-      const height = Math.round(dim[1] * resolution / INCHTOMM);
-      const size = mapBuilder.map.getSize();
-      const viewResolution = mapBuilder.map.getView().getResolution();
+        const format = document.getElementById('format-pdf-print').value;
+        const resolution = document.getElementById('resolution-pdf-print').value;
+        const dim = dims[format];
+        const width = dim[0];
+        const height = dim[1];
 
-      // Note that when using import() on ES6 modules you must reference the .default property as it's the actual module object that will be returned when the promise is resolved.
-      // => https://webpack.js.org/guides/lazy-loading/
-      const pdf = new jsPDF('landscape', 'mm', format);
-      // Add title
-      pdf.setFontSize(18);
-      pdf.text($('#pdf-print-title').val(), 50, 10);
+        // Note that when using import() on ES6 modules you must reference the .default property as it's the actual module object that will be returned when the promise is resolved.
+        // => https://webpack.js.org/guides/lazy-loading/
+        const pdf = new jsPDF('landscape', 'mm', format);
+        // Add title
+        pdf.setFontSize(18);
+        pdf.text($('#pdf-print-title').val(), 50, 10);
 
-      let offset = 25;
-      let maxWidthLegend = 0;
+        let offset = 25;
+        let maxWidthLegend = 0;
 
-      document.querySelectorAll("#legend img").forEach(function (legend) {
-        pdf.addImage(legend, 'PNG', 0, offset * INCHTOMM/resolution);
-        offset += legend.height;
+        document.querySelectorAll("#legend img").forEach(function (legend) {
+            pdf.addImage(legend, 'PNG', 0, offset * INCHTOMM / resolution);
+            offset += legend.height;
 
-        if(legend.width > maxWidthLegend){
-          maxWidthLegend = legend.width;
-        }
-      });
-
-      mapBuilder.map.once('rendercomplete', function () {
-        const mapCanvas = document.createElement('canvas');
-        mapCanvas.width = width;
-        mapCanvas.height = height;
-        const mapContext = mapCanvas.getContext('2d');
-        document.querySelectorAll('.ol-layer canvas').forEach(function (canvas) {
-          if (canvas.width > 0) {
-            const transform = canvas.style.transform;
-            // Get the transform parameters from the style's transform matrix
-            const matrix = transform.match(/^matrix\(([^\(]*)\)$/)[1].split(',').map(Number);
-            // Apply the transform to the export map context
-            CanvasRenderingContext2D.prototype.setTransform.apply(mapContext, matrix);
-            mapContext.drawImage(canvas, 0, 0);
-          }
+            if (legend.width > maxWidthLegend) {
+                maxWidthLegend = legend.width;
+            }
         });
-        pdf.addImage(mapCanvas.toDataURL('image/jpeg'), 'JPEG', maxWidthLegend * INCHTOMM/resolution, 20, dim[0], dim[1]);
-        pdf.save('map.pdf');
-        // Reset original map size
-        mapBuilder.map.setSize(size);
-        mapBuilder.map.getView().setResolution(viewResolution);
-        document.body.style.cursor = 'auto';
-      });
 
-      // Set print size
-      const printSize = [width - maxWidthLegend, height];
-      mapBuilder.map.setSize(printSize);
-      const scaling = Math.min(width / size[0], height / size[1]);
-      mapBuilder.map.getView().setResolution(viewResolution / scaling);
+        const extent = mapBuilder.map.previousExtent_;
+
+        const left = toLonLat([extent[0], extent[1]]);
+        const right = toLonLat([extent[2], extent[3]]);
+        const dist = getDistance(left, right);
+        const scale = (dist * 1000 / width)
+
+        var baseLayerSelect = document.querySelector('#baseLayerSelect')
+        const activeLayer = mapBuilder.map.getAllLayers()[baseLayerSelect.selectedIndex].values_.source;
+
+        var layers = [];
+
+        if (activeLayer instanceof XYZ) {
+            console.log("Active layer => XYZ")
+            layers = [{
+                "type": "XYZ",
+                "url": activeLayer.getUrls()[0]
+            }]
+        } else if (activeLayer instanceof BingMaps) {
+            console.log("Active layer => BingMaps")
+
+            layers = [{
+                "type": "BingMaps",
+                "url": 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
+                        activeLayer.getImagerySet() +
+                        '?uriScheme=https&include=ImageryProviders&key=' +
+                        activeLayer.getApiKey() +
+                        '&c=' +
+                        activeLayer.culture_
+            }]
+/*
+            var zxy = [Math.round(mapBuilder.map.getView().getZoom())];
+            zxy.push(mapBuilder.map.getView().getCenter()[0]);
+            zxy.push(mapBuilder.map.getView().getCenter()[1]);
+
+            console.log(Math.round(mapBuilder.map.getView().getZoom()))
+            console.log(mapBuilder.map.getView().getCenter()[0])
+            console.log(mapBuilder.map.getView().getCenter()[1])
+
+            function quadKeyToTileCoord(quadKey) {
+                let tileCoord = [0, 0, 0];
+                let zoom = quadKey.length;
+                for (let i = zoom; i > 0; i--) {
+                    let bitmask = 1 << (i - 1);
+                    let digit = parseInt(quadKey.charAt(zoom - i), 10);
+                    if ((digit & 1) !== 0) {
+                        tileCoord[1] |= bitmask;
+                    }
+                    if ((digit & 2) !== 0) {
+                        tileCoord[0] |= bitmask;
+                    }
+                }
+                tileCoord[2] = zoom;
+                return tileCoord;
+            }
+            // [x,y,z]
+
+            var test = quadKey(zxy);
+            console.log(zxy)
+            console.log(test)
+            console.log(quadKeyToTileCoord("1202221212"))
+*/
+            layers = [
+                {
+                    "type": "XYZ",
+                    "url": "https://ecn.t{0-3}.tiles.virtualearth.net/tiles/r" + test + ".jpeg?g=129&mkt=" + activeLayer.culture_ + "&shading=hill&stl=H",
+                    "attribution": "© Microsoft Corporation"
+                }
+            ];
+            mAddMessage(lizDict['layer.not.printable'], 'danger', true, 2500);
+            return;
+        } else if (activeLayer instanceof WMTS) {
+            console.log("Active layer => WMTS")
+            layers = [{
+                "type": "WMTS",
+                "url": activeLayer.getUrls()[0],
+                "layer": activeLayer.getLayer(),
+                "matrixSet": "PM",
+                "projection": "EPSG:3857",
+                "format": activeLayer.getFormat(),
+                "style": "normal",
+                "tileGrid": {
+                    "matrixIds": activeLayer.getTileGrid().getMatrixIds(),
+                    "resolutions": activeLayer.getTileGrid().getResolutions(),
+                    "tileSize": activeLayer.getTileGrid().getTileSize()
+                }
+            }]
+        } else if (activeLayer instanceof ImageWMS) {
+            console.log("Active layer => WMS")
+            layers = [{
+                "type": "WMS",
+                "url": activeLayer.getUrls()[0],
+                "layer": activeLayer.getLayer()
+            }]
+        } else {
+            console.log('empty active layer')
+        }
+
+        //Annex layers
+        for (var i = baseLayerSelect.length; i < mapBuilder.map.getAllLayers().length; i++) {
+            console.log("LAYER DETECTED")
+            var otherLayer = mapBuilder.map.getAllLayers()[i].values_.source
+            layers.push({
+                "type": "WMS",
+                "url": otherLayer.getUrl(),
+                "layer": otherLayer.getParams().LAYERS
+            });
+        }
+
+        const specValue = {
+            "layers": layers,
+            "center": transform(mapBuilder.map.getView().targetCenter_, mapBuilder.map.getView().getProjection(), 'EPSG:4326'),
+            "size": [width, height, 'mm'],
+            "dpi": resolution,
+            "scale": scale,
+            "projection": mapBuilder.map.getView().getProjection().code_,
+        };
+console.log(specValue)
+        //Create progress bar
+        var customProgress = new CustomProgress();
+
+        document.getElementById("pdf-print").appendChild(customProgress);
+
+        const jobId = await queuePrint(specValue);
+
+        getJobStatus(jobId).subscribe((printStatus) => {
+            customProgress.setLengthBar(printStatus.progress)
+
+            if (printStatus.progress === 1) {
+                customProgress.setSuccesState();
+                pdf.addImage(URL.createObjectURL(printStatus.imageBlob), 'JPEG', maxWidthLegend * INCHTOMM / resolution, 20, dim[0], dim[1]);
+                pdf.save('map.pdf');
+                setTimeout(() => {
+                    document.getElementById("pdf-print").removeChild(customProgress);
+                }, 500);
+            }
+        });
+
     });
+    document.body.style.cursor = 'auto';
     $(this).removeClass("disabled");
   });
 

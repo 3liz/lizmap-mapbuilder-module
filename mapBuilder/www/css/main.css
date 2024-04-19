@@ -148,6 +148,26 @@
     margin-left: 25px;
 }
 
+/* Progress Bar for Printing */
+.progress {
+    display: -ms-flexbox;
+    display: flex;
+    height: 1rem;
+    overflow: hidden;
+    font-size: .75rem;
+    background-color: #e9ecef;
+    border-radius: .25rem;
+}
+
+.bg-primary {
+    background-color: #007bff !important;
+}
+
+.bg-success {
+    background-color: #28a745 !important;
+}
+/* End of Progress Bar for Printing */
+
 /* CSS for LayerTree */
 ul.layerStore-tree {
     display: flex;
