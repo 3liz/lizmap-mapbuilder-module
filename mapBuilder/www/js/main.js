@@ -1,5 +1,4 @@
 // it is important to set global var before any imports
-import {map} from "lit-html/directives/map.js";
 
 __webpack_public_path__ = lizUrls.basepath+'mapBuilder/js/';
 
@@ -18,7 +17,6 @@ import XYZ from 'ol/source/XYZ.js';
 import StadiaMaps from 'ol/source/StadiaMaps.js';
 import XYZ from 'ol/source/XYZ.js';
 import BingMaps from 'ol/source/BingMaps.js';
-import {quadKey} from 'ol/source/BingMaps.js';
 import WMTS from 'ol/source/WMTS.js';
 import WMTSTileGrid from 'ol/tilegrid/WMTS.js';
 import {getWidth} from 'ol/extent.js';
@@ -1219,57 +1217,14 @@ $(function() {
             }]
         } else if (activeLayer instanceof BingMaps) {
             console.log("Active layer => BingMaps")
+            console.log(activeLayer)
 
             layers = [{
                 "type": "BingMaps",
-                "url": 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
-                        activeLayer.getImagerySet() +
-                        '?uriScheme=https&include=ImageryProviders&key=' +
-                        activeLayer.getApiKey() +
-                        '&c=' +
-                        activeLayer.culture_
+                "imagerySet": activeLayer.getImagerySet(),
+                "apiKey": activeLayer.getApiKey(),
             }]
-/*
-            var zxy = [Math.round(mapBuilder.map.getView().getZoom())];
-            zxy.push(mapBuilder.map.getView().getCenter()[0]);
-            zxy.push(mapBuilder.map.getView().getCenter()[1]);
 
-            console.log(Math.round(mapBuilder.map.getView().getZoom()))
-            console.log(mapBuilder.map.getView().getCenter()[0])
-            console.log(mapBuilder.map.getView().getCenter()[1])
-
-            function quadKeyToTileCoord(quadKey) {
-                let tileCoord = [0, 0, 0];
-                let zoom = quadKey.length;
-                for (let i = zoom; i > 0; i--) {
-                    let bitmask = 1 << (i - 1);
-                    let digit = parseInt(quadKey.charAt(zoom - i), 10);
-                    if ((digit & 1) !== 0) {
-                        tileCoord[1] |= bitmask;
-                    }
-                    if ((digit & 2) !== 0) {
-                        tileCoord[0] |= bitmask;
-                    }
-                }
-                tileCoord[2] = zoom;
-                return tileCoord;
-            }
-            // [x,y,z]
-
-            var test = quadKey(zxy);
-            console.log(zxy)
-            console.log(test)
-            console.log(quadKeyToTileCoord("1202221212"))
-*/
-            layers = [
-                {
-                    "type": "XYZ",
-                    "url": "https://ecn.t{0-3}.tiles.virtualearth.net/tiles/r" + test + ".jpeg?g=129&mkt=" + activeLayer.culture_ + "&shading=hill&stl=H",
-                    "attribution": "© Microsoft Corporation"
-                }
-            ];
-            mAddMessage(lizDict['layer.not.printable'], 'danger', true, 2500);
-            return;
         } else if (activeLayer instanceof WMTS) {
             console.log("Active layer => WMTS")
             layers = [{
