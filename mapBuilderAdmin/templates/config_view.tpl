@@ -1,7 +1,10 @@
+{meta_html js $j_basepath.'mapBuilder/js/mapbuilderadminpreview.js'}
+
 {jmessage_bootstrap}
 
 <h1>{@mapBuilderAdmin~admin.menu.configuration.label@}</h1>
 
+<div id="map" style="width: 500px;height: 500px"></div>
 {formdatafull $form}
 
 <!-- Modify -->

@@ -5,7 +5,8 @@ module.exports = {
   devtool: 'source-map',
   entry: {
     mapbuilder: './main.js',
-    mapbuilderadmin: './mainadmin.js'
+    mapbuilderadmin: './mainadmin.js',
+    mapbuilderadminpreview: './mainadminpreview.js'
   },
   module: {
     rules: [
