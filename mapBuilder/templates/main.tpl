@@ -13,14 +13,14 @@
         <li class="home nav-item">
           <a href="{jurl 'view~default:index'}" class="nav-link">
             <span class="icon"></span>
-            <span class="text text-secondary">{@view~default.repository.list.title@}</span>
+            <span class="text">{@view~default.repository.list.title@}</span>
           </a>
         </li>
         {if $isConnected}
           <li class="user nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
               <span class="icon"></span>
-              <span class="text text-secondary">{$user->login|eschtml}</span>
+              <span class="text">{$user->login|eschtml}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
               {ifacl2 'auth.user.view'}
@@ -33,14 +33,14 @@
           <li class="login nav-item">
             <a class="nav-link" href="{jurl 'jcommunity~login:index', array('auth_url_return'=>$auth_url_return)}">
               <span class="icon"></span>
-              <span class="text text-secondary">{@view~default.header.connect@}</span>
+              <span class="text">{@view~default.header.connect@}</span>
             </a>
           </li>
           {if isset($allowUserAccountRequests) and $allowUserAccountRequests == '1'}
           <li class="registered nav-item">
             <a class="nav-link" href="{jurl 'jcommunity~registration:index'}">
               <span class="icon"></span>
-              <span class="text text-secondary">{@view~default.header.createAccount@}</span>
+              <span class="text">{@view~default.header.createAccount@}</span>
             </a>
           </li>
           {/if}
