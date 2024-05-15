@@ -1,0 +1,44 @@
+/*
+CSS stylesheet for admin configuration of mapBuilder
+ */
+
+.ol-do-control {
+    display: flex;
+    top: .5em;
+    right: .5em;
+}
+
+.ol-do-control .ol-do-control-undo {
+    border-radius: 2px 0 0 2px;
+}
+
+.ol-do-control .ol-do-control-redo {
+    border-radius: 2px 0 0 2px;
+}
+
+.ol-zoom-origin {
+    top: 4.5em;
+    right: .5em;
+}
+
+#preview.ol-zoom-origin {
+    top: .5em;
+    right: .5em;
+}
+
+.ol-select-extent {
+    top: 2.5em;
+    right: .5em;
+}
+
+#controlButtonDisabled {
+    background-color: lightgray;
+    color: rgb(157, 157, 157);
+    cursor: default;
+}
+
+#controlButtonDisabled:hover {
+    background-color: lightgray;
+    color: rgb(157, 157, 157);
+    outline: none;
+}

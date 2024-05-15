@@ -10,6 +10,7 @@ import {WMTS, StadiaMaps, BingMaps, OSM, Vector as VectorSource} from 'ol/source
 import WMTSTileGrid from 'ol/tilegrid/WMTS.js';
 
 import {get as getProjection, transformExtent} from 'ol/proj.js';
+import {Control, defaults as defaultControls} from 'ol/control.js';
 
 $(function () {
 
@@ -104,6 +105,41 @@ $(function () {
         });
     }
 
+    var zoomToOriginControl = class ZoomToOriginControl extends Control {
+
+        constructor(opt_options) {
+
+            var options = opt_options || {};
+
+            var button = document.createElement('button');
+            button.className = 'fas fa-expand-arrows-alt';
+            button.title = 'Zoom to selected map extent';
+
+            var element = document.createElement('div');
+            element.className = 'ol-zoom-origin ol-unselectable ol-control';
+            element.id = 'preview';
+            element.appendChild(button);
+
+            super({
+                element: element,
+                target: options.target,
+            });
+
+            button.addEventListener('click', this.handleZoomToOrigin.bind(this), false);
+        }
+
+        handleZoomToOrigin() {
+            var extent = document.getElementById("_extent").textContent.split(',').map(parseFloat);
+
+            extent = transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
+
+            this.getMap().getView().fit(extent, {
+                duration: 250
+            });
+        };
+    }
+
+
     var source = new VectorSource({wrapX: false});
 
     var vector = new VectorLayer({
@@ -113,6 +149,9 @@ $(function () {
     var map = new Map({
         layers: [raster, vector],
         target: 'map',
+        controls: defaultControls().extend([
+            new zoomToOriginControl()
+        ]),
         view: new View({
             extent: transformExtent([-180, -85.06, 180, 85.06], 'EPSG:4326', 'EPSG:3857'),
             center: [95022, 5922170],

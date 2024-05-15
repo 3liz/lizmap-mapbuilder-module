@@ -1,4 +1,6 @@
 {meta_html js $j_basepath.'mapBuilder/js/mapbuilderadminpreview.js'}
+{meta_html css $j_basepath."mapBuilder/css/admin.css"}
+{meta_html css $j_basepath."mapBuilder/css/fontawesome-free-web/css/all.min.css"}
 
 {jmessage_bootstrap}
 
