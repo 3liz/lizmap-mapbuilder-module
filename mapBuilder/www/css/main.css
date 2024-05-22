@@ -232,3 +232,69 @@ span.fancytree-drag-source.fancytree-drag-remove {
 .ol-scale-line {
     margin-left: 25px;
 }
+
+/* CSS for LayerTree */
+ul.layerStore-tree {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    user-select: none;
+}
+
+li.layerStore-arrow {
+    padding: 5px 0;
+    cursor: pointer;
+}
+
+.layerStore-tree ul {
+    padding-left: 20px;
+}
+
+.layerStore-layer {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 10px;
+}
+
+.layerStore-layer span {
+    padding: 0 10px;
+    flex: 1;
+}
+
+.layerStore-layer select {
+    width: 100px;
+    margin-right: 10px;
+}
+
+span.layerStore-folder {
+    padding: 0 5px;
+}
+
+/* CSS for selection */
+#layerSelected tbody tr {
+    box-shadow: 0 0 5px 0.5px rgba(0,0,0,0.2);
+    display: flex;
+    padding: 10px;
+    margin-bottom: 7px;
+    border-radius: 9px;
+}
+
+#layerSelected tbody tr:last-child {
+    margin-bottom: 0
+}
+
+#layerSelected tbody tr td:first-child {
+    flex: 1;
+    margin: auto;
+}
+
+#layerSelected tbody tr td:nth-child(n) {
+    margin-left: 3px
+}
+
+#layerSelected tbody tr td:nth-child(1), #layerSelected tbody tr td:nth-child(2) {
+    margin-left: 0
+}

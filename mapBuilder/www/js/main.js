@@ -18,7 +18,6 @@ import WMTS from 'ol/source/WMTS.js';
 import WMTSTileGrid from 'ol/tilegrid/WMTS.js';
 import {getWidth} from 'ol/extent.js';
 
-import WMSCapabilities from 'ol/format/WMSCapabilities.js';
 import ImageWMS from 'ol/source/ImageWMS.js';
 import {transformExtent, get as getProjection} from 'ol/proj.js';
 
@@ -28,6 +27,8 @@ import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from '
 import './modules/bottom-dock.js';
 
 import {AttributeTable} from "./components/AttributeTable";
+import {LayerStore} from "./components/LayerStore";
+import {LayerTreeFolder} from "./modules/LayerTreeFolder";
 
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
@@ -149,84 +150,6 @@ $(function() {
         }
 
         return elt;
-    }
-
-    function buildLayerTree(layer, cfg) {
-        var myArray = [];
-        if (Array.isArray(layer)) {
-            layer.forEach(function (sublayer) {
-                // Layer name is used as a key in lizmap config
-                var sublayerName = sublayer.Name;
-
-                // If key is not present, it might because a shortname has been defined in QGIS
-                if (!cfg.layers.hasOwnProperty(sublayer.Name)) {
-                    for (var key in cfg.layers) {
-                        if (cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname === sublayer.Name)) {
-                            sublayerName = cfg.layers[key].name;
-                        }
-                    }
-                }
-                // Filter layers in Hidden and Overview directory
-                if (sublayer.hasOwnProperty('Title') && (sublayer.Title.toLowerCase() === 'hidden' || sublayer.Title.toLowerCase() === 'overview')) {
-                    return;
-                }
-                // Filter layers not visible in legend or without geometry
-                if (sublayer.hasOwnProperty('Name') && cfg.layers.hasOwnProperty(sublayerName)
-                    && (cfg.layers[sublayerName].displayInLegend === 'False' || cfg.layers[sublayerName].geometryType === 'none')) {
-                    return;
-                }
-                var layers = buildLayerTree(sublayer, cfg);
-                myArray = myArray.concat(layers);
-            });
-            return myArray;
-        }
-
-        // Layer name is used as a key in lizmap config
-        var layerName = layer.Name;
-
-        // If key is not present, it might because a shortname has been defined in QGIS
-        if (!cfg.layers.hasOwnProperty(layer.Name)) {
-            for (var key in cfg.layers) {
-                if (cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname == layer.Name)) {
-                    layerName = cfg.layers[key].name;
-                }
-            }
-        }
-
-        // Create node
-        if (cfg.layers.hasOwnProperty(layerName)) {
-            var myObj = {title: cfg.layers[layerName].title, name: layerName, popup: cfg.layers[layerName].popup};
-
-            if (layer.hasOwnProperty('Style')) {
-                myObj.style = layer.Style;
-            }
-            if (layer.hasOwnProperty('EX_GeographicBoundingBox')) {
-                myObj.bbox = layer.EX_GeographicBoundingBox;
-            }
-            if (layer.hasOwnProperty('MinScaleDenominator') && layer.MinScaleDenominator !== undefined) {
-                myObj.minScale = layer.MinScaleDenominator;
-            }
-            if (layer.hasOwnProperty('MaxScaleDenominator') && layer.MaxScaleDenominator !== undefined) {
-                myObj.maxScale = layer.MaxScaleDenominator;
-            }
-            if (cfg.attributeLayers.hasOwnProperty(layerName)
-                && cfg.attributeLayers[layerName].hideLayer != "True"
-                && cfg.attributeLayers[layerName].pivot != "True") {
-                myObj.hasAttributeTable = true;
-            }
-            if (cfg.layers.hasOwnProperty(layerName)
-                && cfg.layers[layerName].abstract != "") {
-                myObj.tooltip = cfg.layers[layerName].abstract;
-            }
-            myArray.push(myObj);
-        }
-
-        // Layer has children and is not a group as layer => folder
-        if (layer.hasOwnProperty('Layer') && cfg.layers[layerName].groupAsLayer == 'False') {
-            myObj.folder = true;
-            myObj.children = buildLayerTree(layer.Layer, cfg);
-        }
-        return myArray;
     }
 
     // refresh #layerSelected tree to reflect OL layer's state
@@ -568,288 +491,228 @@ $(function() {
     });
   });
 
-  $('#layerStore').fancytree({
-    selectMode: 3,
-    source: mapBuilder.layerStoreTree,
-    extensions: ["table", "glyph"],
-    table: {
-      indentation: 20,      // indent 20px per node level
-      nodeColumnIdx: 0     // render the node title into the first column
-    },
-    glyph: {
-        // The preset defines defaults for all supported icon types.
-        // It also defines a common class name that is prepended (in this case 'fa ')
-        preset: "awesome5",
-        map: {
-          doc: "fas fa-globe-africa",
-          docOpen: "fas fa-globe-africa",
-          folder: "fas fa-folder",
-          folderOpen: "fas fa-folder-open"
-        }
-      },
-    lazyLoad: function(event, data) {
-      //https://github.com/mar10/fancytree/wiki/TutorialLoadData
-      var repositoryId = data.node.data.repository;
-      var projectId = data.node.data.project;
-      var url = lizUrls.wms+"?repository=" + repositoryId + "&project=" + projectId + "&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
-      var parser = new WMSCapabilities();
+  //Build the tree
+  var listTree = [];
 
-      const promises = [
-        new Promise(resolve =>
-          $.get(url, function(capabilities) {
-            var result = parser.read(capabilities);
-            if (result.hasOwnProperty('Capability')){
-              var node = result.Capability;
-
-              if (node.hasOwnProperty('Layer')) {
-                // First layer is in fact project
-                if (node.Layer.hasOwnProperty('Layer')) {
-                  resolve(node.Layer.Layer);
-                } else { // Should not happen
-                  resolve(node.Layer);
-                }
-              }
-            }else{
-              resolve(false);
-            }
-          })
-        ),
-        new Promise(resolve =>
-          $.getJSON(lizUrls.config,{"repository":repositoryId,"project":projectId},function(cfgData) {
-            if (cfgData){
-              resolve(cfgData);
-            }else{
-              resolve(false);
-            }
-          })
-        )
-      ];
-
-      data.result = Promise.all(promises).then(results => {
-        if(! mapBuilder.hasOwnProperty('lizMap')){
-          mapBuilder.lizMap = {};
-        }
-
-        if (results[0] && results[1]){
-          // Cache project config for later use
-          mapBuilder.lizMap[repositoryId + '|' + projectId] = {};
-          mapBuilder.lizMap[repositoryId + '|' + projectId].config = results[1];
-
-          return buildLayerTree(results[0], results[1]);
-        }else{
-          // Return empty array when errors
-          return [];
-        }
-      });
-    },
-    renderColumns: function(event, data) {
-      var node = data.node,
-      tdList = node.tr.querySelectorAll(`:scope ${">td"}`);
-      // Style list
-      if(node.data.hasOwnProperty('style')){
-        var styleOption = "";
-        node.data.style.forEach(function(style) {
-          styleOption += "<option>"+style.Name+"</option>";
-        });
-        tdList[1].innerHTML = "<select class='layerStyles custom-select custom-select-sm'>"+styleOption+"</select>";
-      }
-      // Add button for layers (level 1 => repositories, 2 => projects)
-      if(node.getLevel() > 2 && node.children == null){
-        tdList[2].innerHTML = "<button type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>";
-      }
-    }
+  mapBuilder.layerStoreTree.forEach((value) => {
+    listTree.push(new LayerTreeFolder({
+      title: value.title,
+      children: value.children,
+      lazy: value.lazy,
+      project: value.project,
+      repository: value.repository,
+      bbox: value.bbox,
+      popup: value.popup
+    }));
   });
 
+  console.log(listTree);
+
+  var layerStore;
+
+  layerStore = new LayerStore(document.getElementById("layerStoreHolder"));
+
+  layerStore.tree = listTree;
+
+  function getNodeFromUuid(uuid) {
+    for (var i = 0; i < listTree.length; i++) {
+      var node = layerStore.getNode(uuid, listTree[i]);
+      if (node !== -1) {
+        return node;
+      }
+    }
+    return -1;
+  }
+
   /* Handle custom addLayerButton clicks */
-  document.querySelector('#layerStore').addEventListener('click', function(e) {
+  document.querySelector('#layerStoreHolder').addEventListener('click', function (e) {
     if (e.target.closest('.addLayerButton')) {
-      var node = $.ui.fancytree.getNode(e.target);
-      var parentList = node.getParentList();
-      // We get repositoryId and projectId from parents node in the tree
-      var repositoryId = parentList[1].data.repository;
-      var projectId = parentList[1].data.project;
+      var element = e.target.closest('.addLayerButton');
+
+      var node = getNodeFromUuid(element.id);
+      var nodeLi = document.getElementById(element.id).closest("li");
+
+      var repositoryId = node.getRepository();
+      var projectId = node.getProject();
 
       var newLayer = new ImageLayer({
-        title: node.title,
+        title: node.getTitle(),
         repositoryId: repositoryId,
         projectId: projectId,
-        bbox: node.data.bbox,
-        popup: node.data.popup,
-        hasAttributeTable: node.data.hasAttributeTable,
+        bbox: node.getBbox(),
+        popup: node.getPopup(),
+        hasAttributeTable: node.hasAttributeTable(),
         source: new ImageWMS({
-          url: lizUrls.wms+'?repository=' + repositoryId + '&project=' + projectId,
+          url: lizUrls.wms + '?repository=' + repositoryId + '&project=' + projectId,
           params: {
-            'LAYERS': node.data.name,
-            'STYLES': $(node.tr).find(">td .layerStyles :selected").text()
+            'LAYERS': node.getName(),
+            'STYLES': nodeLi.querySelector(".layerStyles").value
           },
           serverType: 'qgis'
-          })
+        })
       });
 
-        // Set min/max resolution if min/max scale are defined in getCapabilities
-        if(node.data.hasOwnProperty('minScale')){
-            newLayer.setMinResolution(node.data.minScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
+      // Set min/max resolution if min/max scale are defined in getCapabilities
+      if (node.getMinScale()) {
+        newLayer.setMinResolution(node.data.minScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
+      }
+      if (node.getMaxScale()) {
+        newLayer.setMaxResolution(node.data.maxScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
+      }
+
+      var maxZindex = -1;
+      // Get maximum Z-index to put new layer at top of the stack
+      mapBuilder.map.getLayers().forEach(function (layer) {
+        var zIndex = layer.getZIndex();
+        if (zIndex !== undefined && zIndex > maxZindex) {
+          maxZindex = zIndex;
         }
-        if(node.data.hasOwnProperty('maxScale')){
-            newLayer.setMaxResolution(node.data.maxScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
-        }
+      });
 
-        var maxZindex = -1;
-        // Get maximum Z-index to put new layer at top of the stack
-        mapBuilder.map.getLayers().forEach(function(layer) {
-            var zIndex = layer.getZIndex();
-            if(zIndex !== undefined && zIndex > maxZindex){
-                maxZindex = zIndex;
-            }
-        });
+      if (maxZindex > -1) {
+        newLayer.setZIndex(maxZindex + 1);
+      } else {
+        newLayer.setZIndex(0);
+      }
 
-        if(maxZindex > -1){
-            newLayer.setZIndex(maxZindex + 1);
-        }else{
-            newLayer.setZIndex(0);
-        }
+      // Show layer is loading
+      newLayer.getSource().on('imageloadstart', function (event) {
+        var span1 = document.createElement('span');
+        span1.classList.add('spinner-grow', 'spinner-grow-sm');
+        span1.setAttribute('title', lizDict['selector.layers.loading'] + '...');
+        span1.setAttribute('role', 'status');
 
-        // Show layer is loading
-        newLayer.getSource().on('imageloadstart', function(event) {
-            var span1 = document.createElement('span');
-            span1.classList.add('spinner-grow', 'spinner-grow-sm');
-            span1.setAttribute('title', lizDict['selector.layers.loading'] + '...');
-            span1.setAttribute('role', 'status');
+        var span2 = document.createElement('span');
+        span2.classList.add('sr-only');
+        span2.textContent = lizDict['selector.layers.loading'] + '...';
 
-            var span2 = document.createElement('span');
-            span2.classList.add('sr-only');
-            span2.textContent = lizDict['selector.layers.loading'] + '...';
+        span1.appendChild(span2);
 
-            span1.appendChild(span2);
+        var layersLoading = document.getElementById('layers-loading');
+        layersLoading.insertBefore(span1, layersLoading.firstChild);
+      });
 
-            var layersLoading = document.getElementById('layers-loading');
-            layersLoading.insertBefore(span1, layersLoading.firstChild);
-        });
+      // Show layer had loaded
+      newLayer.getSource().on('imageloadend', function (event) {
+        document.querySelector("#layers-loading > .spinner-grow:first-child").remove();
+      });
 
-        // Show layer had loaded
-        newLayer.getSource().on('imageloadend', function(event) {
-            document.querySelector("#layers-loading > .spinner-grow:first-child").remove();
-        });
+      mapBuilder.map.addLayer(newLayer);
+      refreshLayerSelected();
 
-        mapBuilder.map.addLayer(newLayer);
-        refreshLayerSelected();
-
-        mAddMessage(lizDict['layer.added'], 'success', true, 1000);
-
-        e.stopPropagation();  // prevent fancytree activate for this row
+      mAddMessage(lizDict['layer.added'], 'success', true, 1000);
     }
   });
 
 
   $('#layerSelected').fancytree({
-      extensions: ["dnd5", "table"],
-      table: {
-        indentation: 20,      // indent 20px per node level
-        nodeColumnIdx: 0     // render the node title into the first column
+    extensions: ["dnd5", "table"],
+    table: {
+      indentation: 20,      // indent 20px per node level
+      nodeColumnIdx: 0     // render the node title into the first column
+    },
+    dnd5: {
+      dragStart: function() {
+        return true;
       },
-      dnd5: {
-          dragStart: function() {
-            return true;
-          },
-          dragDrop: function(node, data) {
-            if (data.otherNode) {
-              data.otherNode.moveTo(node, data.hitMode);
-            }
-            // Parcourt de la liste des nodes pour mettre à jour le Z-index des couches
-            var allNodes = node.parent.children;
+      dragDrop: function(node, data) {
+        if (data.otherNode) {
+          data.otherNode.moveTo(node, data.hitMode);
+        }
+        // Parcourt de la liste des nodes pour mettre à jour le Z-index des couches
+        var allNodes = node.parent.children;
 
-            for (var i = 0; i < allNodes.length; i++) {
-              var layers = mapBuilder.map.getLayers().getArray();
-              for (var j = 0; j < layers.length; j++) {
-                if (allNodes[i].data.ol_uid == layers[j].ol_uid) {
-                  layers[j].setZIndex(allNodes.length - i);
-                }
-              }
+        for (var i = 0; i < allNodes.length; i++) {
+          var layers = mapBuilder.map.getLayers().getArray();
+          for (var j = 0; j < layers.length; j++) {
+            if (allNodes[i].data.ol_uid == layers[j].ol_uid) {
+              layers[j].setZIndex(allNodes.length - i);
             }
-            // Refresh legends
-            loadLegend();
-          },
-          dragEnter: function() {
-            // Don't allow dropping *over* a node (would create a child). Just
-            // allow changing the order:
-            return ["before", "after"];
           }
+        }
+        // Refresh legends
+        loadLegend();
       },
-      renderColumns: function(event, data) {
-        var node = data.node;
-        var nodeRow = $(node.tr);
-        node.tr.querySelectorAll(`:scope ${".layerSelectedStyles"}`)[0].textContent = node.data.styles;
-        var opacity = 0;
-        var visible = true;
+      dragEnter: function() {
+        // Don't allow dropping *over* a node (would create a child). Just
+        // allow changing the order:
+        return ["before", "after"];
+      }
+    },
+    renderColumns: function(event, data) {
+      var node = data.node;
+      node.tr.querySelectorAll(`:scope ${".layerSelectedStyles"}`)[0].textContent = node.data.styles;
+      var opacity = 0;
+      var visible = true;
 
-        var layers = mapBuilder.map.getLayers().getArray();
-        for (var i = 0; i < layers.length; i++) {
-          if(layers[i].ol_uid == node.data.ol_uid){
-            opacity = layers[i].getOpacity();
-            visible = layers[i].getVisible();
-          }
-        }
-
-        node.tr.querySelector(".deleteLayerButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-trash'></i></button>"
-
-        if(visible){
-          node.tr.querySelector(".toggleVisibilityButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-eye'></i></button>"
-        }else{
-          node.tr.querySelector(".toggleVisibilityButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>"
-        }
-        node.tr.querySelector(".zoomToExtentButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>"
-
-        // Add button to display layer's attribute table if eligible
-        if(node.tr.querySelectorAll('.displayDataButton').length === 1 && node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable !== undefined){
-          var disabled = '';
-
-          // original statement : $("#attributeLayersTabs .nav-link [data-ol_uid='"+node.data.ol_uid+"']").length
-
-          var navLinks = document.getElementById('attributeLayersTabs').querySelectorAll('.nav-link');
-          var el = [];
-
-          navLinks.forEach(function(navLink) {
-              if (navLink.getAttribute('data-ol_uid') === node.data.ol_uid) {
-                  el.push(navLink);
-              }
-          });
-
-          if(el.length !== 0){
-            disabled = 'disabled';
-          }
-
-          node.tr.querySelector(".displayDataButton").innerHTML = "<button type='button' \"+disabled+\" class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>";
-        }
-        node.tr.querySelector(".changeOrder").innerHTML = "<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>";
-        node.tr.querySelector(".toggleInfos").innerHTML = "<button class='btn btn-sm'><i class='fas fa-info'></i></button>";
-
-        var buttons = "";
-        for (var i = 1; i < 6; i++) {
-          var active = opacity == (i*20)/100 ? "active" : "";
-          buttons += "<button type='button' class='btn "+active+"'>"+(i*20)+"</button>";
-        }
-
-        node.tr.querySelector(".changeOpacityButton").innerHTML ='<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>';
-
-          var layerSelectedStyles = document.querySelectorAll('.layerSelectedStyles');
-
-          var layerSelectedStylesVisible = Array.from(layerSelectedStyles).filter(function(element) {
-              var computedStyle = window.getComputedStyle(element);
-              return computedStyle.display !== 'none';
-          });
-
-        if(layerSelectedStylesVisible.length > 0){
-          var list = document.getElementById("layerSelected").querySelectorAll("td.hide")
-          list.forEach(function (list) {
-              list.style.display = 'table-cell';
-          });
-        }else{
-            var list = document.getElementById("layerSelected").querySelectorAll("td.hide")
-            list.forEach(function (list) {
-                list.style.display = 'none';
-            });
+      var layers = mapBuilder.map.getLayers().getArray();
+      for (var i = 0; i < layers.length; i++) {
+        if(layers[i].ol_uid == node.data.ol_uid){
+          opacity = layers[i].getOpacity();
+          visible = layers[i].getVisible();
         }
       }
+
+      node.tr.querySelector(".deleteLayerButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-trash'></i></button>"
+
+      if(visible){
+        node.tr.querySelector(".toggleVisibilityButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-eye'></i></button>"
+      }else{
+        node.tr.querySelector(".toggleVisibilityButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>"
+      }
+      node.tr.querySelector(".zoomToExtentButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>"
+
+      // Add button to display layer's attribute table if eligible
+      if(node.tr.querySelectorAll('.displayDataButton').length === 1 && node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable !== undefined){
+        var disabled = '';
+
+        // original statement : $("#attributeLayersTabs .nav-link [data-ol_uid='"+node.data.ol_uid+"']").length
+
+        var navLinks = document.getElementById('attributeLayersTabs').querySelectorAll('.nav-link');
+        var el = [];
+
+        navLinks.forEach(function(navLink) {
+          if (navLink.getAttribute('data-ol_uid') === node.data.ol_uid) {
+            el.push(navLink);
+          }
+        });
+
+        if(el.length !== 0){
+          disabled = 'disabled';
+        }
+
+        node.tr.querySelector(".displayDataButton").innerHTML = "<button type='button' "+disabled+" class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>";
+      }
+      node.tr.querySelector(".changeOrder").innerHTML = "<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>";
+      node.tr.querySelector(".toggleInfos").innerHTML = "<button class='btn btn-sm'><i class='fas fa-info'></i></button>";
+
+      var buttons = "";
+      for (var i = 1; i < 6; i++) {
+        var active = opacity == (i*20)/100 ? "active" : "";
+        buttons += "<button type='button' class='btn "+active+"'>"+(i*20)+"</button>";
+      }
+
+      node.tr.querySelector(".changeOpacityButton").innerHTML ='<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>';
+
+      var layerSelectedStyles = document.querySelectorAll('.layerSelectedStyles');
+
+      var layerSelectedStylesVisible = Array.from(layerSelectedStyles).filter(function(element) {
+        var computedStyle = window.getComputedStyle(element);
+        return computedStyle.display !== 'none';
+      });
+
+      if(layerSelectedStylesVisible.length > 0){
+        var list = document.getElementById("layerSelected").querySelectorAll("td.hide")
+        list.forEach(function (list) {
+          list.style.display = 'table-cell';
+        });
+      }else{
+        var list = document.getElementById("layerSelected").querySelectorAll("td.hide")
+        list.forEach(function (list) {
+          list.style.display = 'none';
+        });
+      }
+    }
   });
 
   $('#layerSelected').on("click", ".deleteLayerButton button", function(e){
