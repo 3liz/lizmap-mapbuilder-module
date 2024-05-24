@@ -28,6 +28,7 @@ import './modules/bottom-dock.js';
 
 import {AttributeTable} from "./components/AttributeTable";
 import {LayerStore} from "./components/LayerStore";
+import {LayerSelected} from "./components/LayerSelected";
 import {LayerTreeFolder} from "./modules/LayerTreeFolder";
 
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
@@ -506,13 +507,14 @@ $(function() {
     }));
   });
 
-  console.log(listTree);
-
   var layerStore;
+  var layerSelected;
 
   layerStore = new LayerStore(document.getElementById("layerStoreHolder"));
+  layerSelected = new LayerSelected(document.getElementById("layerSelectedHolder").children[1]);
 
   layerStore.tree = listTree;
+  layerSelected.updateLayerSelected(mapBuilder.map.getAllLayers());
 
   function getNodeFromUuid(uuid) {
     for (var i = 0; i < listTree.length; i++) {
@@ -599,11 +601,11 @@ $(function() {
 
       mapBuilder.map.addLayer(newLayer);
       refreshLayerSelected();
+      layerSelected.addElement(newLayer);
 
       mAddMessage(lizDict['layer.added'], 'success', true, 1000);
     }
   });
-
 
   $('#layerSelected').fancytree({
     extensions: ["dnd5", "table"],
@@ -715,224 +717,178 @@ $(function() {
     }
   });
 
-  $('#layerSelected').on("click", ".deleteLayerButton button", function(e){
-    var node = $.ui.fancytree.getNode(e);
+  document.getElementById("layerSelectedHolder").addEventListener('click', function (e) {
+    if (e.target.closest('#layerSelectedDataButton')) {
+      document.getElementById("attribute-btn").classList.add("active");
 
-    var layers = mapBuilder.map.getLayers().getArray();
-    for (var i = 0; i < layers.length; i++) {
-      if(layers[i].ol_uid == node.data.ol_uid){
-        mapBuilder.map.removeLayer(layers[i]);
-      }
-    }
-    refreshLayerSelected();
+      var idLayer = e.target.closest(".containerLayerSelected").id;
+      var layer;
+      var layerElement;
 
-    mAddMessage(lizDict['layer.deleted'], 'success', true, 1000);
-
-    e.stopPropagation();  // prevent fancytree activate for this row
-  });
-
-  // Toggle layer visibility
-  $('#layerSelected').on("click", ".toggleVisibilityButton button", function(e){
-    var node = $.ui.fancytree.getNode(e);
-
-    var layers = mapBuilder.map.getLayers().getArray();
-    for (var i = 0; i < layers.length; i++) {
-      if(layers[i].ol_uid == node.data.ol_uid){
-        if(layers[i].getVisible()){
-          layers[i].setVisible(false);
-          $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
-        }else{
-          layers[i].setVisible(true);
-          $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
+      for (var i = 0; i < layerSelected.getLayerArray().getArray().length; i++) {
+        if (layerSelected.getLayerArray().getArray()[i].getLayer().ol_uid === idLayer) {
+          layer = layerSelected.getLayerArray().getArray()[i].getLayer();
+          layerElement = layerSelected.getLayerArray().getArray()[i];
+          break;
         }
       }
-    }
-    e.stopPropagation();  // prevent fancytree activate for this row
-  });
 
-  $('#layerSelected').on("click", ".zoomToExtentButton button", function(e){
-    var node = $.ui.fancytree.getNode(e);
+      layerSelected.actionDisplayDataButton(layerElement, true);
 
-    var layers = mapBuilder.map.getLayers().getArray();
-    for (var i = 0; i < layers.length; i++) {
-      if(layers[i].ol_uid == node.data.ol_uid){
-        mapBuilder.map.getView().fit(transformExtent(layers[i].getProperties().bbox, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
-      }
-    }
-    e.stopPropagation();  // prevent fancytree activate for this row
-  });
+      var layerName = performCleanName(layer.getSource().getParams()["LAYERS"]);
+      var repositoryId = layer.getProperties().repositoryId;
+      var projectId = layer.getProperties().projectId;
 
-  $('#layerSelected').on("click", ".attributeLayerButton", function(e){
-    document.getElementById("attribute-btn").classList.add("active");
+      const promises = [
+        new Promise(resolve =>
+          // GetFeature request
+          $.getJSON(lizUrls.wms, {
+            'repository':repositoryId
+            ,'project':projectId
+            ,'SERVICE':'WFS'
+            ,'REQUEST':'GetFeature'
+            ,'VERSION':'1.0.0'
+            ,'TYPENAME':layerName
+            ,'OUTPUTFORMAT': 'GeoJSON'
+            ,'GEOMETRYNAME': 'extent'
+          }, function(features) {
+            resolve(features);
+          })
+        ),
+        new Promise(resolve =>
+          // DescribeFeatureType request to get aliases
+          $.getJSON(lizUrls.wms, {
+            'repository':repositoryId
+            ,'project':projectId
+            ,'SERVICE':'WFS'
+            ,'VERSION':'1.0.0'
+            ,'REQUEST':'DescribeFeatureType'
+            ,'TYPENAME':layerName
+            ,'OUTPUTFORMAT':'JSON'
+          }, function(describe) {
+            resolve(describe);
+          })
+        )
+      ];
 
-    e.target.closest(".attributeLayerButton").disabled = true;
+      Promise.all(promises).then(results => {
+        // TODO : cache results
+        var features = results[0].features;
+        var aliases = results[1].aliases;
 
-    var node = $.ui.fancytree.getNode(e);
+        // Show only WFS-published and non hidden properties
+        var propertiesFromWFS = features[0].properties;
+        var visibleProperties = [];
 
-    var layerName = performCleanName(node.data.name);
-    var repositoryId = node.data.repositoryId;
-    var projectId = node.data.projectId;
+        if (mapBuilder.lizMap[repositoryId + '|' + projectId].config.attributeLayers[layer.getSource().getParams()["LAYERS"]].hasOwnProperty('attributetableconfig')) {
+          var columns = mapBuilder.lizMap[repositoryId + '|' + projectId].config.attributeLayers[layer.getSource().getParams()["LAYERS"]].attributetableconfig.columns.column;
+        }
 
-    const promises = [
-      new Promise(resolve =>
-        // GetFeature request
-        $.getJSON(lizUrls.wms, {
-           'repository':repositoryId
-          ,'project':projectId
-          ,'SERVICE':'WFS'
-          ,'REQUEST':'GetFeature'
-          ,'VERSION':'1.0.0'
-          ,'TYPENAME':layerName
-          ,'OUTPUTFORMAT': 'GeoJSON'
-          ,'GEOMETRYNAME': 'extent'
-        }, function(features) {
-          resolve(features);
-        })
-      ),
-      new Promise(resolve =>
-        // DescribeFeatureType request to get aliases
-        $.getJSON(lizUrls.wms, {
-           'repository':repositoryId
-          ,'project':projectId
-          ,'SERVICE':'WFS'
-          ,'VERSION':'1.0.0'
-          ,'REQUEST':'DescribeFeatureType'
-          ,'TYPENAME':layerName
-          ,'OUTPUTFORMAT':'JSON'
-        }, function(describe) {
-          resolve(describe);
-        })
-      )
-    ];
-
-    Promise.all(promises).then(results => {
-      // TODO : cache results
-      var features = results[0].features;
-      var aliases = results[1].aliases;
-
-      // Show only WFS-published and non hidden properties
-      var propertiesFromWFS = features[0].properties;
-      var visibleProperties = [];
-
-      if(mapBuilder.lizMap[repositoryId + '|' + projectId].config.attributeLayers[node.data.name].hasOwnProperty('attributetableconfig')){
-        var columns = mapBuilder.lizMap[repositoryId + '|' + projectId].config.attributeLayers[node.data.name].attributetableconfig.columns.column;
-      }
-
-      if(columns !== undefined){
-        for (var i = 0; i < columns.length; i++) {
-          if(propertiesFromWFS.hasOwnProperty(columns[i].attributes.name) && columns[i].attributes.hidden == "0"){
-            visibleProperties.push(columns[i].attributes.name);
+        if (columns !== undefined) {
+          for (var i = 0; i < columns.length; i++) {
+            if (propertiesFromWFS.hasOwnProperty(columns[i].attributes.name) && columns[i].attributes.hidden == "0") {
+              visibleProperties.push(columns[i].attributes.name);
+            }
+          }
+        } else {
+          for (var property in propertiesFromWFS) {
+            visibleProperties.push(property);
           }
         }
-      }else{
-        for (var property in propertiesFromWFS) {
-          visibleProperties.push(property);
-        }
-      }
 
-      // Elements : [repositoryId, projectId, layerName, features, aliases, visibleProperties]
-      var elements = [repositoryId, projectId, layerName, features, aliases, visibleProperties];
+        // Elements : [repositoryId, projectId, layerName, features, aliases, visibleProperties]
+        var elements = [repositoryId, projectId, layerName, features, aliases, visibleProperties];
 
-      // Hide other tabs before appending
-      var navLinks = document.querySelectorAll('#attributeLayersTabs .nav-link');
+        // Hide other tabs before appending
+        var navLinks = document.querySelectorAll('#attributeLayersTabs .nav-link');
 
-      navLinks.forEach(function(navLink) {
-        navLink.classList.remove('active');
-      });
-
-      var tabPane = document.querySelectorAll('#attributeLayersContent .tab-pane');
-
-      tabPane.forEach(function(tabPane) {
-        tabPane.classList.remove('show');
-        tabPane.classList.remove('active');
-      });
-
-      document.getElementById("attributeLayersTabs").insertAdjacentHTML("beforeend",'\
-          <li class="nav-item">\
-            <a class="nav-link active" href="#attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tab">'+node.title+'&nbsp;<i data-ol_uid="' + node.data.ol_uid + '" class="fas fa-times"></i></a>\
-          </li>'
-      );
-
-      const container = document.getElementById('attributeLayersContent');
-
-      const addToContainer = (elements) => {
-          const attributeTable = new AttributeTable(elements);
-          container.appendChild(attributeTable);
-          attributeTable.updateContent();
-      };
-
-      if (document.getElementById("attributeLayersContent").innerHTML === "") {
-          const attributeTable = new AttributeTable(elements);
-          container.appendChild(attributeTable);
-          attributeTable.updateContent();
-      } else {
-          addToContainer(elements);
-      }
-
-      $('#attributeLayersTabs a').on('click', function (e) {
-        e.preventDefault();
-        $(this).tab('show');
-      });
-
-        // Handle close tabs
-      $('#attributeLayersTabs .fa-times').on('click', function (e) {
-        e.preventDefault();
-
-        var isActiveTab = $(this).closest('a').hasClass('active');
-        var previousTab = $(this).closest('li').prev();
-        var nextTab = $(this).closest('li').next();
-
-        // Remove tab and its content
-        var parentId = $(this).closest('a').attr('href');
-        $(parentId).remove();
-        $(this).closest('li').remove();
-
-        // Enable attribute table button
-        var ol_uid = $(this).data('ol_uid');
-        $.ui.fancytree.getTree("#layerSelected").visit(function(node){
-          if(node.data.ol_uid == ol_uid){
-            $(node.tr).find(".attributeLayerButton").prop("disabled",false);
-          }
+        navLinks.forEach(function (navLink) {
+          navLink.classList.remove('active');
         });
 
-        // Hide bottom dock
-        if(document.getElementById("attributeLayersContent").textContent.trim() === ""){
-          document.getElementById("bottom-dock").style.display = 'none';
-          document.getElementById("attribute-btn").classList.remove("active");
+        var tabPane = document.querySelectorAll('#attributeLayersContent .tab-pane');
+
+        tabPane.forEach(function (tabPane) {
+          tabPane.classList.remove('show');
+          tabPane.classList.remove('active');
+        });
+
+        document.getElementById("attributeLayersTabs").insertAdjacentHTML("beforeend", '\
+          <li class="nav-item">\
+            <a class="nav-link active" href="#attributeLayer-' + repositoryId + '-' + projectId + '-' + layerName + '" role="tab">' + layer.getProperties().title + '&nbsp;<i data-ol_uid="' + layer.ol_uid + '" class="fas fa-times"></i></a>\
+          </li>'
+        );
+
+        const container = document.getElementById('attributeLayersContent');
+
+        const addToContainer = (elements) => {
+          const attributeTable = new AttributeTable(elements);
+          container.appendChild(attributeTable);
+          attributeTable.updateContent();
+        };
+
+        if (document.getElementById("attributeLayersContent").innerHTML === "") {
+          const attributeTable = new AttributeTable(elements);
+          container.appendChild(attributeTable);
+          attributeTable.updateContent();
+        } else {
+          addToContainer(elements);
         }
 
-        // Active another sibling tab if current was active
-        if(isActiveTab){
-          if(nextTab.length > 0){
-            nextTab.find('.nav-link').tab('show');
-          }else{
-            previousTab.find('.nav-link').tab('show');
+        $('#attributeLayersTabs a').on('click', function (e) {
+          e.preventDefault();
+          $(this).tab('show');
+        });
+
+        // Handle close tabs
+        $('#attributeLayersTabs .fa-times').on('click', function (e) {
+          e.preventDefault();
+          if (e.target.dataset.ol_uid === layerElement.getLayer().ol_uid) {
+            var isActiveTab = $(this).closest('a').hasClass('active');
+            var previousTab = $(this).closest('li').prev();
+            var nextTab = $(this).closest('li').next();
+
+            // Remove tab and its content
+            var parentId = $(this).closest('a').attr('href');
+            $(parentId).remove();
+            $(this).closest('li').remove();
+
+            // Enable attribute table button
+            var ol_uid = "" + $(this).data('ol_uid');
+
+            layerSelected.actionDisplayDataButton(layerElement, false);
+
+            // Hide bottom dock
+            if (document.getElementById("attributeLayersContent").textContent.trim() === "") {
+              document.getElementById("bottom-dock").style.display = 'none';
+              document.getElementById("attribute-btn").classList.remove("active");
+            }
+
+            // Active another sibling tab if current was active
+            if (isActiveTab) {
+              if (nextTab.length > 0) {
+                nextTab.find('.nav-link').tab('show');
+              } else {
+                previousTab.find('.nav-link').tab('show');
+              }
+            }
           }
-        }
+          e.stopPropagation();  // prevent fancytree activate for this row
+
+        });
+
+        // Handle zoom to feature extent
+        $('.zoomToFeatureExtent').on('click', function () {
+          var bbox = $(this).data('feature-extent');
+          mapBuilder.map.getView().fit(transformExtent(bbox, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
+        });
+
+        document.getElementById("bottom-dock").style.display = 'block';
       });
-
-      // Handle zoom to feature extent
-      $('.zoomToFeatureExtent').on('click', function () {
-        var bbox = $(this).data('feature-extent');
-        mapBuilder.map.getView().fit(transformExtent(bbox, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
-      });
-
-      document.getElementById("bottom-dock").style.display = 'block';
-    });
-  });
-
-  $('#layerSelected').on("click", ".toggleInfos button", function(e){
-    $(this).parent().nextAll().toggle();
-
-    if($(".layerSelectedStyles:visible").length > 0){
-      $("#layerSelected th.hide").show();
-    }else{
-      $("#layerSelected th.hide").hide();
     }
-
-    e.stopPropagation();  // prevent fancytree activate for this row
   });
 
+  /*
   $('#layerSelected').on("click", ".changeOpacityButton div button", function(e){
     var node = $.ui.fancytree.getNode(e);
     var opacity = e.target.textContent;
@@ -948,41 +904,7 @@ $(function() {
     this.classList.add("active");
     e.stopPropagation();  // prevent fancytree activate for this row
   });
-
-  // Handle zIndex up and down events
-  $('#layerSelected').on("click", ".changeOrder", function(e){
-    var node = $.ui.fancytree.getNode(e);
-    var siblingNode = $(this).hasClass("changeOrderUp") ? node.getPrevSibling() : node.getNextSibling();
-
-    if(siblingNode){
-      var nodeLayerZIndex = -1;
-      var siblingNodeLayerZIndex = -1;
-
-      var layers = mapBuilder.map.getLayers().getArray();
-
-      for (var i = 0; i < layers.length; i++) {
-        if(layers[i].ol_uid == node.data.ol_uid){
-          nodeLayerZIndex = layers[i].getZIndex();
-        }
-        if(layers[i].ol_uid == siblingNode.data.ol_uid){
-          siblingNodeLayerZIndex = layers[i].getZIndex();
-        }
-      }
-
-      // Swap zIndex
-      for (var i = 0; i < layers.length; i++) {
-        if(layers[i].ol_uid == node.data.ol_uid){
-          layers[i].setZIndex(siblingNodeLayerZIndex);
-        }
-        if(layers[i].ol_uid == siblingNode.data.ol_uid){
-          layers[i].setZIndex(nodeLayerZIndex);
-        }
-      }
-
-      refreshLayerSelected();
-    }
-    e.stopPropagation();  // prevent fancytree activate for this row
-  });
+   */
 
   function loadLegend(){
     var legends = [];
