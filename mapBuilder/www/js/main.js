@@ -11,7 +11,7 @@ import {defaults as defaultControls, Control, ScaleLine} from 'ol/control.js';
 import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
 
 import OSM from 'ol/source/OSM.js';
-import Stamen from 'ol/source/Stamen.js';
+import StadiaMaps from 'ol/source/StadiaMaps.js';
 import XYZ from 'ol/source/XYZ.js';
 import BingMaps from 'ol/source/BingMaps.js';
 import WMTS from 'ol/source/WMTS.js';
@@ -27,6 +27,8 @@ import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from '
 
 import './modules/bottom-dock.js';
 
+import {AttributeTable} from "./components/AttributeTable";
+
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
 var originalZoom = 6;
@@ -41,252 +43,297 @@ if (PRODUCTION) {
 
 $(function() {
 
-  function performCleanName(aName) {
-    var accentMap = {
-        "à": "a",    "á": "a",    "â": "a",    "ã": "a",    "ä": "a",    "ç": "c",    "è": "e",    "é": "e",    "ê": "e",    "ë": "e",    "ì": "i",    "í": "i",    "î": "i",    "ï": "i",    "ñ": "n",    "ò": "o",    "ó": "o",    "ô": "o",    "õ": "o",    "ö": "o",    "ù": "u",    "ú": "u",    "û": "u",    "ü": "u",    "ý": "y",    "ÿ": "y",
-        "À": "A",    "Á": "A",    "Â": "A",    "Ã": "A",    "Ä": "A",    "Ç": "C",    "È": "E",    "É": "E",    "Ê": "E",    "Ë": "E",    "Ì": "I",    "Í": "I",    "Î": "I",    "Ï": "I",    "Ñ": "N",    "Ò": "O",    "Ó": "O",    "Ô": "O",    "Õ": "O",    "Ö": "O",    "Ù": "U",    "Ú": "U",    "Û": "U",    "Ü": "U",    "Ý": "Y",
-        "-":" ", "'": " ", "(": " ", ")": " "};
-    var normalize = function( term ) {
-        var ret = "";
-        for ( var i = 0; i < term.length; i++ ) {
-            ret += accentMap[ term.charAt(i) ] || term.charAt(i);
-        }
-        return ret;
-    };
-    var theCleanName = normalize(aName);
-    var reg = new RegExp('\\W', 'g');
-    return theCleanName.replace(reg, '_');
-  }
-
-  function mAddMessage( aMessage, aType, aClose, aTimer ) {
-    var mType = 'info';
-    var mTypeList = ['info', 'danger', 'success'];
-    var mClose = false;
-    var mDismissible = '';
-
-    if ( $.inArray(aType, mTypeList) != -1 )
-      mType = aType;
-
-    if ( aClose ){
-      mClose = true;
-      mDismissible = 'alert-dismissible';
+    function performCleanName(aName) {
+        var accentMap = {
+            "à": "a",
+            "á": "a",
+            "â": "a",
+            "ã": "a",
+            "ä": "a",
+            "ç": "c",
+            "è": "e",
+            "é": "e",
+            "ê": "e",
+            "ë": "e",
+            "ì": "i",
+            "í": "i",
+            "î": "i",
+            "ï": "i",
+            "ñ": "n",
+            "ò": "o",
+            "ó": "o",
+            "ô": "o",
+            "õ": "o",
+            "ö": "o",
+            "ù": "u",
+            "ú": "u",
+            "û": "u",
+            "ü": "u",
+            "ý": "y",
+            "ÿ": "y",
+            "À": "A",
+            "Á": "A",
+            "Â": "A",
+            "Ã": "A",
+            "Ä": "A",
+            "Ç": "C",
+            "È": "E",
+            "É": "E",
+            "Ê": "E",
+            "Ë": "E",
+            "Ì": "I",
+            "Í": "I",
+            "Î": "I",
+            "Ï": "I",
+            "Ñ": "N",
+            "Ò": "O",
+            "Ó": "O",
+            "Ô": "O",
+            "Õ": "O",
+            "Ö": "O",
+            "Ù": "U",
+            "Ú": "U",
+            "Û": "U",
+            "Ü": "U",
+            "Ý": "Y",
+            "-": " ",
+            "'": " ",
+            "(": " ",
+            ")": " "
+        };
+        var normalize = function (term) {
+            var ret = "";
+            for (var i = 0; i < term.length; i++) {
+                ret += accentMap[term.charAt(i)] || term.charAt(i);
+            }
+            return ret;
+        };
+        var theCleanName = normalize(aName);
+        var reg = new RegExp('\\W', 'g');
+        return theCleanName.replace(reg, '_');
     }
 
-    var html = '<div class="alert alert-'+mType+' '+mDismissible+' fade show" role="alert">';
+    function mAddMessage( aMessage, aType, aClose, aTimer ) {
+        var mType = 'info';
+        var mTypeList = ['info', 'danger', 'success'];
+        var mClose = false;
+        var mDismissible = '';
 
-    html += aMessage;
+        if ( $.inArray(aType, mTypeList) != -1 )
+            mType = aType;
 
-    if ( mClose ){
-      html += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\
+        if ( aClose ){
+            mClose = true;
+            mDismissible = 'alert-dismissible';
+        }
+
+        var html = '<div class="alert alert-'+mType+' '+mDismissible+' fade show" role="alert">';
+
+        html += aMessage;
+
+        if ( mClose ){
+            html += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\
                 <span aria-hidden="true">&times;</span>\
               </button>';
+        }
+
+        html += '</div>';
+
+        var elt = $(html);
+        $('#message').append(elt);
+
+        if(aTimer !== undefined){
+            setTimeout(function() {
+                $(".alert").alert('close');
+            }, aTimer);
+        }
+
+        return elt;
     }
-    
-    html += '</div>';
 
-    var elt = $(html);
-    $('#message').append(elt);
+    function buildLayerTree(layer, cfg) {
+        var myArray = [];
+        if (Array.isArray(layer)) {
+            layer.forEach(function (sublayer) {
+                // Layer name is used as a key in lizmap config
+                var sublayerName = sublayer.Name;
 
-    if(aTimer !== undefined){
-      setTimeout(function() {
-        $(".alert").alert('close');
-      }, aTimer);
-    }
+                // If key is not present, it might because a shortname has been defined in QGIS
+                if (!cfg.layers.hasOwnProperty(sublayer.Name)) {
+                    for (var key in cfg.layers) {
+                        if (cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname === sublayer.Name)) {
+                            sublayerName = cfg.layers[key].name;
+                        }
+                    }
+                }
+                // Filter layers in Hidden and Overview directory
+                if (sublayer.hasOwnProperty('Title') && (sublayer.Title.toLowerCase() === 'hidden' || sublayer.Title.toLowerCase() === 'overview')) {
+                    return;
+                }
+                // Filter layers not visible in legend or without geometry
+                if (sublayer.hasOwnProperty('Name') && cfg.layers.hasOwnProperty(sublayerName)
+                    && (cfg.layers[sublayerName].displayInLegend === 'False' || cfg.layers[sublayerName].geometryType === 'none')) {
+                    return;
+                }
+                var layers = buildLayerTree(sublayer, cfg);
+                myArray = myArray.concat(layers);
+            });
+            return myArray;
+        }
 
-    return elt;
-  }
+        // Layer name is used as a key in lizmap config
+        var layerName = layer.Name;
 
-  function buildLayerTree(layer, cfg) {
-    var myArray = [];
-    if (Array.isArray(layer)) {
-        layer.forEach(function(sublayer) {
-          // Layer name is used as a key in lizmap config
-          var sublayerName = sublayer.Name;
-
-          // If key is not present, it might because a shortname has been defined in QGIS
-          if(!cfg.layers.hasOwnProperty(sublayer.Name)){
+        // If key is not present, it might because a shortname has been defined in QGIS
+        if (!cfg.layers.hasOwnProperty(layer.Name)) {
             for (var key in cfg.layers) {
-              if(cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname == sublayer.Name)){
-                 sublayerName = cfg.layers[key].name;
-               }
+                if (cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname == layer.Name)) {
+                    layerName = cfg.layers[key].name;
+                }
             }
-          }
-          // Filter layers in Hidden and Overview directory
-          if(sublayer.hasOwnProperty('Title') && (sublayer.Title.toLowerCase() == 'hidden' || sublayer.Title.toLowerCase() == 'overview')){
-            return;
-          }
-          // Filter layers not visible in legend or without geometry
-          if(sublayer.hasOwnProperty('Name') && cfg.layers.hasOwnProperty(sublayerName)
-            && (cfg.layers[sublayerName].displayInLegend == 'False' || cfg.layers[sublayerName].geometryType == 'none')){
-              return;
-          }
-          var layers = buildLayerTree(sublayer, cfg);
-          myArray = myArray.concat(layers);
-        });
+        }
+
+        // Create node
+        if (cfg.layers.hasOwnProperty(layerName)) {
+            var myObj = {title: cfg.layers[layerName].title, name: layerName, popup: cfg.layers[layerName].popup};
+
+            if (layer.hasOwnProperty('Style')) {
+                myObj.style = layer.Style;
+            }
+            if (layer.hasOwnProperty('EX_GeographicBoundingBox')) {
+                myObj.bbox = layer.EX_GeographicBoundingBox;
+            }
+            if (layer.hasOwnProperty('MinScaleDenominator') && layer.MinScaleDenominator !== undefined) {
+                myObj.minScale = layer.MinScaleDenominator;
+            }
+            if (layer.hasOwnProperty('MaxScaleDenominator') && layer.MaxScaleDenominator !== undefined) {
+                myObj.maxScale = layer.MaxScaleDenominator;
+            }
+            if (cfg.attributeLayers.hasOwnProperty(layerName)
+                && cfg.attributeLayers[layerName].hideLayer != "True"
+                && cfg.attributeLayers[layerName].pivot != "True") {
+                myObj.hasAttributeTable = true;
+            }
+            if (cfg.layers.hasOwnProperty(layerName)
+                && cfg.layers[layerName].abstract != "") {
+                myObj.tooltip = cfg.layers[layerName].abstract;
+            }
+            myArray.push(myObj);
+        }
+
+        // Layer has children and is not a group as layer => folder
+        if (layer.hasOwnProperty('Layer') && cfg.layers[layerName].groupAsLayer == 'False') {
+            myObj.folder = true;
+            myObj.children = buildLayerTree(layer.Layer, cfg);
+        }
         return myArray;
     }
 
-    // Layer name is used as a key in lizmap config
-    var layerName = layer.Name;
+    // refresh #layerSelected tree to reflect OL layer's state
+    function refreshLayerSelected() {
+        var layerTree = [];
+        mapBuilder.map.getLayers().forEach(function (layer) {
+            // Don't add base layer
+            if (!layer.getProperties().hasOwnProperty('baseLayer')) {
+                var layerObject = {
+                    repositoryId: layer.getProperties().repositoryId,
+                    projectId: layer.getProperties().projectId,
+                    title: layer.getProperties().title,
+                    styles: layer.getSource().getParams().STYLES,
+                    hasAttributeTable: layer.getProperties().hasAttributeTable,
+                    name: layer.getSource().getParams().LAYERS,
+                    ol_uid: layer.ol_uid
+                };
 
-    // If key is not present, it might because a shortname has been defined in QGIS
-    if(!cfg.layers.hasOwnProperty(layer.Name)){
-      for (var key in cfg.layers) {
-        if(cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname == layer.Name)){
-           layerName = cfg.layers[key].name;
-         }
-      }
-    }
+                if (layer.getZIndex() !== undefined) {
+                    layerTree[layer.getZIndex()] = layerObject;
+                }
+            }
+        });
 
-    // Create node
-    if (cfg.layers.hasOwnProperty(layerName)){
-      var myObj = { title: cfg.layers[layerName].title, name: layerName, popup: cfg.layers[layerName].popup };
+        // Reverse to show top layers at top of the tree
+        layerTree.reverse();
+        // Remove empty values (TODO: à améliorer)
+        layerTree = layerTree.filter(n => n);
 
-      if (layer.hasOwnProperty('Style')) {
-        myObj.style = layer.Style;
-      }
-      if (layer.hasOwnProperty('EX_GeographicBoundingBox')) {
-        myObj.bbox = layer.EX_GeographicBoundingBox;
-      }
-      if (layer.hasOwnProperty('MinScaleDenominator') && layer.MinScaleDenominator !== undefined) {
-        myObj.minScale = layer.MinScaleDenominator;
-      }
-      if (layer.hasOwnProperty('MaxScaleDenominator') && layer.MaxScaleDenominator !== undefined) {
-        myObj.maxScale = layer.MaxScaleDenominator;
-      }
-      if (cfg.attributeLayers.hasOwnProperty(layerName)
-        && cfg.attributeLayers[layerName].hideLayer != "True"
-        && cfg.attributeLayers[layerName].pivot != "True") {
-        myObj.hasAttributeTable = true;
-      }
-      if (cfg.layers.hasOwnProperty(layerName)
-        && cfg.layers[layerName].abstract != "") {
-        myObj.tooltip = cfg.layers[layerName].abstract;
-      }
-      myArray.push(myObj);
-    }
-
-    // Layer has children and is not a group as layer => folder
-    if (layer.hasOwnProperty('Layer') && cfg.layers[layerName].groupAsLayer == 'False') {
-        myObj.folder = true;
-        myObj.children = buildLayerTree(layer.Layer, cfg);
-    }
-    return myArray;
-  }
-
-  // refresh #layerSelected tree to reflect OL layer's state
-  function refreshLayerSelected() {
-      var layerTree = [];
-      mapBuilder.map.getLayers().forEach(function(layer) {
-        // Don't add base layer
-        if( ! layer.getProperties().hasOwnProperty('baseLayer')){
-          var layerObject = {
-            repositoryId: layer.getProperties().repositoryId,
-            projectId: layer.getProperties().projectId,
-            title: layer.getProperties().title,
-            styles: layer.getSource().getParams().STYLES,
-            hasAttributeTable: layer.getProperties().hasAttributeTable,
-            name: layer.getSource().getParams().LAYERS,
-            ol_uid: layer.ol_uid
-          };
-
-          if(layer.getZIndex() !== undefined){
-            layerTree[layer.getZIndex()] = layerObject;
-          }
+        if ($.ui.fancytree.getTree("#layerSelected") !== null) {
+            $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
         }
-      });
 
-      // Reverse to show top layers at top of the tree
-      layerTree.reverse();
-      // Remove empty values (TODO: à améliorer)
-      layerTree = layerTree.filter(n => n);
-
-      if ($.ui.fancytree.getTree("#layerSelected") !== null) {
-        $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
-      }
-
-      // Refresh legends
-      loadLegend();
-  }
-
-  var dragZoomControl = (function (Control) {
-    function dragZoomControl(opt_options) {
-      var options = opt_options || {};
-
-      var button = document.createElement('button');
-      button.className = 'fas fa-square';
-      button.title = lizDict['zoomrectangle'];
-
-      var element = document.createElement('div');
-      element.className = 'ol-drag-zoom ol-unselectable ol-control';
-      element.appendChild(button);
-
-      Control.call(this, {
-        element: element,
-        target: options.target
-      });
-
-      button.addEventListener('click', this.handleDragZoom.bind(this), false);
+        // Refresh legends
+        loadLegend();
     }
 
-    if ( Control ) dragZoomControl.__proto__ = Control;
-    dragZoomControl.prototype = Object.create( Control && Control.prototype );
-    dragZoomControl.prototype.constructor = dragZoomControl;
+    var dragZoomControl = class DragZoomControl extends Control {
+        constructor(opt_options) {
+            var options = opt_options || {};
 
-    dragZoomControl.prototype.handleDragZoom = function handleDragZoom () {
-      if($(this.element).hasClass('active')){
-        $(this.element).removeClass('active');
+            var button = document.createElement('button');
+            button.className = 'fas fa-square';
+            button.title = lizDict['zoomrectangle'];
 
-        this.getMap().getInteractions().forEach(function(interaction) {
-          if(interaction instanceof DragZoom){
-            interaction.condition_ = shiftKeyOnlyCondition;
-          }
-        });
-      }else{
-        $(this.element).addClass('active');
+            var element = document.createElement('div');
+            element.className = 'ol-drag-zoom ol-unselectable ol-control';
+            element.appendChild(button);
 
-        this.getMap().getInteractions().forEach(function(interaction) {
-          if(interaction instanceof DragZoom){
-            interaction.condition_ = alwaysCondition;
-          }
-        });
-      }
-    };
+            super({
+                element: element,
+                target: options.target,
+            });
 
-    return dragZoomControl;
-  }(Control));
+            button.addEventListener('click', this.handleDragZoom.bind(this), false);
+        }
 
-  var zoomToOriginControl = (function (Control) {
-    function zoomToOriginControl(opt_options) {
-      var options = opt_options || {};
+        handleDragZoom() {
 
-      var button = document.createElement('button');
-      button.className = 'fas fa-expand-arrows-alt';
-      button.title = lizDict['zoominitial'];
+            var element = document.querySelector(".ol-drag-zoom.ol-unselectable.ol-control");
 
-      var element = document.createElement('div');
-      element.className = 'ol-zoom-origin ol-unselectable ol-control';
-      element.appendChild(button);
+            if (element.classList.contains('active')) {
+                element.classList.remove('active');
 
-      Control.call(this, {
-        element: element,
-        target: options.target
-      });
+                this.getMap().getInteractions().forEach(function (interaction) {
+                    if (interaction instanceof DragZoom) {
+                        interaction.condition_ = shiftKeyOnlyCondition;
+                    }
+                });
+            } else {
+                element.classList.add('active');
 
-      button.addEventListener('click', this.handleZoomToOrigin.bind(this), false);
+                this.getMap().getInteractions().forEach(function (interaction) {
+                    if (interaction instanceof DragZoom) {
+                        interaction.condition_ = alwaysCondition;
+                    }
+                });
+            }
+        }
     }
+    var zoomToOriginControl = class ZoomToOriginControl extends Control {
 
-    if ( Control ) zoomToOriginControl.__proto__ = Control;
-    zoomToOriginControl.prototype = Object.create( Control && Control.prototype );
-    zoomToOriginControl.prototype.constructor = zoomToOriginControl;
+        constructor(opt_options) {
 
-    zoomToOriginControl.prototype.handleZoomToOrigin = function handleZoomToOrigin () {
-      this.getMap().getView().setCenter(originalCenter);
-      this.getMap().getView().setZoom(originalZoom);
-    };
+            var options = opt_options || {};
 
-    return zoomToOriginControl;
-  }(Control));
+            var button = document.createElement('button');
+            button.className = 'fas fa-expand-arrows-alt';
+            button.title = lizDict['zoominitial'];
+
+            var element = document.createElement('div');
+            element.className = 'ol-zoom-origin ol-unselectable ol-control';
+            element.appendChild(button);
+
+            super({
+                element: element,
+                target: options.target,
+            });
+
+            button.addEventListener('click', this.handleZoomToOrigin.bind(this), false);
+        }
+
+        handleZoomToOrigin() {
+            this.getMap().getView().setCenter(originalCenter);
+            this.getMap().getView().setZoom(originalZoom);
+        };
+    }
 
   // Hide header if h=0 in URL
   const url = new URL(window.location.href);
@@ -329,18 +376,10 @@ $(function() {
           source: new OSM()
         });
       }
-      else if(baseLayerName === 'osmStamenToner'){
+      else if(baseLayerName === 'osmStadiaMapsToner'){
         baseLayer = new TileLayer({
-          source: new Stamen({
-            layer: 'toner'
-          })
-        });
-      }
-      else if(baseLayerName === 'osmCyclemap'
-        && mapBuilder.hasOwnProperty('baseLayerKeyOSMCycleMap')){
-        baseLayer = new TileLayer({
-          source: new XYZ({
-            url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=' + mapBuilder.baseLayerKeyOSMCycleMap
+          source: new StadiaMaps({
+            layer: 'stamen_toner_lite'
           })
         });
       }
@@ -401,7 +440,7 @@ $(function() {
         });
 
         var ign_source = new WMTS({
-          url: "https://wxs.ign.fr/essentiels/geoportail/wmts",
+          url: "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile",
           layer: ignCorrespondance[baseLayerName],
           matrixSet: 'PM',
           format: ignImageFormat[baseLayerName],
@@ -423,7 +462,8 @@ $(function() {
       }
 
       if(baseLayer){
-        var visibility = $("#baseLayerSelect").find(":selected").val() == baseLayerName ? true : false;
+        var baseLayerSelect = document.querySelector('#baseLayerSelect')
+        var visibility = baseLayerSelect.options[baseLayerSelect.selectedIndex].value === baseLayerName;
 
         baseLayer.setProperties({
           title: baseLayerName,
@@ -436,26 +476,27 @@ $(function() {
     }
   }
 
-  $("#baseLayerSelect").change(function() {
-    var baseLayerSelected = $(this).find(":selected").val();
+  document.querySelector("#baseLayerSelect").addEventListener("change", function() {
+    var baseLayerSelect = this;
+    var baseLayerSelected = baseLayerSelect.options[baseLayerSelect.selectedIndex].value;
     mapBuilder.map.getLayers().forEach(function(layer) {
       if(layer.getProperties().baseLayer){
-        layer.setVisible(layer.getProperties().title == baseLayerSelected);
+        layer.setVisible(layer.getProperties().title === baseLayerSelected);
       }
     });
   });
 
   // Extent is set in mapBuilder.ini.php => fit view on it and override originalCenter and originalZoom
   if(mapBuilder.hasOwnProperty('extent')){
-    mapBuilder.map.getView().fit(transformExtent(mapBuilder.extent, 'EPSG:4326', mapBuilder.map.getView().projection_));
+    mapBuilder.map.getView().fit(transformExtent(mapBuilder.extent, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
 
     originalCenter = mapBuilder.map.getView().getCenter();
     originalZoom = mapBuilder.map.getView().getZoom();
   }
 
   function onMoveEnd(evt) {
-    if($(".ol-drag-zoom").hasClass("active")){
-      $(".ol-drag-zoom.active").removeClass("active");
+    if(document.querySelector(".ol-drag-zoom").classList.contains("active")){
+      document.querySelector(".ol-drag-zoom.active").classList.remove("active");
 
       evt.map.getInteractions().forEach(function(interaction) {
         if(interaction instanceof DragZoom){
@@ -496,7 +537,7 @@ $(function() {
     var promises = [];
     for (var i = getFeatureInfos.length - 1; i >= 0; i--) {
       if(getFeatureInfos[i] !== undefined){
-        promises.push(new Promise(resolve => 
+        promises.push(new Promise(resolve =>
           $.get(getFeatureInfos[i], function(gfi) {
             resolve(gfi);
           })
@@ -511,16 +552,17 @@ $(function() {
       }
 
       document.getElementById('popup-content').innerHTML = popupHTML;
+      var popupDisplayTab = document.querySelector('#popup-display-tab');
       // Display if not empty
-      if(popupHTML != ''){
+      if(popupHTML !== ''){
         // Show popup tab
-        $('#popup-display-tab').removeClass('d-none');
+        popupDisplayTab.classList.remove('d-none');
         $('#popup-display-tab').tab('show');
-        $('#popup-display-tab').focus();
+        popupDisplayTab.focus();
       }else{
-        if($('#popup-display').hasClass('active')){
-          $('#popup-display-tab').addClass('d-none');
-          $("#dock").hide();
+        if(document.querySelector('#popup-display').classList.contains("active")){
+          popupDisplayTab.classList.add('d-none');
+          document.querySelector("#dock").style.display = 'none';
         }
       }
     });
@@ -553,7 +595,7 @@ $(function() {
       var parser = new WMSCapabilities();
 
       const promises = [
-        new Promise(resolve => 
+        new Promise(resolve =>
           $.get(url, function(capabilities) {
             var result = parser.read(capabilities);
             if (result.hasOwnProperty('Capability')){
@@ -572,7 +614,7 @@ $(function() {
             }
           })
         ),
-        new Promise(resolve => 
+        new Promise(resolve =>
           $.getJSON(lizUrls.config,{"repository":repositoryId,"project":projectId},function(cfgData) {
             if (cfgData){
               resolve(cfgData);
@@ -602,88 +644,100 @@ $(function() {
     },
     renderColumns: function(event, data) {
       var node = data.node,
-      $tdList = $(node.tr).find(">td");
-
+      tdList = node.tr.querySelectorAll(`:scope ${">td"}`);
       // Style list
       if(node.data.hasOwnProperty('style')){
         var styleOption = "";
         node.data.style.forEach(function(style) {
           styleOption += "<option>"+style.Name+"</option>";
         });
-        $tdList.eq(1).html("<select class='layerStyles custom-select custom-select-sm'>"+styleOption+"</select>");
+        tdList[1].innerHTML = "<select class='layerStyles custom-select custom-select-sm'>"+styleOption+"</select>";
       }
       // Add button for layers (level 1 => repositories, 2 => projects)
       if(node.getLevel() > 2 && node.children == null){
-        $tdList.eq(2).html("<button type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>");
+        tdList[2].innerHTML = "<button type='button' class='addLayerButton btn btn-sm'><i class='fas fa-plus'></i></button>";
       }
     }
   });
 
   /* Handle custom addLayerButton clicks */
-  $('#layerStore').on("click", ".addLayerButton", function(e){
-    var node = $.ui.fancytree.getNode(e);
+  document.querySelector('#layerStore').addEventListener('click', function(e) {
+    if (e.target.closest('.addLayerButton')) {
+      var node = $.ui.fancytree.getNode(e.target);
+      var parentList = node.getParentList();
+      // We get repositoryId and projectId from parents node in the tree
+      var repositoryId = parentList[1].data.repository;
+      var projectId = parentList[1].data.project;
 
-    var parentList = node.getParentList();
-    // We get repositoryId and projectId from parents node in the tree
-    var repositoryId = parentList[1].data.repository;
-    var projectId = parentList[1].data.project;
+      var newLayer = new ImageLayer({
+        title: node.title,
+        repositoryId: repositoryId,
+        projectId: projectId,
+        bbox: node.data.bbox,
+        popup: node.data.popup,
+        hasAttributeTable: node.data.hasAttributeTable,
+        source: new ImageWMS({
+          url: lizUrls.wms+'?repository=' + repositoryId + '&project=' + projectId,
+          params: {
+            'LAYERS': node.data.name,
+            'STYLES': $(node.tr).find(">td .layerStyles :selected").text()
+          },
+          serverType: 'qgis'
+          })
+      });
 
-    var newLayer = new ImageLayer({
-      title: node.title,
-      repositoryId: repositoryId,
-      projectId: projectId,
-      bbox: node.data.bbox,
-      popup: node.data.popup,
-      hasAttributeTable: node.data.hasAttributeTable,
-      source: new ImageWMS({
-        url: lizUrls.wms+'?repository=' + repositoryId + '&project=' + projectId,
-        params: {
-          'LAYERS': node.data.name,
-          'STYLES': $(node.tr).find(">td .layerStyles :selected").text()
-        },
-        serverType: 'qgis'
-      })
-    });
+        // Set min/max resolution if min/max scale are defined in getCapabilities
+        if(node.data.hasOwnProperty('minScale')){
+            newLayer.setMinResolution(node.data.minScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
+        }
+        if(node.data.hasOwnProperty('maxScale')){
+            newLayer.setMaxResolution(node.data.maxScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
+        }
 
-    // Set min/max resolution if min/max scale are defined in getCapabilities
-    if(node.data.hasOwnProperty('minScale')){
-      newLayer.setMinResolution(node.data.minScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
+        var maxZindex = -1;
+        // Get maximum Z-index to put new layer at top of the stack
+        mapBuilder.map.getLayers().forEach(function(layer) {
+            var zIndex = layer.getZIndex();
+            if(zIndex !== undefined && zIndex > maxZindex){
+                maxZindex = zIndex;
+            }
+        });
+
+        if(maxZindex > -1){
+            newLayer.setZIndex(maxZindex + 1);
+        }else{
+            newLayer.setZIndex(0);
+        }
+
+        // Show layer is loading
+        newLayer.getSource().on('imageloadstart', function(event) {
+            var span1 = document.createElement('span');
+            span1.classList.add('spinner-grow', 'spinner-grow-sm');
+            span1.setAttribute('title', lizDict['selector.layers.loading'] + '...');
+            span1.setAttribute('role', 'status');
+
+            var span2 = document.createElement('span');
+            span2.classList.add('sr-only');
+            span2.textContent = lizDict['selector.layers.loading'] + '...';
+
+            span1.appendChild(span2);
+
+            var layersLoading = document.getElementById('layers-loading');
+            layersLoading.insertBefore(span1, layersLoading.firstChild);
+        });
+
+        // Show layer had loaded
+        newLayer.getSource().on('imageloadend', function(event) {
+            document.querySelector("#layers-loading > .spinner-grow:first-child").remove();
+        });
+
+        mapBuilder.map.addLayer(newLayer);
+        refreshLayerSelected();
+
+        mAddMessage(lizDict['layer.added'], 'success', true, 1000);
+
+        e.stopPropagation();  // prevent fancytree activate for this row
     }
-    if(node.data.hasOwnProperty('maxScale')){
-      newLayer.setMaxResolution(node.data.maxScale * INCHTOMM / (1000 * 90 * window.devicePixelRatio));
-    }
-
-    var maxZindex = -1;
-    // Get maximum Z-index to put new layer at top of the stack
-    mapBuilder.map.getLayers().forEach(function(layer) {
-      var zIndex = layer.getZIndex();
-      if(zIndex !== undefined && zIndex > maxZindex){
-        maxZindex = zIndex;
-      }
-    });
-
-    if(maxZindex > -1){
-      newLayer.setZIndex(maxZindex + 1);
-    }else{
-      newLayer.setZIndex(0);
-    }
-
-    // Show layer is loading
-    newLayer.getSource().on('imageloadstart', function(event) {
-      $('#layers-loading').prepend('\
-        <span class="spinner-grow spinner-grow-sm" title="'+lizDict['selector.layers.loading']+'..." role="status">\
-          <span class="sr-only">'+lizDict['selector.layers.loading']+'...</span>\
-        </span>');
-    });
-
-    // Show layer had loaded
-    newLayer.getSource().on('imageloadend', function(event) {
-      $('#layers-loading > .spinner-grow:first').remove();
-    });
-
-    mapBuilder.map.addLayer(newLayer);
-    refreshLayerSelected();
-    e.stopPropagation();  // prevent fancytree activate for this row
   });
 
 
@@ -724,8 +778,7 @@ $(function() {
       renderColumns: function(event, data) {
         var node = data.node;
         var nodeRow = $(node.tr);
-        nodeRow.find(".layerSelectedStyles").text(node.data.styles);
-
+        node.tr.querySelectorAll(`:scope ${".layerSelectedStyles"}`)[0].textContent = node.data.styles;
         var opacity = 0;
         var visible = true;
 
@@ -737,29 +790,38 @@ $(function() {
           }
         }
 
-        nodeRow.find(".deleteLayerButton").html("<button class='btn btn-sm'><i class='fas fa-trash'></i></button>");
+        node.tr.querySelector(".deleteLayerButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-trash'></i></button>"
 
         if(visible){
-          nodeRow.find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye'></i></button>");
+          node.tr.querySelector(".toggleVisibilityButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-eye'></i></button>"
         }else{
-          nodeRow.find(".toggleVisibilityButton").html("<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>");
+          node.tr.querySelector(".toggleVisibilityButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>"
         }
-        
-        nodeRow.find(".zoomToExtentButton").html("<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>");
+        node.tr.querySelector(".zoomToExtentButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>"
 
         // Add button to display layer's attribute table if eligible
-        if(nodeRow.find(".displayDataButton").length == 1 && node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable !== undefined){
+        if(node.tr.querySelectorAll('.displayDataButton').length === 1 && node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable !== undefined){
           var disabled = '';
 
-          if($("#attributeLayersTabs .nav-link [data-ol_uid='"+node.data.ol_uid+"']").length != 0){
+          // original statement : $("#attributeLayersTabs .nav-link [data-ol_uid='"+node.data.ol_uid+"']").length
+
+          var navLinks = document.getElementById('attributeLayersTabs').querySelectorAll('.nav-link');
+          var el = [];
+
+          navLinks.forEach(function(navLink) {
+              if (navLink.getAttribute('data-ol_uid') === node.data.ol_uid) {
+                  el.push(navLink);
+              }
+          });
+
+          if(el.length !== 0){
             disabled = 'disabled';
           }
 
-          nodeRow.find(".displayDataButton").html("<button type='button' "+disabled+" class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>");
+          node.tr.querySelector(".displayDataButton").innerHTML = "<button type='button' \"+disabled+\" class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>";
         }
-
-        nodeRow.find(".changeOrder").html("<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>");
-        nodeRow.find(".toggleInfos").html("<button class='btn btn-sm'><i class='fas fa-info'></i></button>");
+        node.tr.querySelector(".changeOrder").innerHTML = "<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>";
+        node.tr.querySelector(".toggleInfos").innerHTML = "<button class='btn btn-sm'><i class='fas fa-info'></i></button>";
 
         var buttons = "";
         for (var i = 1; i < 6; i++) {
@@ -767,12 +829,25 @@ $(function() {
           buttons += "<button type='button' class='btn "+active+"'>"+(i*20)+"</button>";
         }
 
-        nodeRow.find(".changeOpacityButton").html('<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>');
+        node.tr.querySelector(".changeOpacityButton").innerHTML ='<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>';
 
-        if($(".layerSelectedStyles:visible").length > 0){
-          $("#layerSelected td.hide").show();
+          var layerSelectedStyles = document.querySelectorAll('.layerSelectedStyles');
+
+          var layerSelectedStylesVisible = Array.from(layerSelectedStyles).filter(function(element) {
+              var computedStyle = window.getComputedStyle(element);
+              return computedStyle.display !== 'none';
+          });
+
+        if(layerSelectedStylesVisible.length > 0){
+          var list = document.getElementById("layerSelected").querySelectorAll("td.hide")
+          list.forEach(function (list) {
+              list.style.display = 'table-cell';
+          });
         }else{
-          $("#layerSelected td.hide").hide();
+            var list = document.getElementById("layerSelected").querySelectorAll("td.hide")
+            list.forEach(function (list) {
+                list.style.display = 'none';
+            });
         }
       }
   });
@@ -787,6 +862,9 @@ $(function() {
       }
     }
     refreshLayerSelected();
+
+    mAddMessage(lizDict['layer.deleted'], 'success', true, 1000);
+
     e.stopPropagation();  // prevent fancytree activate for this row
   });
 
@@ -822,10 +900,9 @@ $(function() {
   });
 
   $('#layerSelected').on("click", ".attributeLayerButton", function(e){
-    $('#attribute-btn').addClass("active");
+    document.getElementById("attribute-btn").classList.add("active");
 
-    // Disable button to avoid multiple calls
-    $(this).prop("disabled",true);
+    e.target.closest(".attributeLayerButton").disabled = true;
 
     var node = $.ui.fancytree.getNode(e);
 
@@ -834,7 +911,7 @@ $(function() {
     var projectId = node.data.projectId;
 
     const promises = [
-      new Promise(resolve => 
+      new Promise(resolve =>
         // GetFeature request
         $.getJSON(lizUrls.wms, {
            'repository':repositoryId
@@ -849,7 +926,7 @@ $(function() {
           resolve(features);
         })
       ),
-      new Promise(resolve => 
+      new Promise(resolve =>
         // DescribeFeatureType request to get aliases
         $.getJSON(lizUrls.wms, {
            'repository':repositoryId
@@ -890,70 +967,51 @@ $(function() {
         }
       }
 
-      var attributeHTMLTable = '<table class="table">';
-
-      // Add table header
-      attributeHTMLTable += '<tr><th></th>';
-      for (var i = 0; i < visibleProperties.length; i++) {
-        var columnName = aliases[visibleProperties[i]] != "" ? aliases[visibleProperties[i]] : visibleProperties[i];
-        attributeHTMLTable += '<th>'+ columnName +'</th>';
-      }
-      attributeHTMLTable += '</tr>';
-
-      // Add data
-      for (var i = 0; i < features.length; i++) {
-        var feature = features[i];
-
-        attributeHTMLTable += '<tr><td><button type="button" title="'+lizDict['zoomin']+'" class="btn btn-sm zoomToFeatureExtent" data-feature-extent="'+JSON.stringify(feature.bbox)+'"><i class="fas fa-search-plus"></i></button></td>';
-        for (var j = 0; j < visibleProperties.length; j++) {
-          var propertieValue = feature.properties[visibleProperties[j]];
-
-          // Replace url or media by link
-          if(typeof propertieValue === 'string'){
-            if( propertieValue.substr(0,6) == 'media/' || propertieValue.substr(0,6) == '/media/' ){
-                var rdata = propertieValue;
-                if( propertieValue.substr(0,6) == '/media/' )
-                    rdata = propertieValue.slice(1);
-                propertieValue = '<a href="' + lizUrls.media + '?repository='+repositoryId+'&project='+projectId+'&path=/' + rdata + '" target="_blank">'+aliases[visibleProperties[j]]+'</a>';
-            }
-            else if( propertieValue.substr(0,4) == 'http' || propertieValue.substr(0,3) == 'www' ){
-                var rdata = propertieValue;
-                if(propertieValue.substr(0,3) == 'www')
-                    rdata = 'http://' + propertieValue;
-                propertieValue = '<a href="' + rdata + '" target="_blank">' + propertieValue + '</a>';
-            }
-          }
-          attributeHTMLTable += '<td>'+ propertieValue +'</td>';
-        }
-        attributeHTMLTable += '</tr>';
-      }
-
-      attributeHTMLTable += '</table>';
+      // Elements : [repositoryId, projectId, layerName, features, aliases, visibleProperties]
+      var elements = [repositoryId, projectId, layerName, features, aliases, visibleProperties];
 
       // Hide other tabs before appending
-      $('#attributeLayersTabs .nav-link').removeClass('active');
-      $('#attributeLayersContent .tab-pane').removeClass('show active');
+      var navLinks = document.querySelectorAll('#attributeLayersTabs .nav-link');
 
-      $('#attributeLayersTabs').append('\
+      navLinks.forEach(function(navLink) {
+        navLink.classList.remove('active');
+      });
+
+      var tabPane = document.querySelectorAll('#attributeLayersContent .tab-pane');
+
+      tabPane.forEach(function(tabPane) {
+        tabPane.classList.remove('show');
+        tabPane.classList.remove('active');
+      });
+
+      document.getElementById("attributeLayersTabs").insertAdjacentHTML("beforeend",'\
           <li class="nav-item">\
             <a class="nav-link active" href="#attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tab">'+node.title+'&nbsp;<i data-ol_uid="' + node.data.ol_uid + '" class="fas fa-times"></i></a>\
           </li>'
-        );
+      );
 
-      $('#attributeLayersContent').append('\
-          <div class="tab-pane fade show active" id="attributeLayer-'+repositoryId+'-'+projectId+'-'+layerName+'" role="tabpanel">\
-            <div class="table">\
-            '+attributeHTMLTable+'\
-            </div>\
-          </div>'
-        );
+      const container = document.getElementById('attributeLayersContent');
+
+      const addToContainer = (elements) => {
+          const attributeTable = new AttributeTable(elements);
+          container.appendChild(attributeTable);
+          attributeTable.updateContent();
+      };
+
+      if (document.getElementById("attributeLayersContent").innerHTML === "") {
+          const attributeTable = new AttributeTable(elements);
+          container.appendChild(attributeTable);
+          attributeTable.updateContent();
+      } else {
+          addToContainer(elements);
+      }
 
       $('#attributeLayersTabs a').on('click', function (e) {
         e.preventDefault();
         $(this).tab('show');
       });
 
-      // Handle close tabs
+        // Handle close tabs
       $('#attributeLayersTabs .fa-times').on('click', function (e) {
         e.preventDefault();
 
@@ -975,9 +1033,9 @@ $(function() {
         });
 
         // Hide bottom dock
-        if($('#attributeLayersContent').html().trim() == ""){
-          $('#bottom-dock').hide();
-          $('#attribute-btn').removeClass("active");
+        if(document.getElementById("attributeLayersContent").textContent.trim() === ""){
+          document.getElementById("bottom-dock").style.display = 'none';
+          document.getElementById("attribute-btn").classList.remove("active");
         }
 
         // Active another sibling tab if current was active
@@ -996,7 +1054,7 @@ $(function() {
         mapBuilder.map.getView().fit(transformExtent(bbox, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
       });
 
-      $('#bottom-dock').show();
+      document.getElementById("bottom-dock").style.display = 'block';
     });
   });
 
@@ -1024,7 +1082,7 @@ $(function() {
     }
     // UI
     $(this).siblings().removeClass("active");
-    $(this).addClass("active");
+    this.classList.add("active");
     e.stopPropagation();  // prevent fancytree activate for this row
   });
 
@@ -1216,7 +1274,7 @@ $(function() {
     $.ajax({
       url: lizUrls.mapcontext_add,
       type:"POST",
-      data: { 
+      data: {
         name: $("#mapcontext-name").val(),
         is_public: $("#publicmapcontext").is(':checked'),
         mapcontext: JSON.stringify(mapContext)
@@ -1243,6 +1301,7 @@ $(function() {
           dataType:"html",
           success: function( data ){
             setMapContextContent(data);
+            mAddMessage(lizDict['geobookmark.deleted'], 'success', true, 1000);
           }
         });
       }
@@ -1270,7 +1329,7 @@ $(function() {
           mapBuilder.map.getView().setCenter(mapcontext.center);
           mapBuilder.map.getView().setZoom(mapcontext.zoom);
 
-          // Load layers if present 
+          // Load layers if present
           if(mapcontext.layers.length > 0){
             for (var i = 0; i < mapcontext.layers.length; i++) {
               var layerContext = mapcontext.layers[i];
@@ -1319,7 +1378,7 @@ $(function() {
   }
 
   $('#attribute-btn').on("click", function(e){
-    if($('#attributeLayersContent').html().trim() != ""){
+    if($('#attributeLayersContent').text().trim() != ""){
       $('#bottom-dock').show();
       $(this).addClass('active');
     }
