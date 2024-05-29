@@ -174,10 +174,8 @@
         <option value="a4" selected>A4</option>
         <option value="a5">A5</option>
       </select>
-      <select id="resolution-pdf-print" class="custom-select" data-toggle="tooltip" title="{@mapBuilder~pdfprint.resolution@}">
-        <option value="72">72 dpi</option>
-        <option value="150">150 dpi</option>
-        <option value="255">255 dpi</option>
+      <select id="resolution-pdf-print" class="custom-select" data-toggle="tooltip" title="{@mapBuilder~pdfprint.resolution@}" disabled>
+        <option value="90">90 dpi</option>
       </select>
       <button id="pdf-print-btn" type="button" class="btn btn-sm btn-block btn-outline-dark">{@view~map.print.toolbar.title@}</button>
     </div>

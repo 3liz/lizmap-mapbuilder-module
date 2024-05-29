@@ -15,7 +15,6 @@ import {getDistance} from "ol/sphere";
 import OSM from 'ol/source/OSM.js';
 import XYZ from 'ol/source/XYZ.js';
 import StadiaMaps from 'ol/source/StadiaMaps.js';
-import XYZ from 'ol/source/XYZ.js';
 import BingMaps from 'ol/source/BingMaps.js';
 import WMTS from 'ol/source/WMTS.js';
 import WMTSTileGrid from 'ol/tilegrid/WMTS.js';
@@ -1217,8 +1216,6 @@ $(function() {
             }]
         } else if (activeLayer instanceof BingMaps) {
             console.log("Active layer => BingMaps")
-            console.log(activeLayer)
-
             layers = [{
                 "type": "BingMaps",
                 "imagerySet": activeLayer.getImagerySet(),
@@ -1253,9 +1250,10 @@ $(function() {
         }
 
         //Annex layers
-        for (var i = baseLayerSelect.length; i < mapBuilder.map.getAllLayers().length; i++) {
+        var listAnnexLayers = createListAnnexLayers();
+        for (var i = 0; i < listAnnexLayers.length; i++) {
             console.log("LAYER DETECTED")
-            var otherLayer = mapBuilder.map.getAllLayers()[i].values_.source
+            var otherLayer = listAnnexLayers[i].getProperties().source
             layers.push({
                 "type": "WMS",
                 "url": otherLayer.getUrl(),
@@ -1265,13 +1263,13 @@ $(function() {
 
         const specValue = {
             "layers": layers,
-            "center": transform(mapBuilder.map.getView().targetCenter_, mapBuilder.map.getView().getProjection(), 'EPSG:4326'),
+            "center": transform(mapBuilder.map.getView().getCenter(), mapBuilder.map.getView().getProjection(), 'EPSG:4326'),
             "size": [width, height, 'mm'],
             "dpi": resolution,
             "scale": scale,
-            "projection": mapBuilder.map.getView().getProjection().code_,
+            "projection": mapBuilder.map.getView().getProjection().getCode(),
         };
-console.log(specValue)
+
         //Create progress bar
         var customProgress = new CustomProgress();
 
@@ -1297,6 +1295,28 @@ console.log(specValue)
     $(this).removeClass("disabled");
   });
 
+  function createListAnnexLayers() {
+    var layersList = [];
+
+    for (var i = 1; i < mapBuilder.map.getAllLayers().length; i++) {
+      addToList(0, mapBuilder.map.getAllLayers()[i]);
+    }
+
+    return layersList;
+
+    function addToList(index, val) {
+      if (layersList.length < 1) {
+        return layersList.push(val);
+      }
+      if (layersList[index].getZIndex() > val.getZIndex()) {
+        return layersList.splice(index, 0, val);
+      }
+      if (index + 1 === layersList.length) {
+        return layersList.push(val)
+      }
+      return addToList(index + 1, val);
+    }
+  }
 
   //#### MAP CONTEXT
 
@@ -1390,7 +1410,7 @@ console.log(specValue)
         dataType:"json",
         success: function( mapcontext ){
           // Remove all existing layers (begins index at end because index changes after remove !)
-          var layers = mapBuilder.map.getLayers().array_;
+          var layers = mapBuilder.map.getLayers().getArray();
           for (var i = layers.length - 1; i >= 0; i--) {
             if( ! layers[i].getProperties().hasOwnProperty('baseLayer')){
               mapBuilder.map.removeLayer(layers[i]);
