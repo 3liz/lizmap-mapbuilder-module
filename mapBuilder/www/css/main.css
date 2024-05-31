@@ -1,5 +1,5 @@
 /* Fancytree */
-#layerSelected span.fancytree-expander, #layerSelected span.fancytree-icon{display: none;}
+#layerSelectedHolder span.fancytree-expander, #layerSelectedHolder span.fancytree-icon{display: none;}
 table.fancytree-ext-table tbody tr.fancytree-active {
     background-color: inherit;
 }
@@ -169,7 +169,7 @@ span.fancytree-drag-source.fancytree-drag-remove {
 .toggleLegend > img {display: none;}
 
 .changeOrder > div {display: block;text-align: center;}
-#layerSelected tr:first-child div.changeOrderUp, #layerSelected tr:last-child div.changeOrderDown {display: none;}
+#layerSelectedHolder tr:first-child div.changeOrderUp, #layerSelectedHolder tr:last-child div.changeOrderDown {display: none;}
 
 .changeOpacityButton button{border-color: #343a40;}
 .changeOpacityButton button:nth-child(1){background-color: rgba(0, 0, 0, 0);}
@@ -274,7 +274,7 @@ span.layerStore-folder {
 }
 
 /* CSS for selection */
-#layerSelected tbody tr {
+#layerSelectedHolder tbody tr {
     box-shadow: 0 0 5px 0.5px rgba(0,0,0,0.2);
     display: flex;
     padding: 10px;
@@ -282,19 +282,19 @@ span.layerStore-folder {
     border-radius: 9px;
 }
 
-#layerSelected tbody tr:last-child {
+#layerSelectedHolder tbody tr:last-child {
     margin-bottom: 0
 }
 
-#layerSelected tbody tr td:first-child {
+#layerSelectedHolder tbody tr td:first-child {
     flex: 1;
     margin: auto;
 }
 
-#layerSelected tbody tr td:nth-child(n) {
+#layerSelectedHolder tbody tr td:nth-child(n) {
     margin-left: 3px
 }
 
-#layerSelected tbody tr td:nth-child(1), #layerSelected tbody tr td:nth-child(2) {
+#layerSelectedHolder tbody tr td:nth-child(1), #layerSelectedHolder tbody tr td:nth-child(2) {
     margin-left: 0
 }

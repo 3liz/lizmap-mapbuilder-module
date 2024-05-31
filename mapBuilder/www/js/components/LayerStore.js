@@ -8,11 +8,19 @@ export class LayerStore extends HTMLElement {
   constructor(container) {
     super();
     this.container = container;
-    this._tree = [];
-  }
+    this.tree = [];
 
-  set tree(value) {
-    this._tree = value;
+    mapBuilder.layerStoreTree.forEach((value) => {
+      this.tree.push(new LayerTreeFolder({
+        title: value.title,
+        children: value.children,
+        lazy: value.lazy,
+        project: value.project,
+        repository: value.repository,
+        bbox: value.bbox,
+        popup: value.popup
+      }));
+    });
     this.render()
   }
 
@@ -108,7 +116,7 @@ export class LayerStore extends HTMLElement {
   render() {
     const tpl = html`
         <ul class="layerStore-tree">
-            ${this._tree.map((el) =>
+            ${this.tree.map((el) =>
                     html`
                         ${this.folderTemplate(el)}
                     `
@@ -303,6 +311,10 @@ export class LayerStore extends HTMLElement {
       }
     }
     return -1;
+  }
+
+  getTree() {
+    return this.tree;
   }
 }
 

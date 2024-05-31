@@ -4,7 +4,6 @@ export class LayerElement {
 
   #layer;
   #uid;
-  #visible;
   #attributeTableOpened;
   #infoVisible;
 
@@ -12,7 +11,6 @@ export class LayerElement {
    * @typedef {Object} Options
    * @property {ImageLayer} [#layer] layer associated to the element
    * @property {string} [#uid] layer's uid
-   * @property {boolean} [#visible] if the folder is visible or not
    * @property {boolean} [#attributeTableOpened] if the attribute table is opened or not
    * @property {boolean} [#infoVisible] if the info panel is opened or not
    */
@@ -20,7 +18,6 @@ export class LayerElement {
     this.#layer = options.layer;
     this.#uid = options.uid;
 
-    this.#visible = true;
     this.#attributeTableOpened = false;
     this.#infoVisible = false;
   }
@@ -42,13 +39,6 @@ export class LayerElement {
   /**
    * @returns {boolean}
    */
-  isVisible() {
-    return this.#visible;
-  }
-
-  /**
-   * @returns {boolean}
-   */
   isAttributeTableOpened() {
     return this.#attributeTableOpened;
   }
@@ -61,12 +51,7 @@ export class LayerElement {
   }
 
   switchVisibility() {
-    this.#visible = !this.isVisible();
-    if (this.isVisible()) {
-      this.#layer.setVisible(true)
-    } else {
-      this.#layer.setVisible(false)
-    }
+    this.#layer.setVisible(!this.getLayer().isVisible())
   }
 
   /**

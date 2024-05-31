@@ -5,6 +5,7 @@ import {LayerTreeElement} from "./LayerTreeElement";
  * @typedef {Object} Options
  * @property {boolean} [#attributeTable] if the layer has an attribute table
  * @property {string} [#name] name
+ * @property {array} [#style] style
  * @property {string} [#tooltip] layer's tooltip.
  * @property {string} [#uuid] layer's uuid
  * @property {number} [#minScale] layer's minScale
@@ -14,6 +15,7 @@ export class LayerTreeLayer extends LayerTreeElement {
 
   #attributeTable;
   #name;
+  #style;
   #tooltip;
   #uuid;
   #minScale;
@@ -32,7 +34,7 @@ export class LayerTreeLayer extends LayerTreeElement {
 
     this.#name = options.name;
 
-    this.style = options.style;
+    this.#style = options.style;
 
     this.#tooltip = options.tooltip;
 
@@ -52,7 +54,7 @@ export class LayerTreeLayer extends LayerTreeElement {
   }
 
   getStyle() {
-    return this.style;
+    return this.#style;
   }
 
   getTooltip() {

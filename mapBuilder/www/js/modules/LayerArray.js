@@ -12,18 +12,6 @@ export class LayerArray {
   }
 
   /**
-   * @param {[ImageLayer]} [array] Array made of ImageLayer.
-   */
-  setArray(array) {
-    if (array.length > 1) {
-      this.#elements.push(new LayerElement({
-        layer: array[1],
-        uid: array[1].ol_uid
-      }));
-    }
-  }
-
-  /**
    * @param {ImageLayer} [layer] layer
    */
   addElement(layer) {
@@ -31,27 +19,8 @@ export class LayerArray {
       layer: layer,
       uid: layer.ol_uid
     });
-    if (this.#elements.length === 0) {
-      this.#elements.push(element);
-    } else {
-      this.addWithOrder(element, 0);
-    }
+    this.#elements.unshift(element);
     return element;
-  }
-
-  /**
-   * @param {LayerElement} [el] element
-   * @param {number} [index] index
-   */
-  addWithOrder(el, index) {
-    if (this.#elements[index].getLayer().getZIndex() < el.getLayer().getZIndex()) {
-      return this.#elements.splice(index, 0, el);
-    }
-    if (this.#elements.length > index + 1) {
-      return this.addWithOrder(el, index + 1);
-    } else {
-      return this.#elements.splice(index + 1, 0, el);
-    }
   }
 
   /**

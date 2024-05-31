@@ -3,8 +3,8 @@
  * @property {string} [#title] layer's name.
  * @property {boolean} [#popup] popup
  * @property {array} [#bbox] bbox
- * @property {boolean} [#project] project id
- * @property {boolean} [#repository] repository id
+ * @property {string} [#project] project id
+ * @property {string} [#repository] repository id
  */
 export class LayerTreeElement {
 

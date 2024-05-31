@@ -10,11 +10,6 @@ export class LayerSelected extends HTMLElement {
     this._layerSelected = new LayerArray();
   }
 
-  updateLayerSelected(value) {
-    this._layerSelected.setArray(value);
-    this.render();
-  }
-
   addElement(value) {
     this._layerSelected.addElement(value);
     this.render();
@@ -24,7 +19,7 @@ export class LayerSelected extends HTMLElement {
    * @param {LayerElement} element
    */
   template = (element) => {
-    let layerShow = element.isVisible() ? "fa-eye" : "fa-eye-slash";
+    let layerShow = element.getLayer().isVisible() ? "fa-eye" : "fa-eye-slash";
     let infoShow = element.isInfoVisible() ? "table-cell" : "none";
     let attributeTableShow;
 
@@ -41,7 +36,7 @@ export class LayerSelected extends HTMLElement {
     return html`
         <tr role="row" aria-selected="false" class="containerLayerSelected" id="${element.getUid()}">
             <td role="gridcell">
-                <span class="titleLayerSelected">${element.getLayer().getProperties().title + " | " + element.getUid()}</span>
+                <span class="titleLayerSelected">${element.getLayer().getProperties().title}</span>
             </td>
             <td class="changeOrder" role="gridcell">
                 <div class="fas fa-caret-up changeOrder changeOrderUp"
@@ -181,13 +176,6 @@ export class LayerSelected extends HTMLElement {
    */
   actionChangeOpacity(event, element) {
     element.getLayer().setOpacity(parseInt(event.target.closest(".btn").textContent) / 100);
-  }
-
-  /**
-   * @param {LayerElement} element layer element to act on
-   */
-  displayData(element) {
-
   }
 }
 

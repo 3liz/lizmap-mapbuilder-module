@@ -29,7 +29,6 @@ import './modules/bottom-dock.js';
 import {AttributeTable} from "./components/AttributeTable";
 import {LayerStore} from "./components/LayerStore";
 import {LayerSelected} from "./components/LayerSelected";
-import {LayerTreeFolder} from "./modules/LayerTreeFolder";
 
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
@@ -495,26 +494,13 @@ $(function() {
   //Build the tree
   var listTree = [];
 
-  mapBuilder.layerStoreTree.forEach((value) => {
-    listTree.push(new LayerTreeFolder({
-      title: value.title,
-      children: value.children,
-      lazy: value.lazy,
-      project: value.project,
-      repository: value.repository,
-      bbox: value.bbox,
-      popup: value.popup
-    }));
-  });
-
   var layerStore;
   var layerSelected;
 
   layerStore = new LayerStore(document.getElementById("layerStoreHolder"));
   layerSelected = new LayerSelected(document.getElementById("layerSelectedHolder").children[1]);
 
-  layerStore.tree = listTree;
-  layerSelected.updateLayerSelected(mapBuilder.map.getAllLayers());
+  listTree = layerStore.getTree();
 
   function getNodeFromUuid(uuid) {
     for (var i = 0; i < listTree.length; i++) {
