@@ -27,7 +27,8 @@ export class LayerTreeLayer extends LayerTreeElement {
       popup: options.popup,
       bbox: options.bbox,
       project: options.project,
-      repository: options.repository
+      repository: options.repository,
+      color: options.color
     });
 
     this.#attributeTable = options.attributeTable

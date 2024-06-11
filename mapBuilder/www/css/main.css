@@ -105,7 +105,7 @@ span.fancytree-drag-source.fancytree-drag-remove {
 #dock {
     left: 30px;
     padding: 5px;
-    max-height: 43%;
+    max-height: 60%;
     overflow-y: auto;
 }
 
@@ -237,17 +237,19 @@ span.fancytree-drag-source.fancytree-drag-remove {
 ul.layerStore-tree {
     display: flex;
     flex-direction: column;
-    padding: 0;
     user-select: none;
 }
 
 li.layerStore-arrow {
     padding: 5px 0;
     cursor: pointer;
+    display: flex;
+    justify-content: start;
+    align-items: center;
 }
 
-.layerStore-tree ul {
-    padding-left: 20px;
+li.layerStore-arrow span:nth-child(2) {
+    margin-left: 5px;
 }
 
 .layerStore-layer {
@@ -264,13 +266,74 @@ li.layerStore-arrow {
     flex: 1;
 }
 
-.layerStore-layer select {
-    width: 100px;
-    margin-right: 10px;
-}
-
 span.layerStore-folder {
     padding: 0 5px;
+}
+
+#layerStoreHolder {
+    margin: 15px 10px;
+}
+
+#layerStoreHolder ul {
+    margin: 10px 0;
+    padding: 10px 15px;
+    border-radius: 7px;
+    box-shadow: 0 0 5px 0.5px rgba(0,0,0,0.2);
+    list-style-type: none;
+}
+
+#layerStoreHolder > ul:first-of-type > li:hover {
+    background-color: #f0f0f0;
+}
+
+.layerStore-arrow {
+    padding: 5px;
+    border-radius: 5px;
+    transition: 0.1s ease;
+    margin-bottom: 5px;
+}
+
+.layerStore-color {
+    width: 13px;
+    height: 13px;
+    margin-left: 10px;
+    border-radius: 25px;
+    border: #5a5a5a solid 1.8px;
+}
+
+.layerStore-arrow.failed {
+    cursor: not-allowed
+}
+
+.layerStore-arrow:last-of-type {
+    margin-bottom: 0;
+}
+
+.layerStoreTitle {
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 16px
+}
+
+.layerStore-layer {
+    margin-bottom: 3px;
+    padding: 5px 5px;
+    padding-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+ul .layerStore-layer:last-child {
+    margin-bottom: 0;
+}
+
+.layerStore-layer select {
+    border: none;
+    border-radius: 7px;
+    text-align: center;
+    font-family: sans-serif;
+    width: 100px;
+    margin-right: 10px;
 }
 
 /* CSS for selection */

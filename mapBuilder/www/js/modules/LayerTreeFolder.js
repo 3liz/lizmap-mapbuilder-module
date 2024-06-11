@@ -23,7 +23,8 @@ export class LayerTreeFolder extends LayerTreeElement {
       popup: options.popup,
       bbox: options.bbox,
       project: options.project,
-      repository: options.repository
+      repository: options.repository,
+      color: options.color
     });
 
     this.#children = [];
@@ -53,6 +54,7 @@ export class LayerTreeFolder extends LayerTreeElement {
     let listChild = children !== undefined ? children : this.#children;
 
     listChild.forEach((value) => {
+      value.color = this.getColor();
       if (value.hasOwnProperty("style")) {
         value.repository = this.getRepository();
         value.project = this.getProject();
@@ -66,7 +68,8 @@ export class LayerTreeFolder extends LayerTreeElement {
           title: value.title,
           tooltip: value.tooltip,
           project: value.project,
-          repository: value.repository
+          repository: value.repository,
+          color: value.color,
         }));
       } else {
         list.push(new LayerTreeFolder({
@@ -76,7 +79,8 @@ export class LayerTreeFolder extends LayerTreeElement {
           project: value.project,
           repository: value.repository,
           bbox: value.bbox,
-          popup: value.popup
+          popup: value.popup,
+          color: value.color
         }));
       }
     });

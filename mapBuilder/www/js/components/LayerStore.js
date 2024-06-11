@@ -1,4 +1,4 @@
-import {html, render} from 'lit-html';
+import {html, render, nothing} from 'lit-html';
 import {LayerTreeFolder} from "../modules/LayerTreeFolder";
 import {WMSCapabilities} from "ol/format";
 import {LayerTreeLayer} from "../modules/LayerTreeLayer";
@@ -18,7 +18,8 @@ export class LayerStore extends HTMLElement {
         project: value.project,
         repository: value.repository,
         bbox: value.bbox,
-        popup: value.popup
+        popup: value.popup,
+        color: value.color
       }));
     });
     this.render()
@@ -28,7 +29,6 @@ export class LayerStore extends HTMLElement {
    * @param {LayerTreeFolder} element
    */
   folderTemplate = (element) => {
-    let icoLi;
     let tagLazy = element.isLazy() ? "lazy" : "";
 
     let icoSpan;
@@ -39,20 +39,20 @@ export class LayerStore extends HTMLElement {
       icoSpan = element.isOpened() ? "fa-folder-open" : "fa-folder";
     }
 
-    if (element.isOpened()) {
-      icoLi = "fa-caret-down";
-    } else {
-      icoLi = element.isLazy() ? "fa-angle-right" : "fa-caret-right";
-    }
-
     if (element.isFailed()) {
-      icoLi = "";
       icoSpan = "fa-window-close";
+      tagLazy = "failed";
     }
 
     let template = html`
-        <li class='layerStore-arrow ${tagLazy} fas ${icoLi}' @click='${(event) => this.action(element, event)}'>
-            <span class='layerStore-folder  fas ${icoSpan}'></span> ${element.getTitle()}
+        <li class='layerStore-arrow ${tagLazy}' @click='${(event) => this.action(element, event)}'>
+        <span class='layerStore-folder  fas ${icoSpan}'></span>
+        <span class="layerStoreTitle">${element.getTitle()}</span>
+        ${!element.getProject()
+                ? html`
+                    <div class="layerStore-color" style="background-color: ${element.getColor()}"></div>`
+                : nothing
+        }
         </li>
     `;
 
@@ -76,7 +76,10 @@ export class LayerStore extends HTMLElement {
       });
       template = html`
           ${template}
-          <ul class="layerStore-tree">
+          <ul class="layerStore-tree"
+              @mouseover='${(event) => {event.target.closest("ul").style = `background-color: ${element.getHoverColor()}; transition: 0.2s;`}}' 
+              @mouseout='${(event) => {event.target.closest("ul").style = `background-color: ${element.getColor()}; transition: 0.2s;`}}' 
+              style="background-color: ${element.getColor()}">
               ${allChildTemplate}
           </ul>
       `;
@@ -101,14 +104,14 @@ export class LayerStore extends HTMLElement {
     let tooltip = element.getTooltip() !== undefined ? element.getTooltip() : "";
 
     return html`
-        <li class='layerStore-layer fas fa-globe-africa'>
-            <span title=${tooltip}>${element.getTitle()}</span>
+        <li class='layerStore-layer fas fa-layer-group' id="${element.getUuid()}"
+            @mouseover='${(e) => {e.target.closest("li").style = `background-color: ${element.getColor()}; box-shadow: 0 0 5px 0.5px rgba(0,0,0,0.2); transition: 0.2s;`;}}'
+            @mouseout='${(e) => {e.target.closest("li").style = `transition: 0.2s;`;}}'
+        >
+            <span class="layerStoreTitle" title=${tooltip}>${element.getTitle()}</span>
             <select class='layerStyles custom-select custom-select-sm'>
                 ${styleOption}
             </select>
-            <button id=${element.getUuid()} type='button' class='addLayerButton btn btn-sm'>
-                <i class='fas fa-plus'></i>
-            </button>
         </li>
     `;
   }
@@ -130,6 +133,9 @@ export class LayerStore extends HTMLElement {
     this.render();
   }
 
+  /**
+   * @param {LayerTreeFolder} element
+   */
   async action(element, e) {
     if (element.isLazy()) {
       element.setLoading(true);

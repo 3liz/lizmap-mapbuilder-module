@@ -514,8 +514,8 @@ $(function() {
 
   /* Handle custom addLayerButton clicks */
   document.querySelector('#layerStoreHolder').addEventListener('click', function (e) {
-    if (e.target.closest('.addLayerButton')) {
-      var element = e.target.closest('.addLayerButton');
+    if (e.target.closest('.layerStore-layer') && e.target.tagName !== "SELECT") {
+      var element = e.target.closest('.layerStore-layer');
 
       var node = getNodeFromUuid(element.id);
       var nodeLi = document.getElementById(element.id).closest("li");
