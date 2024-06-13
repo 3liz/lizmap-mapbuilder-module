@@ -1,6 +1,7 @@
 import {html, render} from 'lit-html';
 import {LayerArray} from "../modules/LayerArray";
 import {transformExtent} from "ol/proj";
+import {Slider} from "./Slider";
 
 export class LayerSelected extends HTMLElement {
 
@@ -10,8 +11,8 @@ export class LayerSelected extends HTMLElement {
     this._layerSelected = new LayerArray();
   }
 
-  addElement(value) {
-    this._layerSelected.addElement(value);
+  addElement(value, color) {
+    this._layerSelected.addElement(value, color);
     this.render();
   }
 
@@ -19,68 +20,72 @@ export class LayerSelected extends HTMLElement {
    * @param {LayerElement} element
    */
   template = (element) => {
-    let layerShow = element.getLayer().isVisible() ? "fa-eye" : "fa-eye-slash";
-    let infoShow = element.isInfoVisible() ? "table-cell" : "none";
+    let layerShow = element.getLayer().isVisible() ? "fa-eye" : "fa-eye-slash active";
+    let infoShow = element.isInfoVisible() ? "fa-info active" : "fa-info";
     let attributeTableShow;
+    let info;
 
     if (element.getLayer().getProperties().hasAttributeTable) {
       attributeTableShow = element.isAttributeTableOpened() ? html`
-          <button id="layerSelectedDataButton" class="btn btn-sm" disabled>
-              <i class="fas fa-list-ul"></i>
-          </button>` : html`
-          <button id="layerSelectedDataButton" class="btn btn-sm">
-              <i class="fas fa-list-ul"></i>
-          </button>`
+          <button class="dispayDataButton fas fa-list-ul active" disabled></button>` : html`
+          <button class="dispayDataButton fas fa-list-ul"></button>`
+    }
+
+    if (element.isInfoVisible()) {
+
+      let sliderWidth = this.getWidthFromCssRule("custom-slider .slider");
+
+      let slider = new Slider(`
+        background-color: ${element.getColor()};
+        left: ${Math.floor(((element.getLayer().getOpacity() * 100) * (sliderWidth - 10)) / 100) + 'px'};
+        `,
+        element.getLayer()
+      );
+
+      info = html`
+          <div class="midLine">
+              <span class="layerStyleSpan">${element.getLayer().getSource().getParams()["STYLES"]}</span>
+              ${slider}
+          </div>`;
     }
 
     return html`
-        <tr role="row" aria-selected="false" class="containerLayerSelected" id="${element.getUid()}">
-            <td role="gridcell">
-                <span class="titleLayerSelected">${element.getLayer().getProperties().title}</span>
-            </td>
-            <td class="changeOrder" role="gridcell">
-                <div class="fas fa-caret-up changeOrder changeOrderUp"
-                     @click="${(event) => this.actionChangeOrderUp(event)}"></div>
-                <div class="fas fa-caret-down changeOrder changeOrderDown"
-                     @click="${(event) => this.actionChangeOrderDown(event)}"></div>
-            </td>
-            <td class="deleteLayerButton" role="gridcell" @click="${(event) => this.actionDeleteLayerButton(event)}">
-                <button class="btn btn-sm">
+        <div class="containerLayerSelected" id="${element.getUid()}">
+            <div class="changeOrderContainer" style="background-color: ${element.getColor()}">
+                <div class="changeOrder changeOrderUp" style="background-color: ${element.getColor()}"
+                     @click="${(event) => this.actionChangeOrderUp(event)}"
+                     @mouseover='${(e) => this.actionMouseOver(e, element)}'
+                     @mouseout='${(e) => this.actionMouseOut(e, element)}'
+                >
+                    <i class="fas fa-caret-up"></i>
+                </div>
+                <div class="changeOrder changeOrderDown" style="background-color: ${element.getColor()}"
+                     @click="${(event) => this.actionChangeOrderDown(event)}"
+                     @mouseover='${(e) => this.actionMouseOver(e, element)}'
+                     @mouseout='${(e) => this.actionMouseOut(e, element)}'
+                >
+                    <i class="fas fa-caret-down"></i>
+                </div>
+            </div>
+            <div class="layerSelectedContent">
+                <div class="upperLine">
+                    <span class="titleLayerSelected">${element.getLayer().getProperties().title}</span>
+                    <div class="layerButtonsDiv">
+                        ${attributeTableShow}
+                        <button class="zoomToExtentButton fas fa-search-plus"
+                                @click="${(event) => this.actionZoomToExtentButton(event, element)}"></button>
+                        <button class="toggleVisibilityButton fas ${layerShow}"
+                                @click="${(event) => this.actionToggleVisibilityButton(event, element)}"></button>
+                        <button class="toggleInfos fas ${infoShow}"
+                                @click="${(event) => this.actionToggleInfos(event, element)}"></button>
+                    </div>
+                </div>
+                ${info}
+                <button class="deleteLayerButton" @click="${(event) => this.actionDeleteLayerButton(event)}">
                     <i class="fas fa-trash"></i>
                 </button>
-            </td>
-            <td class="toggleVisibilityButton" @click="${(event) => this.actionToggleVisibilityButton(event, element)}">
-                <button class="btn btn-sm">
-                    <i class="fas ${layerShow}"></i>
-                </button>
-            </td>
-            <td class="zoomToExtentButton" @click="${(event) => this.actionZoomToExtentButton(event, element)}">
-                <button class="btn btn-sm">
-                    <i class="fas fa-search-plus"></i>
-                </button>
-            </td>
-            <td class="displayDataButton">
-                ${attributeTableShow}
-            </td>
-            <td class="toggleInfos" @click="${(event) => this.actionToggleInfos(event, element)}">
-                <button class="btn btn-sm">
-                    <i class="fas fa-info"></i>
-                </button>
-            </td>
-            <td class="layerSelectedStyles" role="gridcell" style="display : ${infoShow};">
-                ${element.getLayer().getSource().getParams()["STYLES"]}
-            </td>
-            <td class="changeOpacityButton" role="gridcell" style="display : ${infoShow};"
-                @click="${(event) => this.actionChangeOpacity(event, element)}">
-                <div class="btn-group btn-group-sm" role="group" aria-label="Opacity">
-                    <button type="button" class="btn ">20</button>
-                    <button type="button" class="btn ">40</button>
-                    <button type="button" class="btn ">60</button>
-                    <button type="button" class="btn ">80</button>
-                    <button type="button" class="btn active">100</button>
-                </div>
-            </td>
-        </tr>
+            </div>
+        </div>
     `;
   }
 
@@ -93,10 +98,6 @@ export class LayerSelected extends HTMLElement {
           ${layer}
       `;
     });
-    this._layerSelected.getArray().forEach((value) => {
-      console.log("Nom : " + value.getLayer().getSource().getParams()["LAYERS"] + " | zIndex : " + value.getLayer().getZIndex())
-    });
-    console.log("-----------------");
     render(result, this.container);
   }
 
@@ -115,7 +116,7 @@ export class LayerSelected extends HTMLElement {
    * @param {PointerEvent} event event occurring
    */
   actionChangeOrderUp(event) {
-    this._layerSelected.changeOrder(event.target.closest("tr").id, "up");
+    this._layerSelected.changeOrder(event.target.closest(".containerLayerSelected").id, "up");
     this.render();
   }
 
@@ -123,7 +124,7 @@ export class LayerSelected extends HTMLElement {
    * @param {PointerEvent} event event occurring
    */
   actionChangeOrderDown(event) {
-    this._layerSelected.changeOrder(event.target.closest("tr").id, "down");
+    this._layerSelected.changeOrder(event.target.closest(".containerLayerSelected").id, "down");
     this.render();
   }
 
@@ -131,7 +132,7 @@ export class LayerSelected extends HTMLElement {
    * @param {PointerEvent} event event occurring
    */
   actionDeleteLayerButton(event) {
-    this._layerSelected.removeElement(event.target.closest("tr").id);
+    this._layerSelected.removeElement(event.target.closest(".containerLayerSelected").id);
     this.render();
   }
 
@@ -171,11 +172,26 @@ export class LayerSelected extends HTMLElement {
   }
 
   /**
-   * @param {PointerEvent} event event occurring
-   * @param {LayerElement} element layer element to act on
+   * @param {string} rule css rule
+   * @return {number} width rule
    */
-  actionChangeOpacity(event, element) {
-    element.getLayer().setOpacity(parseInt(event.target.closest(".btn").textContent) / 100);
+  getWidthFromCssRule(rule) {
+    let cssText = "";
+    let classes = document.styleSheets[3].cssRules;
+    for (var x = 0; x < classes.length; x++) {
+      if (classes[x].selectorText === rule) {
+        cssText += classes[x].style["width"];
+      }
+    }
+    return parseInt(cssText.split("px")[0]);
+  }
+
+  actionMouseOver(e, element) {
+    e.target.closest("div.changeOrder").style = `background-color: ${element.getHoverColor()}; transition: 0.2s;`
+  }
+
+  actionMouseOut(e, element) {
+    e.target.closest("div.changeOrder").style = `background-color: ${element.getColor()}; transition: 0.2s;`
   }
 }
 

@@ -37,11 +37,6 @@ var originalZoom = 6;
 // 1 inch = 2,54 cm = 25,4 mm
 const INCHTOMM = 25.4;
 
-// Disable fancytree logs in production mode
-if (PRODUCTION) {
-  $.ui.fancytree.debugLevel = 0;
-}
-
 $(function() {
 
     function performCleanName(aName) {
@@ -178,10 +173,6 @@ $(function() {
         layerTree.reverse();
         // Remove empty values (TODO: à améliorer)
         layerTree = layerTree.filter(n => n);
-
-        if ($.ui.fancytree.getTree("#layerSelected") !== null) {
-            $.ui.fancytree.getTree("#layerSelected").reload(layerTree);
-        }
 
         // Refresh legends
         loadLegend();
@@ -498,7 +489,7 @@ $(function() {
   var layerSelected;
 
   layerStore = new LayerStore(document.getElementById("layerStoreHolder"));
-  layerSelected = new LayerSelected(document.getElementById("layerSelectedHolder").children[1]);
+  layerSelected = new LayerSelected(document.getElementById("layerSelectedHolder"));
 
   listTree = layerStore.getTree();
 
@@ -587,124 +578,14 @@ $(function() {
 
       mapBuilder.map.addLayer(newLayer);
       refreshLayerSelected();
-      layerSelected.addElement(newLayer);
+      layerSelected.addElement(newLayer, element.style.backgroundColor);
 
       mAddMessage(lizDict['layer.added'], 'success', true, 1000);
     }
   });
 
-  $('#layerSelected').fancytree({
-    extensions: ["dnd5", "table"],
-    table: {
-      indentation: 20,      // indent 20px per node level
-      nodeColumnIdx: 0     // render the node title into the first column
-    },
-    dnd5: {
-      dragStart: function() {
-        return true;
-      },
-      dragDrop: function(node, data) {
-        if (data.otherNode) {
-          data.otherNode.moveTo(node, data.hitMode);
-        }
-        // Parcourt de la liste des nodes pour mettre à jour le Z-index des couches
-        var allNodes = node.parent.children;
-
-        for (var i = 0; i < allNodes.length; i++) {
-          var layers = mapBuilder.map.getLayers().getArray();
-          for (var j = 0; j < layers.length; j++) {
-            if (allNodes[i].data.ol_uid == layers[j].ol_uid) {
-              layers[j].setZIndex(allNodes.length - i);
-            }
-          }
-        }
-        // Refresh legends
-        loadLegend();
-      },
-      dragEnter: function() {
-        // Don't allow dropping *over* a node (would create a child). Just
-        // allow changing the order:
-        return ["before", "after"];
-      }
-    },
-    renderColumns: function(event, data) {
-      var node = data.node;
-      node.tr.querySelectorAll(`:scope ${".layerSelectedStyles"}`)[0].textContent = node.data.styles;
-      var opacity = 0;
-      var visible = true;
-
-      var layers = mapBuilder.map.getLayers().getArray();
-      for (var i = 0; i < layers.length; i++) {
-        if(layers[i].ol_uid == node.data.ol_uid){
-          opacity = layers[i].getOpacity();
-          visible = layers[i].getVisible();
-        }
-      }
-
-      node.tr.querySelector(".deleteLayerButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-trash'></i></button>"
-
-      if(visible){
-        node.tr.querySelector(".toggleVisibilityButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-eye'></i></button>"
-      }else{
-        node.tr.querySelector(".toggleVisibilityButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-eye-slash'></i></button>"
-      }
-      node.tr.querySelector(".zoomToExtentButton").innerHTML = "<button class='btn btn-sm'><i class='fas fa-search-plus'></i></button>"
-
-      // Add button to display layer's attribute table if eligible
-      if(node.tr.querySelectorAll('.displayDataButton').length === 1 && node.data.hasOwnProperty('hasAttributeTable') && node.data.hasAttributeTable !== undefined){
-        var disabled = '';
-
-        // original statement : $("#attributeLayersTabs .nav-link [data-ol_uid='"+node.data.ol_uid+"']").length
-
-        var navLinks = document.getElementById('attributeLayersTabs').querySelectorAll('.nav-link');
-        var el = [];
-
-        navLinks.forEach(function(navLink) {
-          if (navLink.getAttribute('data-ol_uid') === node.data.ol_uid) {
-            el.push(navLink);
-          }
-        });
-
-        if(el.length !== 0){
-          disabled = 'disabled';
-        }
-
-        node.tr.querySelector(".displayDataButton").innerHTML = "<button type='button' "+disabled+" class='attributeLayerButton btn btn-sm'><i class='fas fa-list-ul'></i></button>";
-      }
-      node.tr.querySelector(".changeOrder").innerHTML = "<div class='fas fa-caret-up changeOrder changeOrderUp'></div><div class='fas fa-caret-down changeOrder changeOrderDown'></div>";
-      node.tr.querySelector(".toggleInfos").innerHTML = "<button class='btn btn-sm'><i class='fas fa-info'></i></button>";
-
-      var buttons = "";
-      for (var i = 1; i < 6; i++) {
-        var active = opacity == (i*20)/100 ? "active" : "";
-        buttons += "<button type='button' class='btn "+active+"'>"+(i*20)+"</button>";
-      }
-
-      node.tr.querySelector(".changeOpacityButton").innerHTML ='<div class="btn-group btn-group-sm" role="group" aria-label="Opacity">'+buttons+'</div>';
-
-      var layerSelectedStyles = document.querySelectorAll('.layerSelectedStyles');
-
-      var layerSelectedStylesVisible = Array.from(layerSelectedStyles).filter(function(element) {
-        var computedStyle = window.getComputedStyle(element);
-        return computedStyle.display !== 'none';
-      });
-
-      if(layerSelectedStylesVisible.length > 0){
-        var list = document.getElementById("layerSelected").querySelectorAll("td.hide")
-        list.forEach(function (list) {
-          list.style.display = 'table-cell';
-        });
-      }else{
-        var list = document.getElementById("layerSelected").querySelectorAll("td.hide")
-        list.forEach(function (list) {
-          list.style.display = 'none';
-        });
-      }
-    }
-  });
-
   document.getElementById("layerSelectedHolder").addEventListener('click', function (e) {
-    if (e.target.closest('#layerSelectedDataButton')) {
+    if (e.target.closest('.dispayDataButton')) {
       document.getElementById("attribute-btn").classList.add("active");
 
       var idLayer = e.target.closest(".containerLayerSelected").id;
@@ -859,8 +740,6 @@ $(function() {
               }
             }
           }
-          e.stopPropagation();  // prevent fancytree activate for this row
-
         });
 
         // Handle zoom to feature extent
@@ -873,24 +752,6 @@ $(function() {
       });
     }
   });
-
-  /*
-  $('#layerSelected').on("click", ".changeOpacityButton div button", function(e){
-    var node = $.ui.fancytree.getNode(e);
-    var opacity = e.target.textContent;
-
-    var layers = mapBuilder.map.getLayers().getArray();
-    for (var i = 0; i < layers.length; i++) {
-      if(layers[i].ol_uid == node.data.ol_uid){
-        layers[i].setOpacity(opacity/100);
-      }
-    }
-    // UI
-    $(this).siblings().removeClass("active");
-    this.classList.add("active");
-    e.stopPropagation();  // prevent fancytree activate for this row
-  });
-   */
 
   function loadLegend(){
     var legends = [];

@@ -115,21 +115,8 @@
     </div>
     <div class="tab-pane fade" id="layerselection" role="tabpanel" aria-labelledby="layerselection-tab">
       <div class="dock-tab-title">{@mapBuilder~default.selector.layers.selection@}</div>
-      <table id="layerSelectedHolder">
-        <colgroup>
-          <col>
-          <col>
-          <col>
-          <col>
-          <col>
-          {if $attributeTableTool}
-            <col>
-          {/if}
-          <col span="3">
-        </colgroup>
-        <tbody>
-        </tbody>
-      </table>
+      <div id="layerSelectedHolder">
+      </div>
     </div>
     <div class="tab-pane fade" id="legend" role="tabpanel" aria-labelledby="legend-tab">
       <div class="dock-tab-title">{@view~map.legend@}</div>

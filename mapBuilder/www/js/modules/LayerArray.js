@@ -13,11 +13,13 @@ export class LayerArray {
 
   /**
    * @param {ImageLayer} [layer] layer
+   * @param {string} [color] color
    */
-  addElement(layer) {
+  addElement(layer, color) {
     let element = new LayerElement({
       layer: layer,
-      uid: layer.ol_uid
+      uid: layer.ol_uid,
+      color: color
     });
     this.#elements.unshift(element);
     return element;
