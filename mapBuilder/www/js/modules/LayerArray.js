@@ -14,6 +14,7 @@ export class LayerArray {
   /**
    * @param {ImageLayer} [layer] layer
    * @param {string} [color] color
+   * @returns {LayerElement}
    */
   addElement(layer, color) {
     let element = new LayerElement({
@@ -40,7 +41,6 @@ export class LayerArray {
       throw new Error(`"direction" is incorrect !`);
     }
 
-    //On the LayerElement
     let list = this.#elements;
     let indexFirst = this.getIndexOf(layerUid);
     let indexSecond = indexFirst + util;
@@ -78,6 +78,7 @@ export class LayerArray {
         return i;
       }
     }
+    return -1;
   }
 
   /**
