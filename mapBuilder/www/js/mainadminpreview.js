@@ -18,6 +18,7 @@ $(function () {
 
     var raster = undefined;
 
+    //Generate the base layer
     if (baseLayerDefault === 'OSM Mapnik') {
         raster = new TileLayer({
             source: new OSM()
@@ -105,6 +106,10 @@ $(function () {
         });
     }
 
+    /**
+     * Class representing a button to zoom to the origin of the map.
+     * @extends Control
+     */
     var zoomToOriginControl = class ZoomToOriginControl extends Control {
 
         constructor(opt_options) {
@@ -128,6 +133,9 @@ $(function () {
             button.addEventListener('click', this.handleZoomToOrigin.bind(this), false);
         }
 
+        /**
+         * Handle click event to adjust the view;
+         */
         handleZoomToOrigin() {
             var extent = document.getElementById("_extent").textContent.split(',').map(parseFloat);
 
@@ -146,6 +154,7 @@ $(function () {
         source: source
     });
 
+    //Create the map
     var map = new Map({
         layers: [raster, vector],
         target: 'map',

@@ -23,7 +23,15 @@ var map = undefined;
  * @type {QueueExtent}
  */
 var extentHistory = undefined;
+/**
+ * Index of the current extent in the history
+ * @type {number}
+ */
 var indexExtentHystory = 0;
+/**
+ * Maximum length of the history of extents
+ * @type {number}
+ */
 var MAX_LENGTH_EXTENT_HYSTORY = 15;
 
 $(function() {
@@ -54,10 +62,12 @@ $(function() {
     $('#jforms_mapBuilderAdmin_config_baseLayerDefault option[value='+$(this).val()+']').toggle($(this).is(':checked'));
   });
 
+  //Refresh the map when the default baselayer is changed
   document.getElementById("jforms_mapBuilderAdmin_config_baseLayerDefault").addEventListener("change", () => {
     refreshLayerMap();
   })
 
+  //Refresh the map when the Bing key is changed and add a timeout to prevent too many requests
   var idTimeout = undefined;
   document.getElementById("jforms_mapBuilderAdmin_config_baseLayerKeyBing").addEventListener("input", () => {
     if (document.getElementById("jforms_mapBuilderAdmin_config_baseLayerDefault").value.includes("bing")) {
@@ -73,11 +83,15 @@ $(function() {
     $("#map").data('map', map);
   }
 
+  /**
+   * Refresh the map with the new configuration of the base layer
+   */
   async function refreshLayerMap() {
     var baseLayerDefault = document.getElementById("jforms_mapBuilderAdmin_config_baseLayerDefault").value;
 
     var raster = undefined;
 
+    //Generate the new base layer
     if (baseLayerDefault === 'osmMapnik') {
       raster = new TileLayer({
         source: new OSM()
@@ -177,7 +191,10 @@ $(function() {
       document.getElementById("map").children[0].remove();
     }
 
-
+    /**
+     * Class representing a button to zoom to the origin of the map.
+     * @extends Control
+     */
     var zoomToOriginControl = class ZoomToOriginControl extends Control {
 
       constructor(opt_options) {
@@ -200,6 +217,9 @@ $(function() {
         button.addEventListener('click', this.handleZoomToOrigin.bind(this), false);
       }
 
+      /**
+       * Handle click event to adjust the view;
+       */
       handleZoomToOrigin() {
         var extent = document.getElementById("jforms_mapBuilderAdmin_config_extent").value.split(',').map(parseFloat);
 
@@ -211,9 +231,22 @@ $(function() {
       };
     }
 
+    /**
+     * Class representing a button to draw an extent on the map.
+     * @extends Control
+     */
     var selectExtentControl = class selectExtentControl extends Control {
+      /**
+       * @type {Draw}
+       */
       draw;
+      /**
+       * @type {boolean}
+       */
       isActive;
+      /**
+       * @type {HTMLButtonElement}
+       */
       button;
 
       constructor(opt_options) {
@@ -243,6 +276,7 @@ $(function() {
           geometryFunction: createBox()
         });
 
+        //Clear the source when the user starts to draw a new extent
         this.draw.on('drawstart', function (e) {
           source.clear();
 
@@ -257,6 +291,7 @@ $(function() {
           redoElement.disabled = true;
         });
 
+        //Set the extent in the input field when the user finishes to draw an extent
         this.draw.on('drawend', function (e) {
           var tmpExtent = e.feature.getGeometry().getExtent();
           $('#jforms_mapBuilderAdmin_config_extent').val(transformExtent(tmpExtent, 'EPSG:3857', 'EPSG:4326'));
@@ -280,7 +315,7 @@ $(function() {
         button.addEventListener('click', this.handleSelectExtent.bind(this), false);
       }
 
-
+      //Handle the click event on the button
       handleSelectExtent() {
         if (this.isActive) {
           map.removeInteraction(this.draw);
@@ -294,8 +329,11 @@ $(function() {
       }
     }
 
+    /**
+     * Class representing a control to undo and redo the extent drawn on the map.
+     * @extends Control
+     */
     var undoRedoControl = class undoRedoControl extends Control {
-
       constructor(options) {
         options = options ? options : {};
 
@@ -306,6 +344,7 @@ $(function() {
 
         const className = 'ol-do-control';
 
+        //Create the undo button
         const undoElement = document.createElement('button');
         undoElement.className = className + '-undo fas fa-undo-alt';
         undoElement.setAttribute('type', 'button');
@@ -313,6 +352,7 @@ $(function() {
 
         undoElement.addEventListener('click', this.undo.bind(this), false);
 
+        //Create the redo button
         const redoElement = document.createElement('button');
         redoElement.className = className + '-redo fas fa-redo-alt';
         redoElement.setAttribute('type', 'button');
@@ -339,6 +379,10 @@ $(function() {
         redoElement.disabled = true;
 
       }
+
+      /**
+       * Undo the last extent drawn on the map.
+       */
       undo() {
         source.clear();
         indexExtentHystory--;
@@ -359,6 +403,9 @@ $(function() {
         this.redoEl.disabled = false;
       }
 
+      /**
+       * Redo the last extent drawn on the map.
+       */
       redo() {
         source.clear();
         indexExtentHystory++;
@@ -380,6 +427,7 @@ $(function() {
       }
     }
 
+    //Create the map
     map = new Map({
       layers: [raster, vector],
       target: 'map',
