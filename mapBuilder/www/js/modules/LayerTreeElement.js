@@ -1,21 +1,40 @@
-/**
- * @typedef {Object} Options
- * @property {string} [#title] layer's name.
- * @property {boolean} [#popup] popup
- * @property {array} [#bbox] bbox
- * @property {string} [#project] project id
- * @property {string} [#repository] repository id
- * @property {string} [#color] color of the layer in the CSS sheet
- */
+/** Class representing a node in a Layer Tree. */
 export class LayerTreeElement {
 
+  /**
+   * @type {string} Branch title.
+   */
   #title;
+  /**
+   * @type {array} Bbox.
+   */
   #bbox;
+  /**
+   * @type {boolean} Popup.
+   */
   #popup;
+  /**
+   * @type {string} Project id.
+   */
   #project;
+  /**
+   * @type {string} Repository id.
+   */
   #repository;
+  /**
+   * @type {string} Color of the layer in the CSS sheet.
+   */
   #color;
 
+  /**
+   * @typedef {Object} Options
+   * @property {string} [#title] Branch title.
+   * @property {array} [#bbox] Bbox.
+   * @property {boolean} [#popup] Popup.
+   * @property {string} [#project] Project id.
+   * @property {string} [#repository] Repository id.
+   * @property {string} [#color] Color of the layer in the CSS sheet.
+   */
   constructor(options) {
     this.#title = options.title;
 
@@ -35,15 +54,15 @@ export class LayerTreeElement {
   }
 
   /**
-   * Used to generate a light color using the RGB pattern
-   * We use only values between 210 -> 245 to get light colors
-   * @return {string} color with RGB pattern : "rgb(x x x)"
+   * Used to generate a light color using the RGB pattern.
+   * We use only values between 210 -> 245 to get light colors.
+   * @return {string} Color with RGB pattern : "rgb(x x x)".
    */
   generateColor() {
     /**
-     * @param {number} [min]
-     * @param {number} [max]
-     * @return {number}
+     * @param {number} [min] Minimum value.
+     * @param {number} [max] Maximum value.
+     * @return {number} Random integer between min and max.
      */
     function getRandInteger(min, max) {
       return Math.floor(Math.random() * (max + 1 - min)) + min;
@@ -64,6 +83,10 @@ export class LayerTreeElement {
     return `rgb(${listValue[0]} ${listValue[1]} ${listValue[2]})`;
   }
 
+  /**
+   * Get the color of the layer with a darker shade.
+   * @return {string} Color "rgb(200, 223, 235)".
+   */
   getHoverColor() {
     let colorString = this.getColor().split(" ");
     let colorValues = [
@@ -78,26 +101,50 @@ export class LayerTreeElement {
     return `rgb(${colorValues[0]} ${colorValues[1]} ${colorValues[2]})`;
   }
 
+  /**
+   * Get the title of the branch.
+   * @return {string} Branch title.
+   */
   getTitle() {
     return this.#title;
   }
 
+  /**
+   * Get the bbox.
+   * @return {Array} Bbox.
+   */
   getBbox() {
     return this.#bbox;
   }
 
+  /**
+   * Get the popup.
+   * @return {boolean} Popup.
+   */
   getPopup() {
     return this.#popup;
   }
 
+  /**
+   * Get the project id.
+   * @return {string} Project id.
+   */
   getProject() {
     return this.#project;
   }
 
+  /**
+   * Get the repository id.
+   * @return {string} Repository id.
+   */
   getRepository() {
     return this.#repository;
   }
 
+  /**
+   * Get the color of the layer.
+   * @return {string} Color "rgb(210, 233, 245)".
+   */
   getColor() {
     return this.#color;
   }

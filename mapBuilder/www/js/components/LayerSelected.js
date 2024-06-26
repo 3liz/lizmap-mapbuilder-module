@@ -4,14 +4,18 @@ import {Slider} from "./Slider";
 import {getLayerSelectionArray, changeList} from "../modules/LayerSelection.js";
 import {AttributeTable} from "./AttributeTable";
 
+/**
+ * Class representing the visual component of a layer selected.
+ * @extends HTMLElement
+ */
 export class LayerSelected extends HTMLElement {
   /**
-   * @type {LayerElement}
+   * @type {LayerElement} Layer associated to the component.
    */
   #element;
 
   /**
-   * @param {LayerElement} element
+   * @param {LayerElement} element Layer associated to the component.
    */
   constructor(element) {
     super();
@@ -22,18 +26,28 @@ export class LayerSelected extends HTMLElement {
     this.render()
   }
 
+  /**
+   * Render the component.
+   */
   render() {
+    //Check if the layer is visible or not on the map to adjust the component
     let layerShow = this.#element.getLayer().isVisible() ? "fa-eye" : "fa-eye-slash active";
+
+    //Check if the info panel is visible or not to adjust the button in the component
     let infoShow = this.#element.isInfoVisible() ? "fa-info active" : "fa-info";
+
     let attributeTableShow;
     let info;
 
+    //Check if the layer has an attribute table to adjust the component
     if (this.#element.getLayer().getProperties().hasAttributeTable) {
+      //Check if the attribute table is visible or not to adjust the component
       attributeTableShow = this.#element.isAttributeTableOpened() ? html`
           <button class="dispayDataButton fas fa-list-ul active" @click="${(event) => this.actionDisplayDataButton(event, this.#element)}" disabled></button>` : html`
           <button class="dispayDataButton fas fa-list-ul" @click="${(event) => this.actionDisplayDataButton(event, this.#element)}"></button>`
     }
 
+    //Check if the info panel is visible or not to adjust the component
     if (this.#element.isInfoVisible()) {
 
       let sliderWidth = this.getWidthFromCssRule("custom-slider .slider");
@@ -52,6 +66,7 @@ export class LayerSelected extends HTMLElement {
           </div>`;
     }
 
+    //Template of the component
     let tpl = html`
         <div class="changeOrderContainer" style="background-color: ${this.#element.getColor()}">
             <div class="changeOrder changeOrderUp" style="background-color: ${this.#element.getColor()}"
@@ -75,11 +90,11 @@ export class LayerSelected extends HTMLElement {
                 <div class="layerButtonsDiv">
                     ${attributeTableShow}
                     <button class="zoomToExtentButton fas fa-search-plus"
-                            @click="${(event) => this.actionZoomToExtentButton(event)}"></button>
+                            @click="${(event) => this.actionZoomToExtentButton()}"></button>
                     <button class="toggleVisibilityButton fas ${layerShow}"
-                            @click="${(event) => this.actionToggleVisibilityButton(event)}"></button>
+                            @click="${(event) => this.actionToggleVisibilityButton()}"></button>
                     <button class="toggleInfos fas ${infoShow}"
-                            @click="${(event) => this.actionToggleInfos(event)}"></button>
+                            @click="${(event) => this.actionToggleInfos()}"></button>
                 </div>
             </div>
             ${info}
@@ -92,7 +107,8 @@ export class LayerSelected extends HTMLElement {
   }
 
   /**
-   * @param {PointerEvent} event event occurring
+   * Delete the component and the layer associated to it.
+   * @param {PointerEvent} event Event occurring.
    */
   actionDeleteLayerButton(event) {
     getLayerSelectionArray().removeElement(event.target.closest(".containerLayerSelected").id);
@@ -100,31 +116,32 @@ export class LayerSelected extends HTMLElement {
   }
 
   /**
-   * @param {PointerEvent} event event occurring
+   * Switch the visibility of the layer associated to the component.
    */
-  actionToggleVisibilityButton(event) {
+  actionToggleVisibilityButton() {
     this.#element.switchVisibility();
     this.render()
   }
 
   /**
-   * @param {PointerEvent} event event occurring
+   * Zoom, on the map, to the extent of the layer associated to the component.
    */
-  actionZoomToExtentButton(event) {
+  actionZoomToExtentButton() {
     mapBuilder.map.getView().fit(transformExtent(this.#element.getLayer().getProperties().bbox, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
   }
 
   /**
-   * @param {PointerEvent} event event occurring
+   * Display or hide the info panel.
    */
-  actionToggleInfos(event) {
+  actionToggleInfos() {
     this.#element.switchInfoVisibility();
     this.render();
   }
 
   /**
-   * @param {string} rule css rule
-   * @return {number} width rule
+   * Get the width from a CSS rule.
+   * @param {string} rule CSS rule.
+   * @returns {number} Width of the rule.
    */
   getWidthFromCssRule(rule) {
     let cssText = "";
@@ -137,14 +154,27 @@ export class LayerSelected extends HTMLElement {
     return parseInt(cssText.split("px")[0]);
   }
 
+  /**
+   * Darkened the background color of the "ChangeOrder" div when the mouse is over it.
+   * @param {PointerEvent} e Event occurring.
+   */
   actionMouseOver(e) {
     e.target.closest("div.changeOrder").style = `background-color: ${this.#element.getHoverColor()}; transition: 0.2s;`
   }
 
+  /**
+   * Thinned the background color of the "ChangeOrder" div when the mouse is out of it.
+   * @param {PointerEvent} e Event occurring.
+   */
   actionMouseOut(e) {
     e.target.closest("div.changeOrder").style = `background-color: ${this.#element.getColor()}; transition: 0.2s;`
   }
 
+  /**
+   * Clean a name.
+   * @param {string} aName Name to clean.
+   * @returns {string} Cleaned name.
+   */
   performCleanName(aName) {
     var accentMap = {
       "à": "a",
@@ -215,6 +245,11 @@ export class LayerSelected extends HTMLElement {
     return theCleanName.replace(reg, '_');
   }
 
+  /**
+   * Display the attribute table of the layer associated to the component.
+   * @param {PointerEvent} e Event occurring.
+   * @param element Layer associated to the component.
+   */
   actionDisplayDataButton(e, element) {
     document.getElementById("attribute-btn").classList.add("active");
 

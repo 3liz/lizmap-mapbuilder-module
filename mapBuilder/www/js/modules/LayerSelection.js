@@ -1,11 +1,24 @@
 import {LayerArray} from "./LayerArray";
 import {LayerSelected} from "../components/LayerSelected";
-import {AttributeTable} from "../components/AttributeTable";
 
+/*****************************************************
+ * Script created to manage the selection of layers. *
+ *****************************************************/
+
+/**
+ * @type {LayerArray} List of selected layers.
+ */
 let layerArray = new LayerArray();
 
+/**
+ * Add a layer to the list of selected layers.
+ * Create also Listener for drag and drop.
+ * @param {ImageLayer} value Layer to add.
+ * @param {string} color Layer's color.
+ */
 export function addElementToLayerArray(value, color) {
   let layerSelected = new LayerSelected(layerArray.addElement(value, color));
+
   document.getElementById("layerSelectedHolder").insertBefore(
     layerSelected,
     document.getElementById("layerSelectedHolder").children[0]
@@ -44,6 +57,12 @@ export function addElementToLayerArray(value, color) {
   });
 }
 
+/**
+ * Used to get the index of the layer where the user dropped the dragged layer.
+ * @param {HTMLElement} layers Represents the "layerSelectedHolder" div.
+ * @param {number} y Y coordinate of the drop.
+ * @return {number} Index of the drop.
+ */
 function getIndexOfDrop(layers, y) {
   if (layers.children.length <= 1) {
     return 0;
@@ -58,12 +77,18 @@ function getIndexOfDrop(layers, y) {
 }
 
 /**
- * @returns {LayerArray}
+ * Get the object àf selected layers.
+ * @returns {LayerArray} Object of selected layers.
  */
 export function getLayerSelectionArray() {
   return layerArray
 }
 
+/**
+ * Change the order of the layers with a direction.
+ * @param {string} uid Layer's uid.
+ * @param {string} direction Which direction to go : 'up' or 'down'.
+ */
 export function changeList(uid, direction) {
   if (direction === "up") {
     changeOrderUp(uid);
@@ -73,6 +98,7 @@ export function changeList(uid, direction) {
 }
 
 /**
+ * Change the order of the layer with the one above.
  * @param {String} uid layer's uid
  */
 function changeOrderUp(uid) {
@@ -85,6 +111,7 @@ function changeOrderUp(uid) {
 }
 
 /**
+ * Change the order of the layer with the one below.
  * @param {String} uid layer's uid
  */
 function changeOrderDown(uid) {
@@ -96,6 +123,11 @@ function changeOrderDown(uid) {
   );
 }
 
+/**
+ * Switch the HTMLElements in the DOM.
+ * @param {HTMLElement} firstEl First element to switch.
+ * @param {HTMLElement} secondEl Second element to switch.
+ */
 function switchVisualLayers(firstEl, secondEl) {
   let list = Array.from(document.querySelectorAll("lizmap-layer-selected"));
 

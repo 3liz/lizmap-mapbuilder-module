@@ -1,10 +1,11 @@
 import {Image as ImageLayer} from 'ol/layer.js';
 import {LayerElement} from "./LayerElement";
 
-/**
- * @property {[LayerElement]} [#elements] Array made of LayerElement.
- */
+/** Class representing a stack to store selected layers. */
 export class LayerArray {
+  /**
+   * @type {[LayerElement]} Array of selected layers. It's made of LayerElement.
+   */
   #elements;
 
   constructor() {
@@ -12,9 +13,10 @@ export class LayerArray {
   }
 
   /**
-   * @param {ImageLayer} [layer] layer
-   * @param {string} [color] color
-   * @returns {LayerElement}
+   * Add a LayerElement at the top of the stack.
+   * @param {ImageLayer} [layer] Layer to add.
+   * @param {string} [color] Color of the layer.
+   * @returns {LayerElement} The added LayerElement.
    */
   addElement(layer, color) {
     let element = new LayerElement({
@@ -27,8 +29,9 @@ export class LayerArray {
   }
 
   /**
-   * @param {string} [layerUid] layer
-   * @param {string} [direction] direction up or down
+   * Change the order of the layers.
+   * @param {string} [layerUid] Layer's UID.
+   * @param {string} [direction] Which direction to exchange : 'up' or 'down'.
    */
   changeOrder(layerUid, direction) {
     let util;
@@ -54,8 +57,11 @@ export class LayerArray {
   }
 
   /**
-   * @param {string} [layerUid] layer
-   * @param {boolean} [all=true] if the method remove also in mapBuilder.map.AllLayers...
+   * Remove a LayerElement from the stack.
+   * Can also remove it from the map.
+   * @param {string} [layerUid] Layer's UID.
+   * @param {boolean} [all=true] If all = true, the method remove also the layer on the map.
+   * @returns {LayerElement} The removed LayerElement.
    */
   removeElement(layerUid, all = true) {
     let index = this.getIndexOf(layerUid);
@@ -70,7 +76,9 @@ export class LayerArray {
   }
 
   /**
-   * @param {string} [layerUid] layerUid
+   * Get the index of a LayerElement in the stack depending on the layer's UID.
+   * @param {string} [layerUid] Layer's UID.
+   * @returns {number} Index of the LayerElement in the stack.
    */
   getIndexOf(layerUid) {
     for (let i = 0; i < this.#elements.length; i++) {
@@ -82,7 +90,8 @@ export class LayerArray {
   }
 
   /**
-   * @returns {[LayerElement]}
+   * Get the array.
+   * @returns {[LayerElement]} Array of LayerElement.
    */
   getArray() {
     return this.#elements;

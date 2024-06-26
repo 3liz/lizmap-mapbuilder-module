@@ -12,7 +12,6 @@ import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
 
 import OSM from 'ol/source/OSM.js';
 import StadiaMaps from 'ol/source/StadiaMaps.js';
-import XYZ from 'ol/source/XYZ.js';
 import BingMaps from 'ol/source/BingMaps.js';
 import WMTS from 'ol/source/WMTS.js';
 import WMTSTileGrid from 'ol/tilegrid/WMTS.js';
@@ -26,9 +25,8 @@ import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from '
 
 import './modules/bottom-dock.js';
 
-import {AttributeTable} from "./components/AttributeTable";
 import {LayerStore} from "./components/LayerStore";
-import {addElementToLayerArray, getLayerSelectionArray} from "./modules/LayerSelection.js";
+import {addElementToLayerArray} from "./modules/LayerSelection.js";
 
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
@@ -421,6 +419,11 @@ $(function() {
 
   listTree = layerStore.getTree();
 
+  /**
+   * Get the Layer node from its UUID
+   * @param {string} uuid Layer's UUID.
+   * @return {LayerTreeLayer|-1} Node or -1 if not found.
+   */
   function getNodeFromUuid(uuid) {
     for (var i = 0; i < listTree.length; i++) {
       var node = layerStore.getNode(uuid, listTree[i]);

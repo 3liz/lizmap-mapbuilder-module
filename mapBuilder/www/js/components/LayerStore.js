@@ -3,8 +3,16 @@ import {LayerTreeFolder} from "../modules/LayerTreeFolder";
 import {WMSCapabilities} from "ol/format";
 import {LayerTreeLayer} from "../modules/LayerTreeLayer";
 
+/**
+ * Class representing the layer store.
+ * @extends HTMLElement
+ */
 export class LayerStore extends HTMLElement {
 
+  /**
+   * Create a layer store.
+   * @param {HTMLElement} container The HTMLElement where the layer store will be rendered.
+   */
   constructor(container) {
     super();
     this.container = container;
@@ -26,24 +34,31 @@ export class LayerStore extends HTMLElement {
   }
 
   /**
-   * @param {LayerTreeFolder} element
+   * Template for a folder.
+   * @param {LayerTreeFolder} element The folder to render.
+   * @returns {TemplateResult<1>} The template of the folder.
    */
   folderTemplate = (element) => {
+    //Check if the folder will have to load children from a project.
     let tagLazy = element.isLazy() ? "lazy" : "";
 
     let icoSpan;
 
+    //Check if the folder is loading, opened or closed.
     if (element.isLoading()) {
       icoSpan = "fa-spinner fa-pulse";
     } else {
       icoSpan = element.isOpened() ? "fa-folder-open" : "fa-folder";
     }
 
+    //Check if the folder is failed to load children.
+    //It occurs when the project can't be loaded.
     if (element.isFailed()) {
       icoSpan = "fa-window-close";
       tagLazy = "failed";
     }
 
+    //Template of a folder.
     let template = html`
         <li class='layerStore-arrow ${tagLazy}' @click='${(event) => this.action(element, event)}'>
         <span class='layerStore-folder  fas ${icoSpan}'></span>
@@ -56,6 +71,7 @@ export class LayerStore extends HTMLElement {
         </li>
     `;
 
+    //Generate next folders or layers.
     if (element.isOpened() && element.hasChildren()) {
       let allChildTemplate = html``;
       element.getChildren().forEach(value => {
@@ -88,7 +104,9 @@ export class LayerStore extends HTMLElement {
   }
 
   /**
-   * @param {LayerTreeLayer} element
+   * Template for a layer.
+   * @param {LayerTreeLayer} element The layer to render.
+   * @returns {TemplateResult<1>} The template of the layer.
    */
   layerTemplate = (element) => {
     var styleOption = html``;
@@ -101,8 +119,10 @@ export class LayerStore extends HTMLElement {
       `;
     });
 
+    //Check if the layer has a tooltip.
     let tooltip = element.getTooltip() !== undefined ? element.getTooltip() : "";
 
+    //Template
     return html`
         <li class='layerStore-layer fas fa-layer-group' id="${element.getUuid()}"
             @mouseover='${(e) => {e.target.closest("li").style = `background-color: ${element.getColor()}; box-shadow: 0 0 5px 0.5px rgba(0,0,0,0.2); transition: 0.2s;`;}}'
@@ -116,6 +136,7 @@ export class LayerStore extends HTMLElement {
     `;
   }
 
+  //Render the layer store.
   render() {
     const tpl = html`
         <ul class="layerStore-tree">
@@ -134,7 +155,11 @@ export class LayerStore extends HTMLElement {
   }
 
   /**
-   * @param {LayerTreeFolder} element
+   * Action when a folder is clicked.
+   * It can open or close the folder.
+   * It can decide to load the project and put children in the folder.
+   * @param {LayerTreeFolder} element The folder clicked.
+   * @param {Event} e Event occurring.
    */
   async action(element, e) {
     if (element.isLazy()) {
@@ -165,7 +190,9 @@ export class LayerStore extends HTMLElement {
   };
 
   /**
-   * @param {LayerTreeFolder} folder
+   * Load the project and create the tree.
+   * @param {LayerTreeFolder} folder Folder with specs of the project to load.
+   * @returns {Promise<[]>} The children of the folder.
    */
   async loadTree(folder) {
     var repositoryId = folder.getRepository();
@@ -224,6 +251,12 @@ export class LayerStore extends HTMLElement {
     });
   }
 
+  /**
+   * Build the layer tree.
+   * @param layer Layers loaded.
+   * @param cfg Configuration of the project.
+   * @return {*[]} The tree of layers.
+   */
   buildLayerTree(layer, cfg) {
     var myArray = [];
     if (Array.isArray(layer)) {
@@ -302,6 +335,12 @@ export class LayerStore extends HTMLElement {
     return myArray;
   }
 
+  /**
+   * Get a node (LayerTreeLayer) from a specific UUID.
+   * @param {string} uuid UUID of the node.
+   * @param {LayerTreeElement} element Element to compare.
+   * @returns {LayerTreeLayer|-1} The node or -1 if not found.
+   */
   getNode(uuid, element) {
     if (element instanceof LayerTreeLayer) {
       if (element.getUuid() === uuid) {
@@ -319,6 +358,10 @@ export class LayerStore extends HTMLElement {
     return -1;
   }
 
+  /**
+   * Get the tree.
+   * @return {[LayerTreeElement]} The tree.
+   */
   getTree() {
     return this.tree;
   }
