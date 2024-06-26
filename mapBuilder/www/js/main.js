@@ -592,6 +592,7 @@ $(function() {
             }
         });
 
+        //Scale
         const extent = mapBuilder.map.previousExtent_;
 
         const left = toLonLat([extent[0], extent[1]]);
@@ -600,10 +601,11 @@ $(function() {
         const scale = (dist * 1000 / width)
 
         var baseLayerSelect = document.querySelector('#baseLayerSelect')
-        const activeLayer = mapBuilder.map.getAllLayers()[baseLayerSelect.selectedIndex].values_.source;
+        const activeLayer = mapBuilder.map.getAllLayers()[baseLayerSelect.selectedIndex].getProperties().source;
 
         var layers = [];
 
+        //Generate base layer
         if (activeLayer instanceof XYZ) {
             console.log("Active layer => XYZ")
             layers = [{
@@ -645,7 +647,7 @@ $(function() {
             console.log('empty active layer')
         }
 
-        //Annex layers
+        //Generate annex layers
         var listAnnexLayers = createListAnnexLayers();
         for (var i = 0; i < listAnnexLayers.length; i++) {
             console.log("LAYER DETECTED")
@@ -657,6 +659,7 @@ $(function() {
             });
         }
 
+        //Indicate other important values
         const specValue = {
             "layers": layers,
             "center": transform(mapBuilder.map.getView().getCenter(), mapBuilder.map.getView().getProjection(), 'EPSG:4326'),
@@ -673,6 +676,7 @@ $(function() {
 
         const jobId = await queuePrint(specValue);
 
+        //Update progress bar depending on the job status.
         getJobStatus(jobId).subscribe((printStatus) => {
             customProgress.setLengthBar(printStatus.progress)
 
@@ -691,6 +695,10 @@ $(function() {
     $(this).removeClass("disabled");
   });
 
+  /**
+   * Create a list of WMS annex layers representing the layers put by the user above the base one
+   * @return {ImageLayer[]}
+   */
   function createListAnnexLayers() {
     var layersList = [];
 
@@ -702,6 +710,12 @@ $(function() {
 
     return layersList;
 
+    /**
+     * Recursive function to add a layer to the list of annex layers
+     * @param {number} index From 0 to INF
+     * @param {ImageLayer} val The layer to add
+     * @return {*}
+     */
     function addToList(index, val) {
       if (layersList.length < 1) {
         return layersList.push(val);

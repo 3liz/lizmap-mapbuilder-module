@@ -1,4 +1,7 @@
-// Définir la classe de l'élément custom-progress
+/**
+ * Class used to create a custom progress bar for inkmap
+ * @extends HTMLElement
+ */
 export class CustomProgress extends HTMLElement {
     constructor() {
         super();
@@ -18,15 +21,21 @@ export class CustomProgress extends HTMLElement {
         this.appendChild(div);
     }
 
+    /**
+     * Set the length of the progress bar
+     * @param {number} length The length of the progress bar
+     */
     setLengthBar(length) {
         this.progressBar.setAttribute('style', `width: ${length * 100}%;`);
     }
 
+    /**
+     * Set the progress bar to the success state
+     */
     setSuccesState() {
         this.progressBar.setAttribute('class', 'progress-bar bg-success');
     }
 
 }
 
-// Déclarer l'élément custom-progress
 customElements.define('custom-progress', CustomProgress);
