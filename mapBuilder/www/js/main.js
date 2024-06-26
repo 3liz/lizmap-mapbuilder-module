@@ -32,7 +32,7 @@ import './modules/bottom-dock.js';
 import {AttributeTable} from "./components/AttributeTable";
 import {CustomProgress} from "./inkmapComponents/ProgressBar";
 
-import {getJobStatus, queuePrint} from '@camptocamp/inkmap';
+import {getJobStatus, queuePrint} from './dist/inkmap.js';
 
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
@@ -1299,7 +1299,9 @@ $(function() {
     var layersList = [];
 
     for (var i = 1; i < mapBuilder.map.getAllLayers().length; i++) {
-      addToList(0, mapBuilder.map.getAllLayers()[i]);
+      if (mapBuilder.map.getAllLayers()[i] instanceof ImageLayer) {
+        addToList(0, mapBuilder.map.getAllLayers()[i]);
+      }
     }
 
     return layersList;
