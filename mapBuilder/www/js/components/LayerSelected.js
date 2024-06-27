@@ -1,7 +1,7 @@
 import {html, render} from 'lit-html';
 import {transformExtent} from "ol/proj";
-import {Slider} from "./Slider";
-import {getLayerSelectionArray, changeList} from "../modules/LayerSelection.js";
+import {Slider} from "./LayerSelection/Slider";
+import {getLayerSelectionArray, changeList} from "../modules/LayerSelection/LayerSelection.js";
 import {AttributeTable} from "./AttributeTable";
 
 /**

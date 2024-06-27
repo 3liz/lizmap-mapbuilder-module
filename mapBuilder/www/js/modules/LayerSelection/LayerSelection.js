@@ -1,5 +1,5 @@
 import {LayerArray} from "./LayerArray";
-import {LayerSelected} from "../components/LayerSelected";
+import {LayerSelected} from "../../components/LayerSelected";
 
 /*****************************************************
  * Script created to manage the selection of layers. *

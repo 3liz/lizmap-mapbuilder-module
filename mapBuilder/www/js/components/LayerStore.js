@@ -1,7 +1,7 @@
 import {html, render, nothing} from 'lit-html';
-import {LayerTreeFolder} from "../modules/LayerTreeFolder";
+import {LayerTreeFolder} from "../modules/LayerTree/LayerTreeFolder";
 import {WMSCapabilities} from "ol/format";
-import {LayerTreeLayer} from "../modules/LayerTreeLayer";
+import {LayerTreeLayer} from "../modules/LayerTree/LayerTreeLayer";
 
 /**
  * Class representing the layer store.
