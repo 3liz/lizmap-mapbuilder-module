@@ -47,3 +47,25 @@ export function getRaster() {
     source: ign_source
   });
 }
+
+/**
+ * Get the InkMap JSON spec about this layer.
+ * @param {WMTS} activeLayer Layer to print.
+ * @returns {[{}]} Layer specs.
+ */
+export function getInkmapSpec(activeLayer) {
+  return [{
+    "type": "WMTS",
+    "url": activeLayer.getUrls()[0],
+    "layer": activeLayer.getLayer(),
+    "matrixSet": "PM",
+    "projection": "EPSG:3857",
+    "format": activeLayer.getFormat(),
+    "style": "normal",
+    "tileGrid": {
+      "matrixIds": activeLayer.getTileGrid().getMatrixIds(),
+      "resolutions": activeLayer.getTileGrid().getResolutions(),
+      "tileSize": activeLayer.getTileGrid().getTileSize()
+    }
+  }];
+}

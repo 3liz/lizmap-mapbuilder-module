@@ -16,3 +16,15 @@ export function getRaster() {
     })
   });
 }
+
+/**
+ * Get the InkMap JSON spec about this layer.
+ * @param {StadiaMaps} activeLayer Layer to print.
+ * @returns {[{}]} Layer specs.
+ */
+export function getInkmapSpec(activeLayer) {
+  return [{
+    "type": "XYZ",
+    "url": activeLayer.getUrls()[0]
+  }];
+}

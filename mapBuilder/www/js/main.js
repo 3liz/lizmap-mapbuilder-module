@@ -1,5 +1,4 @@
 // it is important to set global var before any imports
-
 __webpack_public_path__ = lizUrls.basepath+'mapBuilder/js/';
 
 import $ from 'jquery';
@@ -13,7 +12,6 @@ import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
 import {getDistance} from "ol/sphere";
 
 import OSM from 'ol/source/OSM.js';
-import XYZ from 'ol/source/XYZ.js';
 import StadiaMaps from 'ol/source/StadiaMaps.js';
 import BingMaps from 'ol/source/BingMaps.js';
 import WMTS from 'ol/source/WMTS.js';
@@ -30,7 +28,7 @@ import './modules/bottom-dock.js';
 
 import {LayerStore} from "./components/LayerStore";
 import {addElementToLayerArray} from "./modules/LayerSelection/LayerSelection.js";
-import {CustomProgress} from "./inkmapComponents/ProgressBar";
+import {CustomProgress} from "./components/inkmap/ProgressBar";
 
 import {getJobStatus, queuePrint} from './dist/inkmap.js';
 
@@ -606,45 +604,17 @@ $(function() {
         var layers = [];
 
         //Generate base layer
-        if (activeLayer instanceof XYZ) {
-            console.log("Active layer => XYZ")
-            layers = [{
-                "type": "XYZ",
-                "url": activeLayer.getUrls()[0]
-            }]
-        } else if (activeLayer instanceof BingMaps) {
-            console.log("Active layer => BingMaps")
-            layers = [{
-                "type": "BingMaps",
-                "imagerySet": activeLayer.getImagerySet(),
-                "apiKey": activeLayer.getApiKey(),
-            }]
-
-        } else if (activeLayer instanceof WMTS) {
-            console.log("Active layer => WMTS")
-            layers = [{
-                "type": "WMTS",
-                "url": activeLayer.getUrls()[0],
-                "layer": activeLayer.getLayer(),
-                "matrixSet": "PM",
-                "projection": "EPSG:3857",
-                "format": activeLayer.getFormat(),
-                "style": "normal",
-                "tileGrid": {
-                    "matrixIds": activeLayer.getTileGrid().getMatrixIds(),
-                    "resolutions": activeLayer.getTileGrid().getResolutions(),
-                    "tileSize": activeLayer.getTileGrid().getTileSize()
-                }
-            }]
-        } else if (activeLayer instanceof ImageWMS) {
-            console.log("Active layer => WMS")
-            layers = [{
-                "type": "WMS",
-                "url": activeLayer.getUrls()[0],
-                "layer": activeLayer.getLayer()
-            }]
+        if (baseLayerSelect.value === 'emptyBaselayer') {
+          console.log('Empty active layer')
         } else {
-            console.log('empty active layer')
+          const lib = await import(`./modules/BaseLayers/${baseLayerSelect.value}.js`);
+          layers = lib.getInkmapSpec(activeLayer);
+          //Scan errors
+          if (layers === 10) {
+            console.error("API Key missing")
+            mAddMessage(lizDict['error.api.inkmap'], 'danger', true, 4000);
+            return;
+          }
         }
 
         //Generate annex layers

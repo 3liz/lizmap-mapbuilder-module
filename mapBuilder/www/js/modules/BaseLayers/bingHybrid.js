@@ -19,3 +19,16 @@ export function getRaster() {
     })
   });
 }
+
+/**
+ * Get the InkMap JSON spec about this layer.
+ * @param {BingMaps} activeLayer Layer to print.
+ * @returns {[{}]} Layer specs.
+ */
+export function getInkmapSpec(activeLayer) {
+  return [{
+    "type": "BingMaps",
+    "imagerySet": activeLayer.getImagerySet(),
+    "apiKey": activeLayer.getApiKey(),
+  }];
+}
