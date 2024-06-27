@@ -4,14 +4,12 @@ import 'ol/ol.css';
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import Feature from 'ol/Feature';
-import {getWidth} from 'ol/extent.js';
 import {fromExtent} from 'ol/geom/Polygon.js';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
-import {WMTS, StadiaMaps, BingMaps, OSM, Vector as VectorSource} from 'ol/source.js';
-import WMTSTileGrid from 'ol/tilegrid/WMTS.js';
+import {OSM, Vector as VectorSource} from 'ol/source.js';
 
 import {defaults as defaultControls} from 'ol/control.js';
-import {get as getProjection, transformExtent} from 'ol/proj.js';
+import {transformExtent} from 'ol/proj.js';
 import {QueueExtent} from "./modules/QueueExtent";
 
 import {ZoomToOriginControl} from "./components/AdminControls/ZoomToOriginControl";
@@ -75,7 +73,7 @@ $(function() {
       }, 1000);
     }
   });
-/*
+
   // Make OL map object accessible to help debugging
   if (!PRODUCTION) {
     $("#map").data('map', map);
@@ -89,92 +87,15 @@ $(function() {
 
     var raster = undefined;
 
-    //Generate the new base layer
-    if (baseLayerDefault === 'osmMapnik') {
+    //Generate base layer
+    if (baseLayerDefault === "emptyBaselayer") {
       raster = new TileLayer({
         source: new OSM()
       });
-    } else if (baseLayerDefault === 'osmStadiaMapsToner') {
-      raster = new TileLayer({
-        source: new StadiaMaps({
-          layer: 'stamen_toner_lite'
-        })
-      });
-    } else if (baseLayerDefault.includes("bing")) {
-      var imagerySet = undefined;
-
-      if (baseLayerDefault.includes("Streets")) {
-        imagerySet = "Road";
-      } else if (baseLayerDefault.includes("Satellite")) {
-        imagerySet = "Aerial";
-      } else {
-        imagerySet = "AerialWithLabels";
-      }
-
-      raster = new TileLayer({
-        visible: true,
-        preload: Infinity,
-        source: new BingMaps({
-          key: document.getElementById("jforms_mapBuilderAdmin_config_baseLayerKeyBing").value,
-          imagerySet: imagerySet
-        })
-      });
-    } else if (baseLayerDefault.includes("ign")) {
-      var imagerySet = undefined;
-      var ignImageFormat = undefined;
-      var ignZoomLevel = undefined;
-
-      if (baseLayerDefault.includes("Streets")) {
-        imagerySet = "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2";
-        ignImageFormat = "image/png";
-        ignZoomLevel = 20;
-      } else if (baseLayerDefault.includes("Satellite")) {
-        imagerySet = "ORTHOIMAGERY.ORTHOPHOTOS";
-        ignImageFormat = "image/jpeg";
-        ignZoomLevel = 22;
-      } else {
-        imagerySet = "CADASTRALPARCELS.PARCELLAIRE_EXPRESS";
-        ignImageFormat = "image/png";
-        ignZoomLevel = 20;
-      }
-
-      var resolutions = [];
-      var matrixIds = [];
-      var proj3857 = getProjection('EPSG:3857');
-      var maxResolution = getWidth(proj3857.getExtent()) / 256;
-
-      for (var i = 0; i < ignZoomLevel; i++) {
-        matrixIds[i] = i.toString();
-        resolutions[i] = maxResolution / Math.pow(2, i);
-      }
-
-      var tileGrid = new WMTSTileGrid({
-        origin: [-20037508, 20037508],
-        resolutions: resolutions,
-        matrixIds: matrixIds
-      });
-
-      var ign_source = new WMTS({
-        url: "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile",
-        layer: imagerySet,
-        matrixSet: 'PM',
-        format: ignImageFormat,
-        projection: 'EPSG:3857',
-        tileGrid: tileGrid,
-        style: 'normal',
-        attributions: `<a href="https://www.ign.fr/" target="_blank">
-          <img src="https://wxs.ign.fr/static/logos/IGN/IGN.gif" 
-          title="Institut national de l'information géographique et forestière" alt="IGN"></a>`
-      });
-
-      raster = new TileLayer({
-        source: ign_source
-      });
-
     } else {
-      raster = new TileLayer({
-        source: new OSM()
-      });
+      console.log(baseLayerDefault)
+      const lib = await import(`./modules/AdminBaseLayers/${baseLayerDefault}.js`);
+      raster = lib.getRaster();
     }
 
     var source = new VectorSource({wrapX: false});
@@ -232,6 +153,5 @@ $(function() {
       );
       map.getView().fit(extent);
     }
-
   }
 });
