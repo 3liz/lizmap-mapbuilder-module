@@ -6,7 +6,8 @@ module.exports = {
   devtool: 'inline-source-map',
   entry: {
     mapbuilder: './main.js',
-    mapbuilderadmin: './mainadmin.js'
+    mapbuilderadmin: './mainadmin.js',
+    mapbuilderadminpreview: './mainadminpreview.js'
   },
   output: {
     filename: '[name].js',

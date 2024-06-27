@@ -187,6 +187,10 @@ span.fancytree-drag-source.fancytree-drag-remove {
 	display: block;
 }
 
+.navbar .nav > li > a:hover {
+    color: #333333;
+}
+
 #pdf-print > * {margin-bottom: 5px}
 
 .hide{display: none;}
