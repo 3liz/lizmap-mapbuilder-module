@@ -1,6 +1,11 @@
 /** Class representing a queue structure for extents. */
 export class QueueExtent {
     /**
+     * @type {number} Current index of the queue.
+     */
+    #index= 0;
+
+    /**
      * @param {Options|{}} options QueueExtent options.
      * @property {array} [element] extent.
      * @property {number} [length] length of the queue.
@@ -83,5 +88,29 @@ export class QueueExtent {
         for (let i = 1; i < delta; i++) {
             this.elements.pop();
         }
+    }
+
+    /**
+     * Get the index of the current extent in the history.
+     * @return {number} Current index.
+     */
+    getIndex() {
+        return this.#index;
+    }
+
+    /**
+     * Increase by 1 the index of the current extent in the history.
+     */
+    increaseIndex() {
+        if (this.getIndex() < this.maxLength - 1){
+            this.#index++;
+        }
+    }
+
+    /**
+     * Decrease by 1 the index of the current extent in the history.
+     */
+    decreaseIndex() {
+        this.#index--;
     }
 }
