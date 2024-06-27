@@ -30,7 +30,7 @@ import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from '
 import './modules/bottom-dock.js';
 
 import {AttributeTable} from "./components/AttributeTable";
-import {CustomProgress} from "./inkmapComponents/ProgressBar";
+import {CustomProgress} from "./components/inkmap/ProgressBar";
 
 import {getJobStatus, queuePrint} from './dist/inkmap.js';
 
