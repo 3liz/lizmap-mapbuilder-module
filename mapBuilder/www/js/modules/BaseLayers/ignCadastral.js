@@ -1,6 +1,6 @@
-/*******************************************************************
- * Class used to fill information about the Base Layer IGN Streets *
- *******************************************************************/
+/*********************************************************************
+ * Class used to fill information about the Base Layer IGN Cadastral *
+ *********************************************************************/
 
 import {Tile as TileLayer} from 'ol/layer.js';
 import {WMTS} from 'ol/source.js';
@@ -32,7 +32,7 @@ export function getRaster() {
 
   let ign_source = new WMTS({
     url: "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile",
-    layer: "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2",
+    layer: "CADASTRALPARCELS.PARCELLAIRE_EXPRESS",
     matrixSet: 'PM',
     format: "image/png",
     projection: 'EPSG:3857',
@@ -46,4 +46,26 @@ export function getRaster() {
   return new TileLayer({
     source: ign_source
   });
+}
+
+/**
+ * Get the InkMap JSON spec about this layer.
+ * @param {WMTS} activeLayer Layer to print.
+ * @returns {[{}]} Layer specs.
+ */
+export function getInkmapSpec(activeLayer) {
+  return [{
+    "type": "WMTS",
+    "url": activeLayer.getUrls()[0],
+    "layer": activeLayer.getLayer(),
+    "matrixSet": "PM",
+    "projection": "EPSG:3857",
+    "format": activeLayer.getFormat(),
+    "style": "normal",
+    "tileGrid": {
+      "matrixIds": activeLayer.getTileGrid().getMatrixIds(),
+      "resolutions": activeLayer.getTileGrid().getResolutions(),
+      "tileSize": activeLayer.getTileGrid().getTileSize()
+    }
+  }];
 }

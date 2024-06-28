@@ -9,6 +9,7 @@ import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import {defaults as defaultControls, Control, ScaleLine} from 'ol/control.js';
 import {Image as ImageLayer, Tile as TileLayer} from 'ol/layer.js';
+import {getDistance} from "ol/sphere";
 
 import OSM from 'ol/source/OSM.js';
 import StadiaMaps from 'ol/source/StadiaMaps.js';
@@ -18,7 +19,7 @@ import WMTSTileGrid from 'ol/tilegrid/WMTS.js';
 import {getWidth} from 'ol/extent.js';
 
 import ImageWMS from 'ol/source/ImageWMS.js';
-import {transformExtent, get as getProjection} from 'ol/proj.js';
+import {transformExtent, get as getProjection, transform, toLonLat} from 'ol/proj.js';
 
 import {DragZoom} from 'ol/interaction.js';
 import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from 'ol/events/condition.js';
@@ -27,6 +28,9 @@ import './modules/bottom-dock.js';
 
 import {LayerStore} from "./components/LayerStore";
 import {addElementToLayerArray} from "./modules/LayerSelection/LayerSelection.js";
+import {CustomProgress} from "./components/inkmap/ProgressBar";
+
+import {getJobStatus, queuePrint} from './dist/inkmap.js';
 
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
@@ -546,80 +550,155 @@ $(function() {
     $("#dock").show();
   });
 
-  $('#pdf-print-btn').on("click", function(){
+  $('#pdf-print-btn').on("click", async function(){
 
     $(this).addClass("disabled");
     document.body.style.cursor = 'progress';
 
-    import(/* webpackChunkName: "jspdf" */ 'jspdf' ).then(({ default: jsPDF }) => {
-      const dims = {
-         a0: [1189, 841],
-         a1: [841, 594],
-         a2: [594, 420],
-         a3: [420, 297],
-         a4: [297, 210],
-         a5: [210, 148]
-       };
+    import(/* webpackChunkName: "jspdf" */ 'jspdf' ).then(async ({default: jsPDF}) => {
+        const dims = {
+            a0: [1189, 841],
+            a1: [841, 594],
+            a2: [594, 420],
+            a3: [420, 297],
+            a4: [297, 210],
+            a5: [210, 148]
+        };
 
-      const format = document.getElementById('format-pdf-print').value;
-      const resolution = document.getElementById('resolution-pdf-print').value;
-      const dim = dims[format];
-      const width = Math.round(dim[0] * resolution / INCHTOMM);
-      const height = Math.round(dim[1] * resolution / INCHTOMM);
-      const size = mapBuilder.map.getSize();
-      const viewResolution = mapBuilder.map.getView().getResolution();
+        const format = document.getElementById('format-pdf-print').value;
+        const resolution = document.getElementById('resolution-pdf-print').value;
+        const dim = dims[format];
+        const width = dim[0];
+        const height = dim[1];
 
-      // Note that when using import() on ES6 modules you must reference the .default property as it's the actual module object that will be returned when the promise is resolved.
-      // => https://webpack.js.org/guides/lazy-loading/
-      const pdf = new jsPDF('landscape', 'mm', format);
-      // Add title
-      pdf.setFontSize(18);
-      pdf.text($('#pdf-print-title').val(), 50, 10);
+        // Note that when using import() on ES6 modules you must reference the .default property as it's the actual module object that will be returned when the promise is resolved.
+        // => https://webpack.js.org/guides/lazy-loading/
+        const pdf = new jsPDF('landscape', 'mm', format);
+        // Add title
+        pdf.setFontSize(18);
+        pdf.text($('#pdf-print-title').val(), 50, 10);
 
-      let offset = 25;
-      let maxWidthLegend = 0;
+        let offset = 25;
+        let maxWidthLegend = 0;
 
-      document.querySelectorAll("#legend img").forEach(function (legend) {
-        pdf.addImage(legend, 'PNG', 0, offset * INCHTOMM/resolution);
-        offset += legend.height;
+        document.querySelectorAll("#legend img").forEach(function (legend) {
+            pdf.addImage(legend, 'PNG', 0, offset * INCHTOMM / resolution);
+            offset += legend.height;
 
-        if(legend.width > maxWidthLegend){
-          maxWidthLegend = legend.width;
-        }
-      });
-
-      mapBuilder.map.once('rendercomplete', function () {
-        const mapCanvas = document.createElement('canvas');
-        mapCanvas.width = width;
-        mapCanvas.height = height;
-        const mapContext = mapCanvas.getContext('2d');
-        document.querySelectorAll('.ol-layer canvas').forEach(function (canvas) {
-          if (canvas.width > 0) {
-            const transform = canvas.style.transform;
-            // Get the transform parameters from the style's transform matrix
-            const matrix = transform.match(/^matrix\(([^\(]*)\)$/)[1].split(',').map(Number);
-            // Apply the transform to the export map context
-            CanvasRenderingContext2D.prototype.setTransform.apply(mapContext, matrix);
-            mapContext.drawImage(canvas, 0, 0);
-          }
+            if (legend.width > maxWidthLegend) {
+                maxWidthLegend = legend.width;
+            }
         });
-        pdf.addImage(mapCanvas.toDataURL('image/jpeg'), 'JPEG', maxWidthLegend * INCHTOMM/resolution, 20, dim[0], dim[1]);
-        pdf.save('map.pdf');
-        // Reset original map size
-        mapBuilder.map.setSize(size);
-        mapBuilder.map.getView().setResolution(viewResolution);
-        document.body.style.cursor = 'auto';
-      });
 
-      // Set print size
-      const printSize = [width - maxWidthLegend, height];
-      mapBuilder.map.setSize(printSize);
-      const scaling = Math.min(width / size[0], height / size[1]);
-      mapBuilder.map.getView().setResolution(viewResolution / scaling);
+        //Scale
+        const extent = mapBuilder.map.previousExtent_;
+
+        const left = toLonLat([extent[0], extent[1]]);
+        const right = toLonLat([extent[2], extent[3]]);
+        const dist = getDistance(left, right);
+        const scale = (dist * 1000 / width)
+
+        var baseLayerSelect = document.querySelector('#baseLayerSelect')
+        const activeLayer = mapBuilder.map.getAllLayers()[baseLayerSelect.selectedIndex].getProperties().source;
+
+        var layers = [];
+
+        //Generate base layer
+        if (baseLayerSelect.value === 'emptyBaselayer') {
+          console.log('Empty active layer')
+        } else {
+          const lib = await import(`./modules/BaseLayers/${baseLayerSelect.value}.js`);
+          layers = lib.getInkmapSpec(activeLayer);
+          //Scan errors
+          if (layers === 10) {
+            console.error("API Key missing")
+            mAddMessage(lizDict['error.api.inkmap'], 'danger', true, 4000);
+            return;
+          }
+        }
+
+        //Generate annex layers
+        var listAnnexLayers = createListAnnexLayers();
+        for (var i = 0; i < listAnnexLayers.length; i++) {
+            console.log("LAYER DETECTED")
+            var otherLayer = listAnnexLayers[i].getProperties().source
+            layers.push({
+                "type": "WMS",
+                "url": otherLayer.getUrl(),
+                "layer": otherLayer.getParams().LAYERS
+            });
+        }
+
+        //Indicate other important values
+        const specValue = {
+            "layers": layers,
+            "center": transform(mapBuilder.map.getView().getCenter(), mapBuilder.map.getView().getProjection(), 'EPSG:4326'),
+            "size": [width, height, 'mm'],
+            "dpi": resolution,
+            "scale": scale,
+            "projection": mapBuilder.map.getView().getProjection().getCode(),
+        };
+
+        //Create progress bar
+        var customProgress = new CustomProgress();
+
+        document.getElementById("pdf-print").appendChild(customProgress);
+
+        const jobId = await queuePrint(specValue);
+
+        //Update progress bar depending on the job status.
+        getJobStatus(jobId).subscribe((printStatus) => {
+            customProgress.setLengthBar(printStatus.progress)
+
+            if (printStatus.progress === 1) {
+                customProgress.setSuccesState();
+                pdf.addImage(URL.createObjectURL(printStatus.imageBlob), 'JPEG', maxWidthLegend * INCHTOMM / resolution, 20, dim[0], dim[1]);
+                pdf.save('map.pdf');
+                setTimeout(() => {
+                    document.getElementById("pdf-print").removeChild(customProgress);
+                }, 500);
+            }
+        });
+
     });
+    document.body.style.cursor = 'auto';
     $(this).removeClass("disabled");
   });
 
+  /**
+   * Create a list of WMS annex layers representing the layers put by the user above the base one
+   * @return {ImageLayer[]}
+   */
+  function createListAnnexLayers() {
+    var layersList = [];
+
+    for (var i = 1; i < mapBuilder.map.getAllLayers().length; i++) {
+      if (mapBuilder.map.getAllLayers()[i] instanceof ImageLayer) {
+        addToList(0, mapBuilder.map.getAllLayers()[i]);
+      }
+    }
+
+    return layersList;
+
+    /**
+     * Recursive function to add a layer to the list of annex layers
+     * @param {number} index From 0 to INF
+     * @param {ImageLayer} val The layer to add
+     * @return {*}
+     */
+    function addToList(index, val) {
+      if (layersList.length < 1) {
+        return layersList.push(val);
+      }
+      if (layersList[index].getZIndex() > val.getZIndex()) {
+        return layersList.splice(index, 0, val);
+      }
+      if (index + 1 === layersList.length) {
+        return layersList.push(val)
+      }
+      return addToList(index + 1, val);
+    }
+  }
 
   //#### MAP CONTEXT
 
@@ -713,7 +792,7 @@ $(function() {
         dataType:"json",
         success: function( mapcontext ){
           // Remove all existing layers (begins index at end because index changes after remove !)
-          var layers = mapBuilder.map.getLayers().array_;
+          var layers = mapBuilder.map.getLayers().getArray();
           for (var i = layers.length - 1; i >= 0; i--) {
             if( ! layers[i].getProperties().hasOwnProperty('baseLayer')){
               mapBuilder.map.removeLayer(layers[i]);

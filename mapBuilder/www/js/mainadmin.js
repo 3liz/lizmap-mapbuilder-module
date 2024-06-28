@@ -93,8 +93,7 @@ $(function() {
         source: new OSM()
       });
     } else {
-      console.log(baseLayerDefault)
-      const lib = await import(`./modules/AdminBaseLayers/${baseLayerDefault}.js`);
+      const lib = await import(`./modules/BaseLayers/${baseLayerDefault}.js`);
       raster = lib.getRaster();
     }
 
