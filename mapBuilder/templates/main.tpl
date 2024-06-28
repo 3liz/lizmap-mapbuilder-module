@@ -101,20 +101,9 @@
       <div class="dock-tab-title">{@view~map.layers@}
         <span id="layers-loading"></span>
       </div>
-      <table id="layerStore">
-        <colgroup>
-          <col>
-          <col width="90px">
-          <col>
-        </colgroup>
-        <tbody>
-          <tr>
-            <td></td>
-            <td title="{@mapBuilder~default.style@}"></td>
-            <td title="{@mapBuilder~default.selector.layers.add@}"></td>
-          </tr>
-        </tbody>
-      </table>
+      <div id="layerStoreHolder">
+
+      </div>
       <div id="baseLayer">
         {@view~map.baselayermenu.title@}
         <select id="baseLayerSelect" class="custom-select custom-select-sm">
@@ -126,34 +115,8 @@
     </div>
     <div class="tab-pane fade" id="layerselection" role="tabpanel" aria-labelledby="layerselection-tab">
       <div class="dock-tab-title">{@mapBuilder~default.selector.layers.selection@}</div>
-      <table id="layerSelected">
-        <colgroup>
-          <col>
-          <col>
-          <col>
-          <col>
-          <col>
-          {if $attributeTableTool}
-          <col>
-          {/if}
-          <col span="3">
-        </colgroup>
-        <tbody>
-          <tr>
-            <td></td>
-            <td class="changeOrder" title="{@mapBuilder~default.selection.order.change@}"></td>
-            <td class="deleteLayerButton" title="{@view~dictionnary.selectiontool.toolbar.action.type.minus@}"></td>
-            <td class="toggleVisibilityButton" title="{@view~dictionnary.tree.button.checkbox@}"></td>
-            <td class="zoomToExtentButton" title="{@view~map.switcher.layer.zoomToExtent.title@}"></td>
-            {if $attributeTableTool}
-            <td class="displayDataButton" title="{@mapBuilder~default.selector.layers.data@}"></td>
-            {/if}
-            <td class="toggleInfos" title="{@view~dictionnary.layer.metadata.title@}"></td>
-            <td class="layerSelectedStyles hide" title="{@mapBuilder~default.style@}"></td>
-            <td class="changeOpacityButton hide" title="{@view~dictionnary.layer.metadata.opacity.title@}"></td>
-          </tr>
-        </tbody>
-      </table>
+      <div id="layerSelectedHolder">
+      </div>
     </div>
     <div class="tab-pane fade" id="legend" role="tabpanel" aria-labelledby="legend-tab">
       <div class="dock-tab-title">{@view~map.legend@}</div>
