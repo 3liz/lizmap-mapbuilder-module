@@ -37,6 +37,7 @@
     padding: 5px;
     max-height: 60%;
     overflow-y: auto;
+    border-radius: 0 0 7px 0;
 }
 
 .dock-tab-title{
