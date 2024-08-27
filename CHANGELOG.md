@@ -2,13 +2,17 @@
 
 ## Unreleased
 
+## 2.1.4 - 2024-08-27
+
 ### Added
+
+* Lizmap Web Client 3.8 support
 
 ## 2.1.3 - 2024-01-10
 
 ### Fixed
 
-* fix latest bug: it was still there 
+* fix latest bug: it was still there
 
 
 ## 2.1.2 - 2024-01-08
@@ -37,7 +41,7 @@
 
 ### Fixed
 
-* Check the existence of the configuration file 
+* Check the existence of the configuration file
 
 ## 2.0.2 - 2021-12-24
 
