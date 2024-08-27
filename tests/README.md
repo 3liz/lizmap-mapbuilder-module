@@ -3,21 +3,39 @@
 Steps:
 
 - clean previous versions (optional)
-  ```
+
+  ```bash
   make clean
   ```
+
 - Launch Lizmap with docker compose
-  ```
+
+  ```bash
   make run
   ```
+
   If you want to use a specific version of Lizmap (for example a local docker image),
   indicate the version of the docker image into `LIZMAP_VERSION_TAG`:
-  ```
+
+  ```bash
   make run LIZMAP_VERSION_TAG=3.6.0-rc.3-98b5cb4ce
   ```
-- Then install modules
+
+- Add the test data
+  ```bash
+  make import-test-data
   ```
+
+- Then install modules
+
+  ```bash
   make install-module
+  ```
+
+- Finally, add the needed Lizmap rights with some mapbuilder rights
+
+  ```bash
+  make import-lizmap-acl
   ```
 
 - Open your browser at `http://localhost:9016`
@@ -70,5 +88,5 @@ psql service=lizmap-mapbuilder
 
 ## Access to the lizmap container
 
-If you want to enter into the lizmap container to execute some commands, 
+If you want to enter into the lizmap container to execute some commands,
 execute `make shell`.

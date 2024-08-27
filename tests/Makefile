@@ -9,8 +9,8 @@ LIZMAP_USER_ID:=$(shell id -u)
 LIZMAP_USER_GID:=$(shell id -g)
 
 LIZMAP_VERSION_TAG:=3.7
-QGIS_VERSION_TAG:=3.28
-POSTGIS_VERSION_TAG:=14-3
+QGIS_VERSION_TAG:=3.34
+POSTGIS_VERSION_TAG:=15-3
 
 QGIS_MAP_WORKERS:=1
 
@@ -58,7 +58,7 @@ env: dirs
 		EOF
 
 run: stop env install-plugins
-	docker compose up
+	docker compose up -d
 
 stop:
 	docker compose down || true
@@ -76,6 +76,21 @@ pull:
 
 shell:
 	docker compose exec -u ${LIZMAP_USER_ID} lizmap /bin/sh -l
+
+import-test-data:
+	export PGPASSWORD=lizmap1234!; psql -h localhost -U lizmap -d lizmap -p 9018 -f sql/test_data.sql
+
+import-lizmap-acl:
+	@echo "Set repositories and users rights if needed"
+	@echo "Set view project"
+	docker compose exec -u $(LIZMAP_USER_ID) lizmap /bin/sh -c ' \
+		php lizmap/console.php acl2:add __anonymous "lizmap.repositories.view" mapbuilder ; \
+		php lizmap/console.php acl2:add users "lizmap.repositories.view" mapbuilder ; \
+		php lizmap/console.php acl2:add admins "lizmap.repositories.view" mapbuilder'
+	@echo "Set mapbuilder access"
+	docker compose exec -u $(LIZMAP_USER_ID) lizmap /bin/sh -c ' \
+		php lizmap/console.php acl2:add __anonymous "mapBuilder.access" ; \
+		php lizmap/console.php acl2:add users "mapBuilder.access"'
 
 install-module:
 	docker compose exec -u ${LIZMAP_USER_ID} lizmap php /www/lizmap/install/configurator.php mapBuilder
