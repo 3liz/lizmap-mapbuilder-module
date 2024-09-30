@@ -4,6 +4,28 @@
 
 ### Added
 
+## 2.2.0 - 2024-09-30
+
+### Added
+
+* Inkmap for printing maps (_not npm_)
+* Map preview before configuration
+* Dynamic update of the base map layer in the configuration
+* Buttons in configuration for the extent (Undo/Redo...)
+* Visuals on layer store
+* Visuals on layer selected
+* Multiple flash messages
+
+### Changed
+
+* OpenLayers updated to 10.2.1
+* Attribute table now uses `lit-html`
+
+### Removed
+
+* `jspdf` dependency from `mapBuilder/www/js/dist/`
+* `fancytree` dependency
+
 ## 2.1.3 - 2024-01-10
 
 ### Fixed
