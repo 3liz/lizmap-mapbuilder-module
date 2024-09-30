@@ -17,6 +17,18 @@ export function getRaster() {
   });
 }
 
+
+/**
+ * Get the raster to create a source for a map.
+ * Used in the admin preview.
+ * Different function due to some differences in the preview page.
+ * @returns {TileLayer} The raster.
+ */
+export function getPreviewRaster() {
+  return getRaster();
+}
+
+
 /**
  * Get the InkMap JSON spec about this layer.
  * @param {StadiaMaps} activeLayer Layer to print.

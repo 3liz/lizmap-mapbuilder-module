@@ -20,6 +20,25 @@ export function getRaster() {
   });
 }
 
+
+/**
+ * Get the raster to create a source for a map.
+ * Used in the admin preview.
+ * Different function due to some differences in the preview page.
+ * @returns {TileLayer} The raster.
+ */
+export function getPreviewRaster() {
+  return new TileLayer({
+    visible: true,
+    preload: Infinity,
+    source: new BingMaps({
+      key: document.getElementById("_baseLayerKeyBing").textContent,
+      imagerySet: "Aerial"
+    })
+  });
+}
+
+
 /**
  * Get the InkMap JSON spec about this layer.
  * @param {BingMaps} activeLayer Layer to print.

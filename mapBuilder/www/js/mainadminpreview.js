@@ -14,98 +14,35 @@ import {defaults as defaultControls} from 'ol/control.js';
 
 import {ZoomToOriginControl} from "./components/AdminControls/ZoomToOriginControl";
 
-$(function () {
+$(async function () {
 
     var baseLayerDefault = document.getElementById("_baseLayerDefault").textContent;
 
     var raster = undefined;
 
-    //Generate the base layer
-    if (baseLayerDefault === 'OSM Mapnik') {
+    let previewDict = {
+        "OSM Mapnik": "osmMapnik",
+        "OSM StadiaMaps Toner": "osmStadiaMapsToner",
+        "Bing Streets": "bingStreets",
+        "Bing Satellite": "bingSatellite",
+        "Bing Hybrid": "bingHybrid",
+        "IGN Streets": "ignStreets",
+        "IGN Satellite": "ignSatellite",
+        "IGN Cadastral": "ignCadastral"
+    };
+
+    baseLayerDefault = previewDict[baseLayerDefault];
+    console.log(baseLayerDefault);
+    baseLayerDefault = baseLayerDefault === undefined ? "emptyBaselayer" : baseLayerDefault;
+
+    //Generate base layer
+    if (baseLayerDefault === "emptyBaselayer") {
         raster = new TileLayer({
             source: new OSM()
         });
-    } else if (baseLayerDefault === 'OSM StadiaMaps Toner') {
-        raster = new TileLayer({
-            source: new StadiaMaps({
-                layer: 'stamen_toner_lite'
-            })
-        });
-    } else if (baseLayerDefault.includes("Bing")) {
-        var imagerySet = undefined;
-
-        if (baseLayerDefault.includes("Streets")) {
-            imagerySet = "Road";
-        } else if (baseLayerDefault.includes("Satellite")) {
-            imagerySet = "Aerial";
-        } else {
-            imagerySet = "AerialWithLabels";
-        }
-
-        raster = new TileLayer({
-            visible: true,
-            preload: Infinity,
-            source: new BingMaps({
-                key: document.getElementById("_baseLayerKeyBing").textContent,
-                imagerySet: imagerySet
-            })
-        });
-    } else if (baseLayerDefault.includes("IGN")) {
-        var imagerySet = undefined;
-        var ignImageFormat = undefined;
-        var ignZoomLevel = undefined;
-
-        if (baseLayerDefault.includes("Streets")) {
-            imagerySet = "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2";
-            ignImageFormat = "image/png";
-            ignZoomLevel = 20;
-        } else if (baseLayerDefault.includes("Satellite")) {
-            imagerySet = "ORTHOIMAGERY.ORTHOPHOTOS";
-            ignImageFormat = "image/jpeg";
-            ignZoomLevel = 22;
-        } else {
-            imagerySet = "CADASTRALPARCELS.PARCELLAIRE_EXPRESS";
-            ignImageFormat = "image/png";
-            ignZoomLevel = 20;
-        }
-
-        var resolutions = [];
-        var matrixIds = [];
-        var proj3857 = getProjection('EPSG:3857');
-        var maxResolution = getWidth(proj3857.getExtent()) / 256;
-
-        for (var i = 0; i < ignZoomLevel; i++) {
-            matrixIds[i] = i.toString();
-            resolutions[i] = maxResolution / Math.pow(2, i);
-        }
-
-        var tileGrid = new WMTSTileGrid({
-            origin: [-20037508, 20037508],
-            resolutions: resolutions,
-            matrixIds: matrixIds
-        });
-
-        var ign_source = new WMTS({
-            url: "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile",
-            layer: imagerySet,
-            matrixSet: 'PM',
-            format: ignImageFormat,
-            projection: 'EPSG:3857',
-            tileGrid: tileGrid,
-            style: 'normal',
-            attributions: `<a href="https://www.ign.fr/" target="_blank">
-          <img src="https://wxs.ign.fr/static/logos/IGN/IGN.gif" 
-          title="Institut national de l'information géographique et forestière" alt="IGN"></a>`
-        });
-
-        raster = new TileLayer({
-            source: ign_source
-        });
-
     } else {
-        raster = new TileLayer({
-            source: new OSM()
-        });
+        const lib = await import(`./modules/BaseLayers/${baseLayerDefault}.js`);
+        raster = lib.getPreviewRaster();
     }
 
     var source = new VectorSource({wrapX: false});
