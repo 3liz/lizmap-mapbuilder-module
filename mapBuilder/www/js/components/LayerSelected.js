@@ -43,8 +43,8 @@ export class LayerSelected extends HTMLElement {
     if (this.#element.getLayer().getProperties().hasAttributeTable) {
       //Check if the attribute table is visible or not to adjust the component
       attributeTableShow = this.#element.isAttributeTableOpened() ? html`
-          <button class="dispayDataButton fas fa-list-ul active" @click="${(event) => this.actionDisplayDataButton(event, this.#element)}" disabled></button>` : html`
-          <button class="dispayDataButton fas fa-list-ul" @click="${(event) => this.actionDisplayDataButton(event, this.#element)}"></button>`
+          <button class="dispayDataButton fas fa-list-ul fa-sm active" @click="${(event) => this.actionDisplayDataButton(event, this.#element)}" disabled></button>` : html`
+          <button class="dispayDataButton fas fa-list-ul fa-sm" @click="${(event) => this.actionDisplayDataButton(event, this.#element)}"></button>`
     }
 
     //Check if the info panel is visible or not to adjust the component
@@ -89,17 +89,17 @@ export class LayerSelected extends HTMLElement {
                 <span class="titleLayerSelected">${this.#element.getLayer().getProperties().title}</span>
                 <div class="layerButtonsDiv">
                     ${attributeTableShow}
-                    <button class="zoomToExtentButton fas fa-search-plus"
+                    <button class="zoomToExtentButton fas fa-search-plus fa-sm"
                             @click="${(event) => this.actionZoomToExtentButton()}"></button>
-                    <button class="toggleVisibilityButton fas ${layerShow}"
+                    <button class="toggleVisibilityButton fas fa-sm ${layerShow}"
                             @click="${(event) => this.actionToggleVisibilityButton()}"></button>
-                    <button class="toggleInfos fas ${infoShow}"
+                    <button class="toggleInfos fas fa-sm ${infoShow}"
                             @click="${(event) => this.actionToggleInfos()}"></button>
                 </div>
             </div>
             ${info}
             <button class="deleteLayerButton" @click="${(event) => this.actionDeleteLayerButton(event)}">
-                <i class="fas fa-trash"></i>
+                <i class="fas fa-trash fa-sm"></i>
             </button>
         </div>
     `;

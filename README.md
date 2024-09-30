@@ -63,3 +63,10 @@ php installer.php
 * Go to the administration of Lizmap with your browser to configure mapBuilder
 
 To update modules, download a new package, and repeat these previous instructions.
+
+### Inkmap dependency
+
+Inkmap is a dependency created by [CampToCamp](https://github.com/camptocamp/inkmap) based on [OpenLayers](https://openlayers.org/).
+It's used by lizmapBuilder to print in real time edited map to PDF.
+Adding it to lizmapBuilder required to change the operation of the dependency.
+In future releases, Inkmap will be added as a dependency in npm, but currently, it is directly put in `mapBuilder/www/js/dist`.

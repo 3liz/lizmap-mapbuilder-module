@@ -211,10 +211,10 @@ span.layerStore-folder {
 }
 
 #layerStoreHolder ul {
-    margin: 10px 0;
-    padding: 10px 15px;
+    margin: 4px 0;
+    padding: 2px 8px;
     border-radius: 7px;
-    box-shadow: 0 0 5px 0.5px rgba(0,0,0,0.2);
+    box-shadow: 0 0 4px 0.3px rgba(0, 0, 0, 0.2);
     list-style-type: none;
 }
 
@@ -248,12 +248,12 @@ span.layerStore-folder {
 .layerStoreTitle {
     font-family: sans-serif;
     font-weight: bold;
-    font-size: 16px
+    font-size: 14px
 }
 
 .layerStore-layer {
     margin-bottom: 3px;
-    padding: 5px 5px;
+    padding: 3px 5px;
     padding-left: 10px;
     border-radius: 5px;
     cursor: pointer;
@@ -275,8 +275,8 @@ ul .layerStore-layer:last-child {
 /* CSS for selection */
 .containerLayerSelected {
     display: flex;
-    margin-bottom: 20px;
-    box-shadow: 0 0 5px 0.5px rgba(0,0,0,0.2);
+    margin-bottom: 10px;
+    box-shadow: 0 0 4px 0.4px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     user-select: none;
     background-color:white;
@@ -327,7 +327,7 @@ ul .layerStore-layer:last-child {
 }
 
 .layerSelectedContent {
-    padding: 5px 10px;
+    padding: 2px 7px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -346,7 +346,7 @@ ul .layerStore-layer:last-child {
 }
 
 .containerLayerSelected .upperLine .titleLayerSelected {
-    font-size: 17px;
+    font-size: 14px;
     font-weight: bold;
     cursor: default;
 }
@@ -365,21 +365,22 @@ ul .layerStore-layer:last-child {
     align-items: center;
     width: 100%;
     font-weight: bold;
-    color: #7a7a7a;
+    color: #6d6d6d;
     cursor: default;
+    font-size: 14px;
 }
 
 .containerLayerSelected .deleteLayerButton {
     background-color: transparent;
     width: 85%;
-    height: 25px;
+    height: 22px;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 5px auto;
     border: none;
     border-radius: 4px;
-    box-shadow: 0 0 5px 0.5px rgba(0,0,0,0.4);
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
     color: black;
     transition: 0.2s;
 }
@@ -391,8 +392,8 @@ ul .layerStore-layer:last-child {
 }
 
 .containerLayerSelected button:not(.containerLayerSelected .deleteLayerButton) {
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     border-radius: 30px;
     background-color: transparent;
     border: none;
