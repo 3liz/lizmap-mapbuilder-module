@@ -620,7 +620,6 @@ $(function() {
         //Generate annex layers
         var listAnnexLayers = createListAnnexLayers();
         for (var i = 0; i < listAnnexLayers.length; i++) {
-            console.log("LAYER DETECTED")
             var otherLayer = listAnnexLayers[i].getProperties().source
             layers.push({
                 "type": "WMS",
