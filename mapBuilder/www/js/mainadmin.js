@@ -30,7 +30,7 @@ var extentHistory = undefined;
  */
 var MAX_LENGTH_EXTENT_HYSTORY = 15;
 
-$(function() {
+document.addEventListener("DOMContentLoaded", function(e) {
 
   //Build the history of extents
   var extent = document.getElementById("jforms_mapBuilderAdmin_config_extent").value.split(',').map(parseFloat);

@@ -3,18 +3,16 @@ import 'ol/ol.css';
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import Feature from 'ol/Feature';
-import {getWidth} from 'ol/extent.js';
 import {fromExtent} from 'ol/geom/Polygon.js';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
-import {WMTS, StadiaMaps, BingMaps, OSM, Vector as VectorSource} from 'ol/source.js';
-import WMTSTileGrid from 'ol/tilegrid/WMTS.js';
+import {OSM, Vector as VectorSource} from 'ol/source.js';
 
-import {get as getProjection, transformExtent} from 'ol/proj.js';
+import {transformExtent} from 'ol/proj.js';
 import {defaults as defaultControls} from 'ol/control.js';
 
 import {ZoomToOriginControl} from "./components/AdminControls/ZoomToOriginControl";
 
-$(async function () {
+document.addEventListener("DOMContentLoaded", async function(e) {
 
     var baseLayerDefault = document.getElementById("_baseLayerDefault").textContent;
 
@@ -32,7 +30,6 @@ $(async function () {
     };
 
     baseLayerDefault = previewDict[baseLayerDefault];
-    console.log(baseLayerDefault);
     baseLayerDefault = baseLayerDefault === undefined ? "emptyBaselayer" : baseLayerDefault;
 
     //Generate base layer
