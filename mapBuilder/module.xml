@@ -5,7 +5,7 @@
         <label lang="en_US">mapBuilder</label>
         <description lang="en_US">Jelix module for Lizmap, which adds a map builder based on every repositories</description>
         <license>Mozilla Public License 2.0</license>
-        <copyright>2020-2023 3liz</copyright>
+        <copyright>2020-2024 3Liz</copyright>
         <creator name="Nicolas Boisteault" email="nboisteault@3liz.com" />
         <homepageURL>https://3liz.com</homepageURL>
     </info>
