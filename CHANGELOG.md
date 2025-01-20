@@ -4,6 +4,12 @@
 
 ### Added
 
+## 2.2.1 - 2025-01-20
+
+### Fixed
+
+* Built files in `dist` folder
+
 ## 2.2.0 - 2024-09-30
 
 ### Added
