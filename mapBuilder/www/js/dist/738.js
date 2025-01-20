@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkol_webpack=self.webpackChunkol_webpack||[]).push([[738],{2738:(e,r,t)=>{t.r(r),t.d(r,{getInkmapSpec:()=>a,getPreviewRaster:()=>s,getRaster:()=>c});var n=t(4235),u=t(7896);function c(){return new n.A({source:new u.A})}function s(){return c()}function a(e){return[{type:"XYZ",url:e.getUrls()[0]}]}}}]);
+//# sourceMappingURL=738.js.map
