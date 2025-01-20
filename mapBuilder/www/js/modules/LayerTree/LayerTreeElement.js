@@ -6,6 +6,7 @@
  * @property {string} _project Project id.
  * @property {string} _repository Repository id.
  * @property {string} _color Color of the layer in the CSS sheet.
+ * @property {boolean} _visible Visibility of the layer for filtering.
  */
 export class LayerTreeElement {
     /**
@@ -27,8 +28,10 @@ export class LayerTreeElement {
 
         if (this._color === undefined) {
             this._color = this.generateColor();
-        }
     }
+
+    this.#visible = true;
+  }
 
     /**
      * Used to generate a light color using the RGB pattern.
@@ -126,4 +129,20 @@ export class LayerTreeElement {
     getColor() {
         return this._color;
     }
+
+  /**
+   * Get the visibility of the layer.
+   * @return {boolean} Visibility of the layer.
+   */
+  isVisible() {
+    return this.#visible;
+  }
+
+  /**
+   * Set the visibility of the layer.
+   * @param {boolean} visible Visibility of the layer.
+   */
+  setVisible(visible) {
+    this.#visible = visible;
+  }
 }
