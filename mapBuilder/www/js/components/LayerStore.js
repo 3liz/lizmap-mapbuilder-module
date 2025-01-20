@@ -12,11 +12,13 @@ export class LayerStore extends HTMLElement {
   /**
    * Create a layer store.
    * @param {HTMLElement} container The HTMLElement where the layer store will be rendered.
+   * @param {KeywordsManager} keywordsManager The keywords manager.
    */
-  constructor(container) {
+  constructor(container, keywordsManager) {
     super();
     this.container = container;
     this.tree = [];
+    this.keywordsManager = keywordsManager;
 
     mapBuilder.layerStoreTree.forEach((value) => {
       this.tree.push(new LayerTreeFolder({
@@ -217,8 +219,19 @@ export class LayerStore extends HTMLElement {
 
     const promises = [
       new Promise(resolve => {
-          $.get(url, function (capabilities) {
+          $.get(url, (capabilities) => {
             var result = parser.read(capabilities);
+
+            const title = result["Service"]["Title"]
+            const wordList = result["Service"]["KeywordList"]
+            this.keywordsManager.addKeywordFromList(wordList);
+
+            this.tree.forEach((element) => {
+              if (element.getLazyTitle() === title) {
+                element.setKeywords(wordList);
+              }
+            });
+
             if (result.hasOwnProperty('Capability')) {
               var node = result.Capability;
 
