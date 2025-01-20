@@ -109,6 +109,16 @@
           <label class="btn btn-secondary btn-sm" id="filterButtonExtent">
             <input type="radio" name="Extent" autocomplete="off"> {@mapBuilder~dictionary.filter.button.extent@}
           </label>
+          <label class="btn btn-secondary btn-sm" id="filterButtonKeywords">
+            <input type="radio" name="Keywords" autocomplete="off"> {@mapBuilder~dictionary.filter.button.keywords@}
+          </label>
+        </div>
+        <div id="filterKeywordsHandler">
+          <button id="filterKeywordsListButton" type="button" class="btn btn-sm btn-info dropdown-toggle">
+            {@mapBuilder~dictionary.filter.keywords.list@}
+          </button>
+          <div id="filterKeywordsList" class="">
+          </div>
         </div>
       </div>
       <div id="base-layer">
