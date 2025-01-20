@@ -25,6 +25,10 @@ export class LayerTreeElement {
    * @type {string} Color of the layer in the CSS sheet.
    */
   #color;
+  /**
+   * @type {boolean} Visibility of the layer for filtering.
+   */
+  #visible;
 
   /**
    * @typedef {Object} Options
@@ -34,6 +38,7 @@ export class LayerTreeElement {
    * @property {string} [#project] Project id.
    * @property {string} [#repository] Repository id.
    * @property {string} [#color] Color of the layer in the CSS sheet.
+   * @property {boolean} [#visible] Visibility of the layer for filtering.
    */
   constructor(options) {
     this.#title = options.title;
@@ -51,6 +56,8 @@ export class LayerTreeElement {
     if (this.#color === undefined) {
       this.#color = this.generateColor();
     }
+
+    this.#visible = true;
   }
 
   /**
@@ -147,5 +154,21 @@ export class LayerTreeElement {
    */
   getColor() {
     return this.#color;
+  }
+
+  /**
+   * Get the visibility of the layer.
+   * @return {boolean} Visibility of the layer.
+   */
+  isVisible() {
+    return this.#visible;
+  }
+
+  /**
+   * Set the visibility of the layer.
+   * @param {boolean} visible Visibility of the layer.
+   */
+  setVisible(visible) {
+    this.#visible = visible;
   }
 }

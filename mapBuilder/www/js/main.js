@@ -32,6 +32,9 @@ import {CustomProgress} from "./components/inkmap/ProgressBar";
 
 import {getJobStatus, queuePrint} from './dist/inkmap.js';
 
+// Filters
+import {ExtentFilter} from './modules/Filter/FilterExtent.js';
+
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
 var originalZoom = 6;
@@ -350,6 +353,16 @@ $(function() {
         }
       });
     }
+
+    // Filter if is active
+    if (!document.getElementById("filterButtonNo").classList.contains("active")) {
+
+      const filterInstance = new ExtentFilter(listTree);
+
+      filterInstance.filter().then(r => {
+        endFilter();
+      });
+    }
   }
 
   mapBuilder.map.on('moveend', onMoveEnd);
@@ -422,6 +435,36 @@ $(function() {
   layerStore = new LayerStore(document.getElementById("layerStoreHolder"));
 
   listTree = layerStore.getTree();
+
+  // Carry filter buttons
+  initFilterButtons();
+
+  /**
+   * Initialize filter buttons.
+   */
+  function initFilterButtons() {
+    document.querySelectorAll('#filterButtons > label').forEach(button => {
+      const filterName = button.children[0].name;
+
+      button.addEventListener("click", async () => {
+        if (filterName === "No") {
+          listTree = layerStore.setAllVisible();
+        } else if (filterName === "Extent") {
+          const filterInstance = new ExtentFilter(listTree);
+          await filterInstance.filter();
+        }
+        layerStore.updateTree(listTree);
+      });
+    });
+  }
+
+  /**
+   * End filter process by updating the tree.
+   */
+  const endFilter = () => {
+    layerStore.updateTree(listTree);
+    listTree = layerStore.getTree();
+  };
 
   /**
    * Get the Layer node from its UUID

@@ -435,3 +435,17 @@ custom-slider .thumb {
     border: solid 1px #555555;
     cursor: pointer;
 }
+
+/* CSS for filtering buttons */
+
+#filterButtons {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#filterButtons > label:first-child {
+    width: 100%;
+}
