@@ -6,9 +6,10 @@ export class KeywordsFilter extends AbstractFilter {
    * Filter the layer tree using keywords of layers.
    * @param {[LayerTreeElement]} layerTree - Layer tree to filter.
    */
-  constructor(layerTree, keywords) {
+  constructor(layerTree, keywords, method) {
     super(layerTree);
     this.keywords = keywords;
+    this.method = method;
   }
 
   /**
@@ -25,7 +26,17 @@ export class KeywordsFilter extends AbstractFilter {
    * @param {string[]} layerKeywords - Keywords to filter with.
    */
   calculateFilter(layerKeywords) {
-    const visibility = this.keywords.some(keyword => layerKeywords.includes(keyword));
+    if (this.keywords.length < 1) {
+      return false;
+    }
+
+    let visibility;
+
+    if (this.method === "union") {
+      visibility = this.keywords.some(keyword => layerKeywords.includes(keyword));
+    } else {
+      visibility = this.keywords.every(keyword => layerKeywords.includes(keyword));
+    }
     this._currentProject.setVisible(visibility);
   }
 }

@@ -118,6 +118,20 @@
             {@mapBuilder~dictionary.filter.keywords.list@}
           </button>
           <div id="filterKeywordsList" class="">
+            <div id="filterKeywordsListUtilsBar">
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label id="keywordsUnionButton" class="btn btn-outline-secondary btn-sm active">
+                  <input type="radio" name="options" checked> {@mapBuilder~dictionary.filter.keywords.radio.union@}
+                </label>
+                <label id="keywordsIntersectButton" class="btn btn-outline-secondary btn-sm">
+                  <input type="radio" name="options"> {@mapBuilder~dictionary.filter.keywords.radio.intersect@}
+                </label>
+              </div>
+              <div class="input-group input-group-sm ml-3 mr-2">
+                <input type="text" class="form-control" placeholder="{@mapBuilder~dictionary.filter.keywords.search.placeholder@}" aria-label="Username">
+              </div>
+            </div>
+            <div id="filterKeywordsListWords"></div>
           </div>
         </div>
       </div>

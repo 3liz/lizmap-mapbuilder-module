@@ -8,6 +8,10 @@ export class KeywordsManager {
    * @type {string[]} Selected keywords.
    */
   selectedKeywords;
+  /**
+   * @type {string} Calculation method for the filter.
+   */
+  calculationMethod = "union";
 
   constructor() {
     this.keywords = [];
@@ -46,7 +50,7 @@ export class KeywordsManager {
       document.dispatchEvent(event);
     });
 
-    document.getElementById("filterKeywordsList").append(div);
+    document.getElementById("filterKeywordsListWords").append(div);
   }
 
   getKeywords() {
@@ -55,6 +59,14 @@ export class KeywordsManager {
 
   getSelectedKeywords() {
     return this.selectedKeywords;
+  }
+
+  getCalculationMethod() {
+    return this.calculationMethod;
+  }
+
+  setCalculationMethod(method) {
+    return this.calculationMethod = method;
   }
 
 }

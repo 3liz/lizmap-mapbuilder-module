@@ -515,7 +515,6 @@ custom-slider .thumb {
     width: 100%;
     margin-top: -20px;
     z-index: 1;
-    padding: 5px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -527,9 +526,24 @@ custom-slider .thumb {
 }
 
 #filterKeywordsList.active {
-    max-height: 120px;
+    max-height: 145px;
     box-shadow: 0 0 4px 0.3px rgba(0, 0, 0, 0.3);
     margin-top: -12px;
+}
+
+#filterKeywordsListWords {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 3px;
+}
+
+#filterKeywordsListUtilsBar {
+    width: 100%;
+    display: flex;
+    margin: 8px 8px 0;
+    align-items: center;
 }
 
 #filterKeyword {
