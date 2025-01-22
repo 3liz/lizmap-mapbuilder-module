@@ -115,7 +115,7 @@
         </div>
         <div id="filterKeywordsHandler">
           <button id="filterKeywordsListButton" type="button" class="btn btn-sm btn-info dropdown-toggle">
-            Show keywords list
+            {@mapBuilder~dictionary.filter.keywords.list@}
           </button>
           <div id="filterKeywordsList" class="">
           </div>
