@@ -1,128 +1,99 @@
 import {v4 as uuidv4} from 'uuid';
 import {LayerTreeElement} from "./LayerTreeElement";
 
-/** Class representing a layer in a Layer Tree. */
+/**
+ * Class representing a layer in a Layer Tree.
+ * @property {boolean} _attributeTable If the layer has an attribute table.
+ * @property {string} _name Layer's name.
+ * @property {Array} _style Layer's styles.
+ * @property {string} _tooltip Layer's tooltip.
+ * @property {string} _uuid Layer's uuid. We use it to make a link between this object and the visual component where its "id" is the "uuid"
+ * @property {number} _minScale Layer's minScale.
+ * @property {number} _maxScale Layer's maxScale.
+ */
 export class LayerTreeLayer extends LayerTreeElement {
+    /**
+     * Create a layer in a tree.
+     * @param {object} options LayerTreeLayer options.
+     */
+    constructor(options) {
+        super({
+            title: options.title,
+            popup: options.popup,
+            bbox: options.bbox,
+            project: options.project,
+            repository: options.repository,
+            color: options.color
+        });
 
-  /**
-   * @type {boolean} If the layer has an attribute table.
-   */
-  #attributeTable;
-  /**
-   * @type {string} Layer's name.
-   */
-  #name;
-  /**
-   * @type {array} Layer's styles.
-   */
-  #style;
-  /**
-   * @type {string} Layer's tooltip.
-   */
-  #tooltip;
-  /**
-   * @type {string} Layer's uuid.
-   * We use it to make a link between this object and
-   * the visual component where its "id" is the "uuid".
-   */
-  #uuid;
-  /**
-   * @type {number} Layer's minScale.
-   */
-  #minScale;
-  /**
-   * @type {number} Layer's maxScale.
-   */
-  #maxScale;
+        this._attributeTable = options.attributeTable
 
-  /**
-   * @typedef {Object} Options
-   * @property {boolean} [#attributeTable] If the layer has an attribute table.
-   * @property {string} [#name] Layer's name.
-   * @property {array} [#style] Layer's styles.
-   * @property {string} [#tooltip] Layer's tooltip.
-   * @property {string} [#uuid] Layer's uuid.
-   * @property {number} [#minScale] Layer's minScale.
-   * @property {number} [#maxScale] Layer's maxScale.
-   */
-  constructor(options) {
-    super({
-      title: options.title,
-      popup: options.popup,
-      bbox: options.bbox,
-      project: options.project,
-      repository: options.repository,
-      color: options.color
-    });
+        this._name = options.name;
 
-    this.#attributeTable = options.attributeTable
+        this._style = options.style;
 
-    this.#name = options.name;
+        this._tooltip = options.tooltip;
 
-    this.#style = options.style;
+        this._uuid = uuidv4();
 
-    this.#tooltip = options.tooltip;
+        this._minScale = options.minScale !== undefined ? options.minScale : undefined;
 
-    this.#uuid = uuidv4();
+        this._maxScale = options.maxScale !== undefined ? options.maxScale : undefined;
+    }
 
-    this.#minScale = options.minScale !== undefined ? options.minScale : undefined;
+    /**
+     * Know if the layer has an attribute table.
+     * @returns {boolean} Attribute table state.
+     */
+    hasAttributeTable() {
+        return this._attributeTable;
+    }
 
-    this.#maxScale = options.maxScale !== undefined ? options.maxScale : undefined;
-  }
+    /**
+     * Get the Layer's name.
+     * @returns {string} Layer's name.
+     */
+    getName() {
+        return this._name;
+    }
 
-  /**
-   * Know if the layer has an attribute table.
-   * @return {boolean}
-   */
-  hasAttributeTable() {
-    return this.#attributeTable;
-  }
+    /**
+     * Get the Layer's styles.
+     * @returns {Array} Array of styles.
+     */
+    getStyle() {
+        return this._style;
+    }
 
-  /**
-   * Get the Layer's name.
-   * @return {string} Layer's name.
-   */
-  getName() {
-    return this.#name;
-  }
+    /**
+     * Get the Layer's tooltip.
+     * @returns {string} Layer's tooltip.
+     */
+    getTooltip() {
+        return this._tooltip;
+    }
 
-  /**
-   * Get the Layer's styles.
-   * @return {Array} Array of styles.
-   */
-  getStyle() {
-    return this.#style;
-  }
+    /**
+     * Get the Layer's uuid.
+     * @returns {string} Layer's uuid.
+     */
+    getUuid() {
+        return this._uuid;
+    }
 
-  /**
-   * Get the Layer's tooltip.
-   * @return {string} Layer's tooltip.
-   */
-  getTooltip() {
-    return this.#tooltip;
-  }
+    /**
+     * Get the Layer's minScale.
+     * @returns {number} Layer's minScale.
+     */
+    getMinScale() {
+        return this._minScale;
+    }
 
-  /**
-   * Get the Layer's uuid.
-   * @return {string} Layer's uuid.
-   */
-  getUuid() {
-    return this.#uuid;
-  }
-
-  /**
-   * Get the Layer's minScale.
-   * @return {number} Layer's minScale.
-   */
-  getMinScale() {
-    return this.#minScale;
-  }
-
-  /**
-   * Get the Layer's maxScale.
-   * @return {number} Layer's maxScale.
-   */
-  getMaxScale() {
-    return this.#maxScale;
-  }
+    /**
+     * Get the Layer's maxScale.
+     * @returns {number} Layer's maxScale.
+     */
+    getMaxScale() {
+        return this._maxScale;
+    }
 }

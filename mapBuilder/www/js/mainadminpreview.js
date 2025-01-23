@@ -12,7 +12,7 @@ import {defaults as defaultControls} from 'ol/control.js';
 
 import {ZoomToOriginControl} from "./components/AdminControls/ZoomToOriginControl";
 
-document.addEventListener("DOMContentLoaded", async function(e) {
+document.addEventListener("DOMContentLoaded", async function() {
 
     var baseLayerDefault = document.getElementById("_baseLayerDefault").textContent;
 

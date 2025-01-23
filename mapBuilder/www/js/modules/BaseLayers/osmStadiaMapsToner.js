@@ -10,11 +10,11 @@ import {StadiaMaps} from 'ol/source.js';
  * @returns {TileLayer} The raster.
  */
 export function getRaster() {
-  return new TileLayer({
-    source: new StadiaMaps({
-      layer: 'stamen_toner_lite'
-    })
-  });
+    return new TileLayer({
+        source: new StadiaMaps({
+            layer: 'stamen_toner_lite'
+        })
+    });
 }
 
 
@@ -25,7 +25,7 @@ export function getRaster() {
  * @returns {TileLayer} The raster.
  */
 export function getPreviewRaster() {
-  return getRaster();
+    return getRaster();
 }
 
 
@@ -35,8 +35,8 @@ export function getPreviewRaster() {
  * @returns {[{}]} Layer specs.
  */
 export function getInkmapSpec(activeLayer) {
-  return [{
-    "type": "XYZ",
-    "url": activeLayer.getUrls()[0]
-  }];
+    return [{
+        "type": "XYZ",
+        "url": activeLayer.getUrls()[0]
+    }];
 }

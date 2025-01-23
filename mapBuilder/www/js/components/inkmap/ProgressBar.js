@@ -1,6 +1,9 @@
 /**
  * Class used to create a custom progress bar for inkmap
- * @extends HTMLElement
+ * @typedef {object} HTMLElement
+ * @typedef {object} HTMLDivElement
+ * @augments HTMLElement
+ * @property {HTMLDivElement} progressBar The progress bar
  */
 export class CustomProgress extends HTMLElement {
     constructor() {
