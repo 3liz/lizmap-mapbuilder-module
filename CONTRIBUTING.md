@@ -1,3 +1,5 @@
+# Contributing
+
 ## Testing with linters
 
 Before the next part, you must have installed the dependencies with `npm install` at the project root.

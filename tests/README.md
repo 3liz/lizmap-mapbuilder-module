@@ -93,4 +93,4 @@ execute `make shell`.
 
 ## Linters
 
-In order to test your code with linters, you can refer to the [linter readme file](../LINTERS.md).
+In order to test your code with linters, you can refer to the [contributors readme file](../CONTRIBUTING.md).
