@@ -1,4 +1,4 @@
-;<?php die(''); ?>
+;<?php exit(''); ?>
 ;for security reasons , don't remove or modify the first line
 
 ;; if you want the map builder to display only one repository, put its id here. Leave blank to get all repositories.

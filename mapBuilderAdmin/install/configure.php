@@ -1,24 +1,26 @@
 <?php
+
 /**
- * @package   lizmap
- * @subpackage mapBuilder
  * @author    3liz
  * @copyright 2018-2022 3liz
- * @link      http://3liz.com
+ *
+ * @see      http://3liz.com
+ *
  * @license   Mozilla Public License : http://www.mozilla.org/MPL/
  */
 use Jelix\Installer\Module\API\ConfigurationHelpers;
+use Jelix\Installer\Module\Configurator;
 use Jelix\Routing\UrlMapping\EntryPointUrlModifier;
 use Jelix\Routing\UrlMapping\MapEntry\MapInclude;
 
 /**
- * Configurator for Lizmap 3.6+
+ * Configurator for Lizmap 3.6+.
  */
-class mapBuilderAdminModuleConfigurator extends \Jelix\Installer\Module\Configurator
+class mapBuilderAdminModuleConfigurator extends Configurator
 {
     public function getDefaultParameters()
     {
-        return array( );
+        return array();
     }
 
     public function declareUrls(EntryPointUrlModifier $registerOnEntryPoint)
@@ -26,15 +28,10 @@ class mapBuilderAdminModuleConfigurator extends \Jelix\Installer\Module\Configur
         $registerOnEntryPoint->havingName(
             'admin',
             array(
-                new MapInclude('urls.xml')
+                new MapInclude('urls.xml'),
             )
-        )
-        ;
+        );
     }
 
-    public function configure(ConfigurationHelpers $helpers)
-    {
-
-    }
-
+    public function configure(ConfigurationHelpers $helpers) {}
 }
