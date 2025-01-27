@@ -19,9 +19,9 @@ let layerArray = new LayerArray();
 export function addElementToLayerArray(value, color) {
   let layerSelected = new LayerSelected(layerArray.addElement(value, color));
 
-  document.getElementById("layerSelectedHolder").insertBefore(
+  document.getElementById("layer-selected-holder").insertBefore(
     layerSelected,
-    document.getElementById("layerSelectedHolder").children[0]
+    document.getElementById("layer-selected-holder").children[0]
   );
 
   layerSelected.addEventListener('dragstart', function(e) {
@@ -33,7 +33,7 @@ export function addElementToLayerArray(value, color) {
     e.target.classList.remove('dragging');
   });
 
-  const dropZone = document.getElementById('layerSelectedHolder');
+  const dropZone = document.getElementById('layer-selected-holder');
 
   dropZone.addEventListener('dragover', function(e) {
     e.preventDefault();
@@ -59,7 +59,7 @@ export function addElementToLayerArray(value, color) {
 
 /**
  * Used to get the index of the layer where the user dropped the dragged layer.
- * @param {HTMLElement} layers Represents the "layerSelectedHolder" div.
+ * @param {HTMLElement} layers Represents the "layer-selected-holder" div.
  * @param {number} y Y coordinate of the drop.
  * @return {number} Index of the drop.
  */

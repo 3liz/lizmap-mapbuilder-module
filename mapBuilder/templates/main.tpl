@@ -101,10 +101,10 @@
       <div class="dock-tab-title">{@view~map.layers@}
         <span id="layers-loading"></span>
       </div>
-      <div id="layerStoreHolder">
+      <div id="layer-store-holder">
 
       </div>
-      <div id="baseLayer">
+      <div id="base-layer">
         {@view~map.baselayermenu.title@}
         <select id="baseLayerSelect" class="custom-select custom-select-sm">
         {foreach $baseLayer as $cle => $valeur}
@@ -115,7 +115,7 @@
     </div>
     <div class="tab-pane fade" id="layerselection" role="tabpanel" aria-labelledby="layerselection-tab">
       <div class="dock-tab-title">{@mapBuilder~default.selector.layers.selection@}</div>
-      <div id="layerSelectedHolder">
+      <div id="layer-selected-holder">
       </div>
     </div>
     <div class="tab-pane fade" id="legend" role="tabpanel" aria-labelledby="legend-tab">
@@ -164,12 +164,12 @@
 </div>
 
 <div id="bottom-dock">
-  <ul id="attributeLayersTabs" class="nav nav-tabs" role="tablist">
+  <ul id="attribute-layers-tabs" class="nav nav-tabs" role="tablist">
     <li class="nav-item">
         <a class="nav-link disabled text-light" href="#" tabindex="-1" aria-disabled="true"><strong>{@view~map.attributeLayers.toolbar.title@}</strong></a>
       </li>
   </ul>
-  <div class="tab-content" id="attributeLayersContent"></div>
+  <div class="tab-content" id="attribute-layers-content"></div>
   <div id="bottom-dock-window-buttons">
     <button id="hideBottomDock" class="btn btn-sm btn-outline-light" type="button">{@view~dictionnary.generic.btn.close.title@}</button>
   </div>

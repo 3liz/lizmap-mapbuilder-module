@@ -31,14 +31,14 @@ CSS stylesheet for admin configuration of mapBuilder
     right: .5em;
 }
 
-#controlButtonDisabled {
+#control-button-disabled {
     background-color: lightgray;
-    color: rgb(157, 157, 157);
+    color: rgb(157 157 157);
     cursor: default;
 }
 
-#controlButtonDisabled:hover {
+#control-button-disabled:hover {
     background-color: lightgray;
-    color: rgb(157, 157, 157);
+    color: rgb(157 157 157);
     outline: none;
 }

@@ -60,12 +60,12 @@ export class LayerStore extends HTMLElement {
 
     //Template of a folder.
     let template = html`
-        <li class='layerStore-arrow ${tagLazy}' @click='${(event) => this.action(element, event)}'>
-        <span class='layerStore-folder  fas ${icoSpan}'></span>
-        <span class="layerStoreTitle">${element.getTitle()}</span>
+        <li class='layer-store-arrow ${tagLazy}' @click='${(event) => this.action(element, event)}'>
+        <span class='layer-store-folder  fas ${icoSpan}'></span>
+        <span class="layer-store-title">${element.getTitle()}</span>
         ${!element.getProject()
                 ? html`
-                    <div class="layerStore-color" style="background-color: ${element.getColor()}"></div>`
+                    <div class="layer-store-color" style="background-color: ${element.getColor()}"></div>`
                 : nothing
         }
         </li>
@@ -92,7 +92,7 @@ export class LayerStore extends HTMLElement {
       });
       template = html`
           ${template}
-          <ul class="layerStore-tree"
+          <ul class="layer-store-tree"
               @mouseover='${(event) => {event.target.closest("ul").style = `background-color: ${element.getHoverColor()}; transition: 0.2s;`}}' 
               @mouseout='${(event) => {event.target.closest("ul").style = `background-color: ${element.getColor()}; transition: 0.2s;`}}' 
               style="background-color: ${element.getColor()}">
@@ -124,11 +124,11 @@ export class LayerStore extends HTMLElement {
 
     //Template
     return html`
-        <li class='layerStore-layer fas fa-layer-group' id="${element.getUuid()}"
+        <li class='layer-store-layer fas fa-layer-group' id="${element.getUuid()}"
             @mouseover='${(e) => {e.target.closest("li").style = `background-color: ${element.getColor()}; box-shadow: 0 0 5px 0.5px rgba(0,0,0,0.2); transition: 0.2s;`;}}'
             @mouseout='${(e) => {e.target.closest("li").style = `transition: 0.2s;`;}}'
         >
-            <span class="layerStoreTitle" title=${tooltip}>${element.getTitle()}</span>
+            <span class="layer-store-title" title=${tooltip}>${element.getTitle()}</span>
             <select class='layerStyles custom-select custom-select-sm'>
                 ${styleOption}
             </select>
@@ -139,7 +139,7 @@ export class LayerStore extends HTMLElement {
   //Render the layer store.
   render() {
     const tpl = html`
-        <ul class="layerStore-tree">
+        <ul class="layer-store-tree">
             ${this.tree.map((el) =>
                     html`
                         ${this.folderTemplate(el)}
@@ -167,7 +167,7 @@ export class LayerStore extends HTMLElement {
       this.render();
       //Prevent from multiple request
       element.setLazy(false);
-      e.target.closest('.lazy').children[0].className = "layerStore-folder fas fa-spinner fa-pulse";
+      e.target.closest('.lazy').children[0].className = "layer-store-folder fas fa-spinner fa-pulse";
       //After loaded
       let child = await this.loadTree(element);
       element.setLazy(false);
