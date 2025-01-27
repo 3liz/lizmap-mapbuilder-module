@@ -19,7 +19,7 @@ class mapcontextCtrl extends jController
         $rep = $this->getResponse('htmlfragment');
 
         // Make sure that it is a POST request.
-        if (strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') != 0) {
+        if (0 != strcasecmp($_SERVER['REQUEST_METHOD'], 'POST')) {
             throw new Exception('Request method must be POST!');
         }
 
@@ -68,7 +68,7 @@ class mapcontextCtrl extends jController
         $rep = $this->getResponse('htmlfragment');
 
         // Make sure that it is a POST request.
-        if (strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') != 0) {
+        if (0 != strcasecmp($_SERVER['REQUEST_METHOD'], 'POST')) {
             throw new Exception('Request method must be POST!');
         }
 
@@ -86,7 +86,7 @@ class mapcontextCtrl extends jController
         $conditions->addCondition('id', '=', $id);
         $mcCount = $daomc->countBy($conditions);
 
-        if ($mcCount != 1) {
+        if (1 != $mcCount) {
             jMessage::add('You can\'t delete this map context or it doesn\'t exist', 'error');
         } else {
             try {
@@ -106,7 +106,6 @@ class mapcontextCtrl extends jController
     // Get mapcontext by id
     public function get()
     {
-
         // Get user
         $juser = jAuth::getUserSession();
         $usr_login = $juser->login;
@@ -125,13 +124,12 @@ class mapcontextCtrl extends jController
         $conditions->endGroup();
         $mcCount = $daomc->countBy($conditions);
 
-        if ($mcCount != 1) {
+        if (1 != $mcCount) {
             jMessage::add('You don\'t have access to this map context or it doesn\'t exist', 'error');
-
             return $this->error();
         }
         $mcList = $daomc->findBy($conditions);
-        $mcParams = array();
+        $mcParams = [];
         foreach ($mcList as $mc) {
             $mcParams = json_decode(htmlspecialchars_decode($mc->mapcontext, ENT_QUOTES));
         }
@@ -140,5 +138,4 @@ class mapcontextCtrl extends jController
 
         return $rep;
 
-    }
 }

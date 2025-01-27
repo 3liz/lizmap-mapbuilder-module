@@ -20,7 +20,7 @@ class mapBuilderAdminModuleConfigurator extends Configurator
 {
     public function getDefaultParameters()
     {
-        return array();
+        return [];
     }
 
     public function declareUrls(EntryPointUrlModifier $registerOnEntryPoint)

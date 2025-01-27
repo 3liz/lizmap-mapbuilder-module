@@ -16,12 +16,12 @@ class mapBuilderAdminModuleInstaller extends jInstallerModule
 {
     public function install()
     {
-        if ($this->entryPoint->getEpId() == 'admin') {
+        if ('admin' == $this->entryPoint->getEpId()) {
             $localConfigIni = $this->entryPoint->localConfigIni->getMaster();
 
             $adminControllers = $localConfigIni->getValue('admin', 'simple_urlengine_entrypoints');
             $mbCtrl = 'mapBuilderAdmin~*@classic';
-            if (strpos($adminControllers, $mbCtrl) === false) {
+            if (false === strpos($adminControllers, $mbCtrl)) {
                 // let's register mapBuilderAdmin controllers
                 $adminControllers .= ', '.$mbCtrl;
                 $localConfigIni->setValue('admin', $adminControllers, 'simple_urlengine_entrypoints');

@@ -55,7 +55,7 @@ class defaultCtrl extends jController
         $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/bootstrap.min.js');
 
         // Pass some configuration options to the web page through javascript var
-        $lizUrls = array(
+        $lizUrls = [
             'basepath' => jApp::urlBasePath(),
             'config' => jUrl::get('lizmap~service:getProjectConfig'),
             'wms' => jUrl::get('lizmap~service:index'),
@@ -63,7 +63,7 @@ class defaultCtrl extends jController
             'mapcontext_add' => jUrl::get('mapBuilder~mapcontext:add'),
             'mapcontext_delete' => jUrl::get('mapBuilder~mapcontext:delete'),
             'mapcontext_get' => jUrl::get('mapBuilder~mapcontext:get'),
-        );
+        ];
 
         // Load lizUrls before mapbuilder. Webpack public path needs it
         $rep->addJSCode('var lizUrls = '.json_encode($lizUrls).';', true);
@@ -74,9 +74,9 @@ class defaultCtrl extends jController
         $readConfigPath = parse_ini_file($configFile, true);
 
         // Build repository + project tree for FancyTree
-        $nestedTree = array();
+        $nestedTree = [];
 
-        $repositoryList = array();
+        $repositoryList = [];
 
         // Get selected repository from ini file if set
         if (array_key_exists('repository', $readConfigPath) && !is_null(lizmap::getRepository($readConfigPath['repository']))) {
@@ -90,7 +90,7 @@ class defaultCtrl extends jController
             if (jAcl2::check('lizmap.repositories.view', $repository->getKey())) {
                 $projects = $repository->getProjects();
 
-                $projectArray = array();
+                $projectArray = [];
                 foreach ($projects as $project) {
                     $projectArray[] = array(
                         'title' => $project->getData('title'), // deprecated, use getTitle() for lizmap >=3.5
@@ -161,12 +161,12 @@ class defaultCtrl extends jController
             $lang = jLocale::getCurrentLang().'_'.jLocale::getCurrentCountry();
         }
 
-        $data = array();
+        $data = [];
         $path = jApp::getModulePath('mapBuilder').'locales/en_US/dictionary.UTF-8.properties';
         if (file_exists($path)) {
             $lines = file($path);
             foreach ($lines as $lineNumber => $lineContent) {
-                if (!empty($lineContent) and $lineContent != '\n') {
+                if (!empty($lineContent) and '\n' != $lineContent) {
                     $exp = explode('=', trim($lineContent));
                     if (!empty($exp[0])) {
                         $data[$exp[0]] = jLocale::get('mapBuilder~dictionary.'.$exp[0], null, $lang);
@@ -182,7 +182,7 @@ class defaultCtrl extends jController
         $rep->body->assign('allowUserAccountRequests', $services->allowUserAccountRequests);
 
         // Add Google Analytics ID
-        if ($services->googleAnalyticsID != '' && preg_match('/^UA-\d+-\d+$/', $services->googleAnalyticsID) == 1) {
+        if ('' != $services->googleAnalyticsID && 1 == preg_match('/^UA-\\d+-\\d+$/', $services->googleAnalyticsID)) {
             $rep->body->assign('googleAnalyticsID', $services->googleAnalyticsID);
         }
 

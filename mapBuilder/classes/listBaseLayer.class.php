@@ -4,13 +4,13 @@ class listBaseLayer implements jIFormsDatasource
 {
     protected $formId = 0;
 
-    protected $data = array();
+    protected $data = [];
 
     public function __construct($id)
     {
         $this->formId = $id;
 
-        $this->data = array(
+        $this->data = [
             'osmMapnik' => 'OSM Mapnik',
             'osmStadiaMapsToner' => 'OSM StadiaMaps Toner',
             'bingStreets' => 'Bing Streets',
@@ -20,7 +20,7 @@ class listBaseLayer implements jIFormsDatasource
             'ignSatellite' => 'IGN Satellite',
             'ignCadastral' => 'IGN Cadastral',
             'emptyBaselayer' => jLocale::get('view~dictionnary.baselayer.empty.title'),
-        );
+        ];
     }
 
     public function getData($form)

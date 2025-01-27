@@ -44,9 +44,9 @@ class configCtrl extends jController
 
         // Set form data values
         foreach ($form->getControls() as $ctrl) {
-            if ($ctrl->type != 'submit') {
+            if ('submit' != $ctrl->type) {
                 $val = $this->ini->getValue($ctrl->ref);
-                if ($ctrl->ref == 'baseLayer') {
+                if ('baseLayer' == $ctrl->ref) {
                     $val = explode(',', $val);
                 }
                 $form->setData($ctrl->ref, $val);
@@ -72,9 +72,9 @@ class configCtrl extends jController
 
         // Set form data values
         foreach ($form->getControls() as $ctrl) {
-            if ($ctrl->type != 'submit') {
+            if ('submit' != $ctrl->type) {
                 $val = $this->ini->getValue($ctrl->ref);
-                if ($ctrl->ref == 'baseLayer') {
+                if ('baseLayer' == $ctrl->ref) {
                     $val = explode(',', $val);
                 }
                 $form->setData($ctrl->ref, $val);
@@ -158,9 +158,9 @@ class configCtrl extends jController
 
         // Save the data
         foreach ($form->getControls() as $ctrl) {
-            if ($ctrl->type != 'submit') {
+            if ('submit' != $ctrl->type) {
                 $val = $form->getData($ctrl->ref);
-                if ($ctrl->ref == 'baseLayer') {
+                if ('baseLayer' == $ctrl->ref) {
                     $val = implode(',', $val);
                 }
                 $this->ini->setValue($ctrl->ref, $val);
@@ -182,7 +182,6 @@ class configCtrl extends jController
      */
     public function validate()
     {
-
         // Destroy the form
         if ($form = jForms::get('mapBuilderAdmin~config')) {
             jForms::destroy('mapBuilderAdmin~config');
