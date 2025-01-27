@@ -28,8 +28,8 @@ class mapBuilderViewListener extends jEventListener
                 // Reproject extent in ini file from EPSG:4326 to EPSG:3857.
                 if (class_exists('Proj4php')) { // lizmap 3.6
                     $proj4 = new Proj4php();
-                    $sourceProj = new Proj4phpProj('EPSG:4326', $proj4);
-                    $destProj = new Proj4phpProj('EPSG:3857', $proj4);
+                    $sourceProj = new Proj4phpProj('EPSG:4326', $proj4); /* @phpstan-ignore class.notFound */ // Used for older version of lizmap
+                    $destProj = new Proj4phpProj('EPSG:3857', $proj4); /* @phpstan-ignore class.notFound */ // Used for older version of lizmap
                 } else {
                     // proj4php > 2.0, lizmap 3.7+
                     $proj4 = new proj4php\Proj4php();

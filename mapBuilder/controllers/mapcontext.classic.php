@@ -126,7 +126,7 @@ class mapcontextCtrl extends jController
 
         if (1 != $mcCount) {
             jMessage::add('You don\'t have access to this map context or it doesn\'t exist', 'error');
-            return $this->error();
+            return '';
         }
         $mcList = $daomc->findBy($conditions);
         $mcParams = [];
