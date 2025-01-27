@@ -3,23 +3,19 @@
 ## Testing with linters
 
 Before the next part, you must have installed the dependencies with `npm install` and `composer install` at the project root.
-Before the next part, you must have installed the dependencies with `npm install` at the project root.
 
 ### StyleLint for CSS
 
-If you want to see all your issues on the PHP code without fixing it, you
 If you want to see all your issues on the CSS code without fixing it, you
 can run the following command:
 
 ```bash
-composer cs-check
 npm run stylelint-check
 ```
 
 If you want to fix the issues automatically, you can run the following command:
 
 ```bash
-composer cs-fix
 npm run stylelint-fix
 ```
 _Note : The command `npm run stylelint-fix` may not fix all the issues and print them on the screen.
@@ -34,4 +30,19 @@ ignoreFiles: [
     "mapBuilder/www/css/bootstrap.min.css",
     "...",
   ],
+```
+
+### PHP CS Fixer for PHP
+
+If you want to see all your issues on the PHP code without fixing it, you
+can run the following command:
+
+```bash
+composer cs-check
+```
+
+If you want to fix the issues automatically, you can run the following command:
+
+```bash
+composer cs-fix
 ```

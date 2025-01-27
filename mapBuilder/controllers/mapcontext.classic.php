@@ -10,7 +10,9 @@
  */
 class mapcontextCtrl extends jController
 {
-    // Add a mapcontext
+    /**
+     * Add a mapcontext.
+     */
     public function add()
     {
 
@@ -57,7 +59,9 @@ class mapcontextCtrl extends jController
         return $rep;
     }
 
-    // Delete mapcontext by id
+    /**
+     * Delete mapcontext by id.
+     */
     public function delete()
     {
 

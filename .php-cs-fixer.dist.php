@@ -6,7 +6,13 @@ $finder = (new PhpCsFixer\Finder())
         'mapBuilder/',
         'mapBuilderAdmin/',
     ])
+    ->notPath([
+        'tests/',
+    ])
 ;
+
+// CS Rules should match with Lizmap Web Client ones
+// https://github.com/3liz/lizmap-web-client/blob/master/.php-cs-fixer.dist.php
 
 return (new PhpCsFixer\Config())
     ->setRules([

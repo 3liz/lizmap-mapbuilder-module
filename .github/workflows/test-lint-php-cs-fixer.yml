@@ -1,0 +1,19 @@
+name: PHP-CS-Fixer 🐘 🔍
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  eslint:
+    name: "PHP CS Fixer 🔍"
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Install modules
+        run: composer install
+
+      - name: Run PHP-CS-Fixer
+        run: composer cs-check
