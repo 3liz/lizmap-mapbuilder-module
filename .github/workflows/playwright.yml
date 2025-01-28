@@ -1,0 +1,40 @@
+name: "End2end Tests 🚗"
+on:
+  push:
+  pull_request:
+jobs:
+  e2e:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Initialize and run Docker
+        run: |
+          make pull
+          make run
+      - name: Wait for Lizmap to be ready
+        run: |
+          sleep 20
+      - name: Add test data and install module
+        run: |
+          make import-test-data
+          make install-module
+          make import-lizmap-acl
+      - name: Install dependencies
+        run: |
+          cd e2e
+          npm install
+      - name: Install Playwright Browsers
+        run: |
+          cd e2e
+          npx playwright install --with-deps chromium
+      - name: Run Playwright tests
+        run: |
+          cd e2e
+          npx playwright test --project=chromium
