@@ -12,11 +12,13 @@ export class LayerStore extends HTMLElement {
   /**
    * Create a layer store.
    * @param {HTMLElement} container The HTMLElement where the layer store will be rendered.
+   * @param {KeywordsManager} keywordsManager The keywords manager.
    */
-  constructor(container) {
+  constructor(container, keywordsManager) {
     super();
     this.container = container;
     this.tree = [];
+    this.keywordsManager = keywordsManager;
 
     mapBuilder.layerStoreTree.forEach((value) => {
       this.tree.push(new LayerTreeFolder({
@@ -36,9 +38,14 @@ export class LayerStore extends HTMLElement {
   /**
    * Template for a folder.
    * @param {LayerTreeFolder} element The folder to render.
-   * @returns {TemplateResult<1>} The template of the folder.
+   * @returns {TemplateResult<1>|null} The template of the folder or null if the folder shouldn't be visible.
    */
   folderTemplate = (element) => {
+    if (!element.isVisible()) {
+      // We use 'null' value because "html``" is not really empty
+      return null;
+    }
+
     //Check if the folder will have to load children from a project.
     let tagLazy = element.isLazy() ? "lazy" : "";
 
@@ -77,28 +84,33 @@ export class LayerStore extends HTMLElement {
       element.getChildren().forEach(value => {
         let childTemplate;
         if (value instanceof LayerTreeFolder) {
-          childTemplate = html`
-              ${this.folderTemplate(value)}
-          `;
+          childTemplate = this.folderTemplate(value);
         } else {
-          childTemplate = html`
-              ${this.layerTemplate(value)}
-          `;
+          childTemplate = this.layerTemplate(value);
         }
-        allChildTemplate = html`
+        if (childTemplate !== null) {
+          allChildTemplate = html`
             ${allChildTemplate}
             ${childTemplate}
         `;
+        }
       });
-      template = html`
-          ${template}
-          <ul class="layerStore-tree"
-              @mouseover='${(event) => {event.target.closest("ul").style = `background-color: ${element.getHoverColor()}; transition: 0.2s;`}}' 
-              @mouseout='${(event) => {event.target.closest("ul").style = `background-color: ${element.getColor()}; transition: 0.2s;`}}' 
-              style="background-color: ${element.getColor()}">
-              ${allChildTemplate}
-          </ul>
-      `;
+      // Prevent empty 'ul' tag which are not well displayed
+      if (allChildTemplate.strings[0] !== "") {
+        template = html`
+            ${template}
+            <ul class="layerStore-tree"
+                @mouseover='${(event) => {
+                    event.target.closest("ul").style = `background-color: ${element.getHoverColor()}; transition: 0.2s;`
+                }}'
+                @mouseout='${(event) => {
+                    event.target.closest("ul").style = `background-color: ${element.getColor()}; transition: 0.2s;`
+                }}'
+                style="background-color: ${element.getColor()}">
+                ${allChildTemplate}
+            </ul>
+        `;
+      }
     }
     return template;
   }
@@ -106,9 +118,14 @@ export class LayerStore extends HTMLElement {
   /**
    * Template for a layer.
    * @param {LayerTreeLayer} element The layer to render.
-   * @returns {TemplateResult<1>} The template of the layer.
+   * @returns {TemplateResult<1>|null} The template of the layer or null if the layer element shouldn't be visible.
    */
   layerTemplate = (element) => {
+    if (!element.isVisible()) {
+      // We use 'null' value because "html``" is not really empty
+      return null;
+    }
+
     var styleOption = html``;
     element.getStyle().forEach(function (style) {
       styleOption = html`
@@ -202,8 +219,19 @@ export class LayerStore extends HTMLElement {
 
     const promises = [
       new Promise(resolve => {
-          $.get(url, function (capabilities) {
+          $.get(url, (capabilities) => {
             var result = parser.read(capabilities);
+
+            const title = result["Service"]["Title"]
+            const wordList = result["Service"]["KeywordList"]
+            this.keywordsManager.addKeywordFromList(wordList);
+
+            this.tree.forEach((element) => {
+              if (element.getLazyTitle() === title) {
+                element.setKeywords(wordList);
+              }
+            });
+
             if (result.hasOwnProperty('Capability')) {
               var node = result.Capability;
 
@@ -365,6 +393,44 @@ export class LayerStore extends HTMLElement {
   getTree() {
     return this.tree;
   }
+
+  /**
+   * Update the tree.
+   * @param {[LayerTreeElement]} tree - The new tree.
+   */
+  updateTree(tree) {
+    this.tree = tree;
+    this.render();
+  }
+
+  /**
+   * Set visibility of layers from layerStore to true.
+   * Allow the layerStore to print all layers.
+   * Call a recursive function to set all layers visible.
+   * @return {[LayerTreeElement]} - The tree.
+   */
+  setAllVisible() {
+    for (let i = 0; i < this.tree.length; i++) {
+      this.recSetVisible(this.tree[i]);
+    }
+    return this.tree;
+  }
+
+  /**
+   * Recursive function to set all layers visible.
+   * @param {LayerTreeFolder|LayerTreeLayer} treeElement - Layer tree element to change visibility.
+   */
+  recSetVisible(treeElement) {
+    treeElement.setVisible(true);
+    if (treeElement instanceof LayerTreeLayer) {
+      return;
+    }
+    let children = treeElement.getChildren();
+    for (let i = 0; i < children.length; i++) {
+      this.recSetVisible(children[i]);
+    }
+  }
+
 }
 
 customElements.define('lizmap-layer-store', LayerStore);

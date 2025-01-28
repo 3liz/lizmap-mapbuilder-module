@@ -24,6 +24,10 @@ export class LayerTreeFolder extends LayerTreeElement {
    * @type {boolean} If the folder got a load error.
    */
   #failed;
+  /**
+   * @type {string[]} Keywords of the layer
+   */
+  #keywords = [];
 
   /**
    * @typedef {Object} Options
@@ -188,4 +192,39 @@ export class LayerTreeFolder extends LayerTreeElement {
   setFailed() {
     this.#failed = true;
   }
+
+  /**
+   * Set the keywords of the layer.
+   * @param {string} keywords Keywords of the layer.
+   */
+  setKeywords(keywords) {
+    this.#keywords = keywords;
+  }
+
+  /**
+   * Get the keywords of the layer.
+   * @return {string} Keywords of the layer.
+   */
+  getKeywords() {
+    return this.#keywords;
+  }
+
+  /**
+   * Get the title of the folder which get the "lazy" tag.
+   * @return {string|undefined} Title.
+   */
+  getLazyTitle() {
+    if (this.#lazy !== undefined) {
+      return this.getTitle();
+    }
+    for (let child of this.#children) {
+      if (child instanceof LayerTreeFolder) {
+        let lazyTitle = child.getLazyTitle();
+        if (lazyTitle !== undefined) {
+          return lazyTitle;
+        }
+      }
+    }
+    return undefined;
+}
 }
