@@ -90,3 +90,14 @@ psql service=lizmap-mapbuilder
 
 If you want to enter into the lizmap container to execute some commands,
 execute `make shell`.
+
+## Automatic End-to-End tests
+
+The `e2e` directory contains some end-to-end tests made for Playwright. Go in `e2e` directory and execute `npm install` to install Playwright (only the first time).
+
+### Playwright
+
+You have to install the browsers with `npx playwright install` (only the first time or after an update) You can then :
+* `npx playwright test --ui --project=chromium` to open a UI as in Cypress which ease testing
+* `npx playwright test` to execute all tests with all browsers
+* `npx playwright test --project=chromium` to execute all tests with the Chromium browser

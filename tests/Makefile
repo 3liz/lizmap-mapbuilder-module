@@ -101,7 +101,7 @@ install-module:
 install-plugins:
 	docker run \
 	    -u $(LIZMAP_USER_ID):$(LIZMAP_USER_GID) \
-	    --rm -it \
+	    --rm \
 	    -e QGSRV_SERVER_PLUGINPATH=/srv/plugins \
 	    -v $(LIZMAP_DIR)/qgis-server-plugins:/srv/plugins \
 	    -v $(shell pwd)/:/src \
