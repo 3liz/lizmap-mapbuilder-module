@@ -4,7 +4,6 @@ class mapBuilderAdminConfigListener extends jEventListener
 {
     public function onmasteradminGetMenuContent($event)
     {
-
         if (jAcl2::check('lizmap.admin.access') && jAcl2::check('mapBuilder.access')) {
             // Create the "mapBuilderAdmin" parent menu item
             $bloc = new masterAdminMenuItem('mapBuilderAdmin', jLocale::get('mapBuilder~default.app.name'), '', 121);

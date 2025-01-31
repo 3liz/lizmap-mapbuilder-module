@@ -182,7 +182,6 @@ class configCtrl extends jController
      */
     public function validate()
     {
-
         // Destroy the form
         if ($form = jForms::get('mapBuilderAdmin~config')) {
             jForms::destroy('mapBuilderAdmin~config');

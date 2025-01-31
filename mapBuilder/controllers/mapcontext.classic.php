@@ -106,7 +106,6 @@ class mapcontextCtrl extends jController
     // Get mapcontext by id
     public function get()
     {
-
         // Get user
         $juser = jAuth::getUserSession();
         $usr_login = $juser->login;
@@ -128,7 +127,7 @@ class mapcontextCtrl extends jController
         if ($mcCount != 1) {
             jMessage::add('You don\'t have access to this map context or it doesn\'t exist', 'error');
 
-            return $this->error();
+            return '';
         }
         $mcList = $daomc->findBy($conditions);
         $mcParams = array();

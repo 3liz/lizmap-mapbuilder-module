@@ -7,7 +7,6 @@ class mapBuilderViewListener extends jEventListener
 {
     public function onmainviewGetMaps($event)
     {
-
         // Access control
         if (jAcl2::check('mapBuilder.access')) {
             $name = jLocale::get('mapBuilder~default.app.name');
@@ -29,8 +28,8 @@ class mapBuilderViewListener extends jEventListener
                 // Reproject extent in ini file from EPSG:4326 to EPSG:3857.
                 if (class_exists('Proj4php')) { // lizmap 3.6
                     $proj4 = new Proj4php();
-                    $sourceProj = new Proj4phpProj('EPSG:4326', $proj4);
-                    $destProj = new Proj4phpProj('EPSG:3857', $proj4);
+                    $sourceProj = new Proj4phpProj('EPSG:4326', $proj4); /* @phpstan-ignore class.notFound */ // Used for older version of lizmap
+                    $destProj = new Proj4phpProj('EPSG:3857', $proj4); /* @phpstan-ignore class.notFound */ // Used for older version of lizmap
                 } else {
                     // proj4php > 2.0, lizmap 3.7+
                     $proj4 = new proj4php\Proj4php();
@@ -59,7 +58,6 @@ class mapBuilderViewListener extends jEventListener
                         $destMaxPt = $proj4->transform($sourceProj, $destProj, $sourceMaxPt);
 
                         $extent = implode(', ', array($destMinPt->x, $destMinPt->y, $destMaxPt->x, $destMaxPt->y));
-
                     } catch (Exception $e) {
                         // Max extent in EPSG:3857
                         $extent = '-20026376.39,-20048966.10,20026376.39,20048966.10';

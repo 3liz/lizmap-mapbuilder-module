@@ -1,0 +1,10 @@
+parameters:
+	scanDirectories:
+		- vendor/
+	level: 0
+	paths:
+		- mapBuilder
+		- mapBuilderAdmin
+	ignoreErrors:
+		- '#Call to static method [a-zA-Z0-9]+\(\) on an unknown class lizmap#'
+		- '#Instantiated class lizmapMainViewItem not found#'
