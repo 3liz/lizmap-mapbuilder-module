@@ -7,12 +7,11 @@
  * @see      http://3liz.com
  *
  * @license   Mozilla Public License : http://www.mozilla.org/MPL/
-
-*/class mapBuilderModuleUpgrader_toggleattributetable extends jInstallerModule
+ */ class mapBuilderModuleUpgrader_toggleattributetable extends jInstallerModule
 {
-    public $targetVersions = [
+    public $targetVersions = array(
         '1.0.0-rc.13',
-    ];
+    );
     public $date = '2019-02-28';
 
     public function install()

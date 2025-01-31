@@ -4,13 +4,13 @@ class listRepositories implements jIFormsDatasource
 {
     protected $formId = 0;
 
-    protected $data = [];
+    protected $data = array();
 
     public function __construct($id)
     {
         $this->formId = $id;
 
-        $repositories = [];
+        $repositories = array();
 
         foreach (lizmap::getRepositoryList() as $repositoryName) {
             $repository = lizmap::getRepository($repositoryName);

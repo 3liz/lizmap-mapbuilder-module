@@ -39,7 +39,7 @@ class mapBuilderViewListener extends jEventListener
                 $extentArraySource = explode(',', $readConfigPath['extent']);
 
                 // Is extent valid ?
-                if (4 == count($extentArraySource) && $extentArraySource === array_filter($extentArraySource, 'is_numeric')) {
+                if (count($extentArraySource) == 4 && $extentArraySource === array_filter($extentArraySource, 'is_numeric')) {
                     // Cast as float
                     $extentArraySource = array_map('floatval', $extentArraySource);
 
@@ -57,7 +57,7 @@ class mapBuilderViewListener extends jEventListener
                         $destMinPt = $proj4->transform($sourceProj, $destProj, $sourceMinPt);
                         $destMaxPt = $proj4->transform($sourceProj, $destProj, $sourceMaxPt);
 
-                        $extent = implode(', ', [$destMinPt->x, $destMinPt->y, $destMaxPt->x, $destMaxPt->y]);
+                        $extent = implode(', ', array($destMinPt->x, $destMinPt->y, $destMaxPt->x, $destMaxPt->y));
                     } catch (Exception $e) {
                         // Max extent in EPSG:3857
                         $extent = '-20026376.39,-20048966.10,20026376.39,20048966.10';

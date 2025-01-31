@@ -44,9 +44,9 @@ class configCtrl extends jController
 
         // Set form data values
         foreach ($form->getControls() as $ctrl) {
-            if ('submit' != $ctrl->type) {
+            if ($ctrl->type != 'submit') {
                 $val = $this->ini->getValue($ctrl->ref);
-                if ('baseLayer' == $ctrl->ref) {
+                if ($ctrl->ref == 'baseLayer') {
                     $val = explode(',', $val);
                 }
                 $form->setData($ctrl->ref, $val);
@@ -72,9 +72,9 @@ class configCtrl extends jController
 
         // Set form data values
         foreach ($form->getControls() as $ctrl) {
-            if ('submit' != $ctrl->type) {
+            if ($ctrl->type != 'submit') {
                 $val = $this->ini->getValue($ctrl->ref);
-                if ('baseLayer' == $ctrl->ref) {
+                if ($ctrl->ref == 'baseLayer') {
                     $val = explode(',', $val);
                 }
                 $form->setData($ctrl->ref, $val);
@@ -158,9 +158,9 @@ class configCtrl extends jController
 
         // Save the data
         foreach ($form->getControls() as $ctrl) {
-            if ('submit' != $ctrl->type) {
+            if ($ctrl->type != 'submit') {
                 $val = $form->getData($ctrl->ref);
-                if ('baseLayer' == $ctrl->ref) {
+                if ($ctrl->ref == 'baseLayer') {
                     $val = implode(',', $val);
                 }
                 $this->ini->setValue($ctrl->ref, $val);

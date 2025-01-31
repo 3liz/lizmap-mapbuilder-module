@@ -18,7 +18,7 @@ class mapBuilderModuleConfigurator extends Configurator
 {
     public function getDefaultParameters()
     {
-        return [];
+        return array();
     }
 
     public function configure(ConfigurationHelpers $helpers)
