@@ -1,21 +1,17 @@
 <?php
+
 /**
-* @package   lizmap
-* @subpackage mapBuilderAdmin
-* @author    your name
-* @copyright 2018-2020 3liz
-* @link      http://3liz.com
-* @license    Mozilla Public License : http://www.mozilla.org/MPL/
-*/
-
-class defaultCtrl extends jController {
-    /**
-    *
-    */
-    function index() {
-        $rep = $this->getResponse('html');
-
-        return $rep;
+ * @author    your name
+ * @copyright 2018-2020 3liz
+ *
+ * @see      http://3liz.com
+ *
+ * @license    Mozilla Public License : http://www.mozilla.org/MPL/
+ */
+class defaultCtrl extends jController
+{
+    public function index()
+    {
+        return $this->getResponse('html');
     }
 }
-
