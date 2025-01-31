@@ -75,12 +75,12 @@ export class SelectExtentControl extends Control {
 
       //Disable buttons to prevent bugs from user
       this.#button.disabled = true;
-      this.#button.id = "controlButtonDisabled";
+      this.#button.id = "control-button-disabled";
       let undoElement = document.querySelector(".ol-do-control-undo")
-      undoElement.id = "controlButtonDisabled";
+      undoElement.id = "control-button-disabled";
       undoElement.disabled = true;
       let redoElement = document.querySelector(".ol-do-control-redo")
-      redoElement.id = "controlButtonDisabled";
+      redoElement.id = "control-button-disabled";
       redoElement.disabled = true;
     });
 

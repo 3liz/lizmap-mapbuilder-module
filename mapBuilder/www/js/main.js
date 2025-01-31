@@ -419,7 +419,7 @@ $(function() {
 
   var layerStore;
 
-  layerStore = new LayerStore(document.getElementById("layerStoreHolder"));
+  layerStore = new LayerStore(document.getElementById("layer-store-holder"));
 
   listTree = layerStore.getTree();
 
@@ -439,9 +439,9 @@ $(function() {
   }
 
   /* Handle custom addLayerButton clicks */
-  document.querySelector('#layerStoreHolder').addEventListener('click', function (e) {
-    if (e.target.closest('.layerStore-layer') && e.target.tagName !== "SELECT") {
-      var element = e.target.closest('.layerStore-layer');
+  document.querySelector('#layer-store-holder').addEventListener('click', function (e) {
+    if (e.target.closest('.layer-store-layer') && e.target.tagName !== "SELECT") {
+      var element = e.target.closest('.layer-store-layer');
 
       var node = getNodeFromUuid(element.id);
       var nodeLi = document.getElementById(element.id).closest("li");
@@ -851,7 +851,7 @@ $(function() {
   }
 
   $('#attribute-btn').on("click", function(e){
-    if($('#attributeLayersContent').text().trim() != ""){
+    if($('#attribute-layers-content').text().trim() != ""){
       $('#bottom-dock').show();
       $(this).addClass('active');
     }

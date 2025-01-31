@@ -90,3 +90,7 @@ psql service=lizmap-mapbuilder
 
 If you want to enter into the lizmap container to execute some commands,
 execute `make shell`.
+
+## Linters
+
+In order to test your code with linters, you can refer to the [contributors readme file](../CONTRIBUTING.md).

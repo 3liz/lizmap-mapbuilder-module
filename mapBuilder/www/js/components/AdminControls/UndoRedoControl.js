@@ -67,11 +67,11 @@ export class UndoRedoControl extends Control {
     this.redoEl = redoElement;
 
     if (this.#history.getIndex() === 0) {
-      undoElement.id = "controlButtonDisabled";
+      undoElement.id = "control-button-disabled";
       undoElement.disabled = true;
     }
 
-    redoElement.id = "controlButtonDisabled";
+    redoElement.id = "control-button-disabled";
     redoElement.disabled = true;
   }
 
@@ -91,7 +91,7 @@ export class UndoRedoControl extends Control {
     );
 
     if (this.#history.getIndex() <= 0) {
-      this.undoEl.id = "controlButtonDisabled";
+      this.undoEl.id = "control-button-disabled";
       this.undoEl.disabled = true;
     }
     this.redoEl.id = "";
@@ -114,7 +114,7 @@ export class UndoRedoControl extends Control {
     );
 
     if (this.#history.getIndex() >= this.#history.getLength() - 1) {
-      this.redoEl.id = "controlButtonDisabled";
+      this.redoEl.id = "control-button-disabled";
       this.redoEl.disabled = true;
     }
     this.undoEl.id = "";

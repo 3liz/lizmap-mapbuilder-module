@@ -1,0 +1,24 @@
+{
+  "name": "lizmap-mapbuilder-module",
+  "version": "1.0.0",
+  "description": "Used for linters",
+  "main": "index.js",
+  "scripts": {
+    "stylelint-check": "npx stylelint \"mapBuilder/www/css/**/*.css\"",
+    "stylelint-fix": "npx stylelint \"mapBuilder/www/css/**/*.css\" --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3liz/lizmap-mapbuilder-module.git"
+  },
+  "author": "3liz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/3liz/lizmap-mapbuilder-module/issues"
+  },
+  "homepage": "https://github.com/3liz/lizmap-mapbuilder-module#readme",
+  "devDependencies": {
+    "stylelint": "^16.13.2",
+    "stylelint-config-standard": "^37.0.0"
+  }
+}

@@ -20,7 +20,7 @@ export class LayerSelected extends HTMLElement {
   constructor(element) {
     super();
     this.#element = element;
-    this.setAttribute("class", "containerLayerSelected");
+    this.setAttribute("class", "container-layer-selected");
     this.setAttribute("id", element.getUid());
     this.setAttribute("draggable", "true");
     this.render()
@@ -60,7 +60,7 @@ export class LayerSelected extends HTMLElement {
       );
 
       info = html`
-          <div class="midLine">
+          <div class="mid-line">
               <span class="layerStyleSpan">${this.#element.getLayer().getSource().getParams()["STYLES"]}</span>
               ${slider}
           </div>`;
@@ -68,15 +68,15 @@ export class LayerSelected extends HTMLElement {
 
     //Template of the component
     let tpl = html`
-        <div class="changeOrderContainer" style="background-color: ${this.#element.getColor()}">
-            <div class="changeOrder changeOrderUp" style="background-color: ${this.#element.getColor()}"
+        <div class="change-order-container" style="background-color: ${this.#element.getColor()}">
+            <div class="change-order change-order-up" style="background-color: ${this.#element.getColor()}"
                  @click="${() => changeList(this.#element.getUid(), "up")}"
                  @mouseover='${(e) => this.actionMouseOver(e)}'
                  @mouseout='${(e) => this.actionMouseOut(e)}'
             >
                 <i class="fas fa-caret-up"></i>
             </div>
-            <div class="changeOrder changeOrderDown" style="background-color: ${this.#element.getColor()}"
+            <div class="change-order change-order-down" style="background-color: ${this.#element.getColor()}"
                  @click="${() => changeList(this.#element.getUid(), "down")}"
                  @mouseover='${(e) => this.actionMouseOver(e)}'
                  @mouseout='${(e) => this.actionMouseOut(e)}'
@@ -84,10 +84,10 @@ export class LayerSelected extends HTMLElement {
                 <i class="fas fa-caret-down"></i>
             </div>
         </div>
-        <div class="layerSelectedContent">
-            <div class="upperLine">
-                <span class="titleLayerSelected">${this.#element.getLayer().getProperties().title}</span>
-                <div class="layerButtonsDiv">
+        <div class="layer-selected-content">
+            <div class="upper-line">
+                <span class="title-layer-selected">${this.#element.getLayer().getProperties().title}</span>
+                <div class="layer-buttons-div">
                     ${attributeTableShow}
                     <button class="zoomToExtentButton fas fa-search-plus fa-sm"
                             @click="${(event) => this.actionZoomToExtentButton()}"></button>
@@ -98,7 +98,7 @@ export class LayerSelected extends HTMLElement {
                 </div>
             </div>
             ${info}
-            <button class="deleteLayerButton" @click="${(event) => this.actionDeleteLayerButton(event)}">
+            <button class="delete-layer-button" @click="${(event) => this.actionDeleteLayerButton(event)}">
                 <i class="fas fa-trash fa-sm"></i>
             </button>
         </div>
@@ -111,8 +111,8 @@ export class LayerSelected extends HTMLElement {
    * @param {PointerEvent} event Event occurring.
    */
   actionDeleteLayerButton(event) {
-    getLayerSelectionArray().removeElement(event.target.closest(".containerLayerSelected").id);
-    document.getElementById("layerSelectedHolder").removeChild(this);
+    getLayerSelectionArray().removeElement(event.target.closest(".container-layer-selected").id);
+    document.getElementById("layer-selected-holder").removeChild(this);
   }
 
   /**
@@ -155,19 +155,19 @@ export class LayerSelected extends HTMLElement {
   }
 
   /**
-   * Darkened the background color of the "ChangeOrder" div when the mouse is over it.
+   * Darkened the background color of the "change-order" div when the mouse is over it.
    * @param {PointerEvent} e Event occurring.
    */
   actionMouseOver(e) {
-    e.target.closest("div.changeOrder").style = `background-color: ${this.#element.getHoverColor()}; transition: 0.2s;`
+    e.target.closest("div.change-order").style = `background-color: ${this.#element.getHoverColor()}; transition: 0.2s;`
   }
 
   /**
-   * Thinned the background color of the "ChangeOrder" div when the mouse is out of it.
+   * Thinned the background color of the "change-order" div when the mouse is out of it.
    * @param {PointerEvent} e Event occurring.
    */
   actionMouseOut(e) {
-    e.target.closest("div.changeOrder").style = `background-color: ${this.#element.getColor()}; transition: 0.2s;`
+    e.target.closest("div.change-order").style = `background-color: ${this.#element.getColor()}; transition: 0.2s;`
   }
 
   /**
@@ -253,7 +253,7 @@ export class LayerSelected extends HTMLElement {
   actionDisplayDataButton(e, element) {
     document.getElementById("attribute-btn").classList.add("active");
 
-    var idLayer = e.target.closest(".containerLayerSelected").id;
+    var idLayer = e.target.closest(".container-layer-selected").id;
     var layer;
     var layerElement;
 
@@ -315,26 +315,26 @@ export class LayerSelected extends HTMLElement {
       var elements = [repositoryId, projectId, layerName, features, aliases, visibleProperties];
 
       // Hide other tabs before appending
-      var navLinks = document.querySelectorAll('#attributeLayersTabs .nav-link');
+      var navLinks = document.querySelectorAll('#attribute-layers-tabs .nav-link');
 
       navLinks.forEach(function (navLink) {
         navLink.classList.remove('active');
       });
 
-      var tabPane = document.querySelectorAll('#attributeLayersContent .tab-pane');
+      var tabPane = document.querySelectorAll('#attribute-layers-content .tab-pane');
 
       tabPane.forEach(function (tabPane) {
         tabPane.classList.remove('show');
         tabPane.classList.remove('active');
       });
 
-      document.getElementById("attributeLayersTabs").insertAdjacentHTML("beforeend", '\
+      document.getElementById("attribute-layers-tabs").insertAdjacentHTML("beforeend", '\
           <li class="nav-item">\
             <a class="nav-link active" href="#attributeLayer-' + repositoryId + '-' + projectId + '-' + layerName + '" role="tab">' + layer.getProperties().title + '&nbsp;<i data-ol_uid="' + layer.ol_uid + '" class="fas fa-times"></i></a>\
           </li>'
       );
 
-      const container = document.getElementById('attributeLayersContent');
+      const container = document.getElementById('attribute-layers-content');
 
       const addToContainer = (elements) => {
         const attributeTable = new AttributeTable(elements);
@@ -342,7 +342,7 @@ export class LayerSelected extends HTMLElement {
         attributeTable.updateContent();
       };
 
-      if (document.getElementById("attributeLayersContent").innerHTML === "") {
+      if (document.getElementById("attribute-layers-content").innerHTML === "") {
         const attributeTable = new AttributeTable(elements);
         container.appendChild(attributeTable);
         attributeTable.updateContent();
@@ -351,7 +351,7 @@ export class LayerSelected extends HTMLElement {
       }
 
       // Handle tab click events
-      document.querySelectorAll('#attributeLayersTabs a').forEach(function(tab) {
+      document.querySelectorAll('#attribute-layers-tabs a').forEach(function(tab) {
         tab.addEventListener('click', function(e) {
           e.preventDefault();
           var tabElement = new bootstrap.Tab(this);
@@ -360,7 +360,7 @@ export class LayerSelected extends HTMLElement {
       });
 
       // Handle close tabs
-      document.querySelectorAll('#attributeLayersTabs .fa-times').forEach((closeIcon) => {
+      document.querySelectorAll('#attribute-layers-tabs .fa-times').forEach((closeIcon) => {
         closeIcon.addEventListener('click', (e) => {
           e.preventDefault();
           if (e.target.dataset.ol_uid === layerElement.getLayer().ol_uid) {
@@ -378,7 +378,7 @@ export class LayerSelected extends HTMLElement {
             this.render();
 
             // Hide bottom dock
-            if (document.getElementById("attributeLayersContent").textContent.trim() === "") {
+            if (document.getElementById("attribute-layers-content").textContent.trim() === "") {
               document.getElementById("bottom-dock").style.display = 'none';
               document.getElementById("attribute-btn").classList.remove("active");
             }

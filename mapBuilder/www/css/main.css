@@ -1,6 +1,10 @@
 /* Mapbuilder */
 
-#headermenu {padding:0;top:45px;}
+#headermenu {
+    padding:0;
+    top:45px;
+
+}
 #auth {width: 100%}
 
 #map, #mapmenu{padding-top: 75px;}
@@ -11,17 +15,22 @@
     z-index: 1;
 }
 
-#message{left: 40px;z-index: 2;}
+#message{
+    left: 40px;
+    z-index: 2;
+}
 
 #mapmenu {
     position: absolute;
-    left: 0px;
+    left: 0;
     height: 100%;
     width: 30px;
     background: #4A4A4A;
-    background: rgba(0,0,0,0.7);
+    background: rgb(0 0 0 / 70%);
     z-index: 1;
 }
+
+.nav-link, .nav-link:hover{color: white}
 
 #mapmenu .nav-link{
     padding: 0;
@@ -37,7 +46,7 @@
     padding: 5px;
     max-height: 60%;
     overflow-y: auto;
-    border-radius: 0 0 7px 0;
+    border-radius: 0 0 7px;
 }
 
 .dock-tab-title{
@@ -58,53 +67,65 @@
 #bottom-dock{
     position: absolute;
     z-index: 1;
-    bottom: 0px;
+    bottom: 0;
     left: 30px;
     right: 10px;
     height: 45%;
     display: none;
-    background: rgba(0,0,0,0.7);
+    background: rgb(0 0 0 / 70%);
 }
 
 #bottom-dock.half-transparent {
     opacity: 0.5;
 }
+
 #bottom-dock.visible {
     opacity: 1;
 }
 
 #bottom-dock-window-buttons{padding: 2px;}
 
-#baseLayer{
+#base-layer{
     margin-top: 10px;
     border-top: 1px dashed black;
     padding-left: 10px;
 }
 
-.nav-link, .nav-link:hover{color: white}
+#attribute-layers-tabs{height: 40px}
 
-#attributeLayersTabs{height: 40px}
-
-#attributeLayersContent{
+#attribute-layers-content{
     font-size: small;
     background-color: #F0F0F0;
     height: calc(100% - 75px);
     overflow-y: auto;
 }
 
-.lizmapPopupDiv{padding: 5px 10px;background-color: #F0F0F0;font-size: .8em;}
+/* stylelint-disable */
+.lizmapPopupDiv{
+    padding: 5px 10px;
+    background-color: #F0F0F0;
+    font-size: .8em;
+}
+/* stylelint-enable */
 
-.footer{position: absolute;bottom: 5px;right: 2px;width: 100%}
+.footer{
+    position: absolute;
+    bottom: 5px;
+    right: 2px;
+    width: 100%
+}
 
-.toggleLegend, .changeOrder {cursor: pointer;}
+/* stylelint-disable */
+.toggleLegend, .change-order {cursor: pointer;}
 .toggleLegend > img {display: none;}
+/* stylelint-enable */
 
 .navbar .nav > li > a {
 	display: block;
 }
 
 .navbar .nav > li > a:hover {
-    color: #333333;
+    color: #333;
 }
 
 #pdf-print > * {margin-bottom: 5px}
@@ -121,6 +142,7 @@
 	top: 65px;
 	right: .5em;
 }
+
 .ol-touch .ol-drag-zoom {
 	top: 80px;
 }
@@ -129,6 +151,7 @@
 	top: 95px;
 	right: .5em;
 }
+
 .ol-touch .ol-zoom-origin {
 	top: 115px;
 }
@@ -137,6 +160,7 @@
 	top: 125px;
 	right: .5em;
 }
+
 .ol-touch .ol-export-pdf {
 	top: 140px;
 }
@@ -151,7 +175,6 @@
 
 /* Progress Bar for Printing */
 .progress {
-    display: -ms-flexbox;
     display: flex;
     height: 1rem;
     overflow: hidden;
@@ -167,91 +190,20 @@
 .bg-success {
     background-color: #28a745 !important;
 }
+
 /* End of Progress Bar for Printing */
 
 /* CSS for LayerTree */
-ul.layerStore-tree {
+ul.layer-store-tree {
     display: flex;
     flex-direction: column;
     user-select: none;
 }
 
-li.layerStore-arrow {
-    padding: 5px 0;
-    cursor: pointer;
-    display: flex;
-    justify-content: start;
-    align-items: center;
-}
-
-li.layerStore-arrow span:nth-child(2) {
-    margin-left: 5px;
-}
-
-.layerStore-layer {
+.layer-store-layer {
     display: flex;
     justify-content: left;
     align-items: center;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    padding-left: 10px;
-}
-
-.layerStore-layer span {
-    padding: 0 10px;
-    flex: 1;
-}
-
-span.layerStore-folder {
-    padding: 0 5px;
-}
-
-#layerStoreHolder {
-    margin: 15px 10px;
-}
-
-#layerStoreHolder ul {
-    margin: 4px 0;
-    padding: 2px 8px;
-    border-radius: 7px;
-    box-shadow: 0 0 4px 0.3px rgba(0, 0, 0, 0.2);
-    list-style-type: none;
-}
-
-#layerStoreHolder > ul:first-of-type > li:hover {
-    background-color: #f0f0f0;
-}
-
-.layerStore-arrow {
-    padding: 5px;
-    border-radius: 5px;
-    transition: 0.1s ease;
-    margin-bottom: 5px;
-}
-
-.layerStore-color {
-    width: 13px;
-    height: 13px;
-    margin-left: 10px;
-    border-radius: 25px;
-    border: #5a5a5a solid 1.8px;
-}
-
-.layerStore-arrow.failed {
-    cursor: not-allowed
-}
-
-.layerStore-arrow:last-of-type {
-    margin-bottom: 0;
-}
-
-.layerStoreTitle {
-    font-family: sans-serif;
-    font-weight: bold;
-    font-size: 14px
-}
-
-.layerStore-layer {
     margin-bottom: 3px;
     padding: 3px 5px;
     padding-left: 10px;
@@ -259,11 +211,77 @@ span.layerStore-folder {
     cursor: pointer;
 }
 
-ul .layerStore-layer:last-child {
+.layer-store-layer span {
+    padding: 0 10px;
+    flex: 1;
+}
+
+li.layer-store-arrow {
+    padding: 5px 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+li.layer-store-arrow span:nth-child(2) {
+    margin-left: 5px;
+}
+
+span.layer-store-folder {
+    padding: 0 5px;
+}
+
+#layer-store-holder {
+    margin: 15px 10px;
+}
+
+#layer-store-holder ul {
+    margin: 4px 0;
+    padding: 2px 8px;
+    border-radius: 7px;
+    box-shadow: 0 0 4px 0.3px rgb(0 0 0 / 20%);
+    list-style-type: none;
+}
+
+#layer-store-holder > ul:first-of-type > li:hover {
+    background-color: #f0f0f0;
+}
+
+.layer-store-arrow {
+    padding: 5px;
+    border-radius: 5px;
+    transition: 0.1s ease;
+    margin-bottom: 5px;
+}
+
+.layer-store-color {
+    width: 13px;
+    height: 13px;
+    margin-left: 10px;
+    border-radius: 25px;
+    border: #5a5a5a solid 1.8px;
+}
+
+.layer-store-arrow.failed {
+    cursor: not-allowed
+}
+
+.layer-store-arrow:last-of-type {
     margin-bottom: 0;
 }
 
-.layerStore-layer select {
+.layer-store-title {
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 14px
+}
+
+ul .layer-store-layer:last-child {
+    margin-bottom: 0;
+}
+
+.layer-store-layer select {
     border: none;
     border-radius: 7px;
     text-align: center;
@@ -273,24 +291,24 @@ ul .layerStore-layer:last-child {
 }
 
 /* CSS for selection */
-.containerLayerSelected {
+.container-layer-selected {
     display: flex;
     margin-bottom: 10px;
-    box-shadow: 0 0 4px 0.4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 4px 0.4px rgb(0 0 0 / 20%);
     border-radius: 8px;
     user-select: none;
     background-color:white;
 }
 
-.containerLayerSelected:last-child {
+.container-layer-selected:last-child {
     margin-bottom: 0
 }
 
-.containerLayerSelected.dragging {
+.container-layer-selected.dragging {
     opacity: 0.5;
 }
 
-.containerLayerSelected .changeOrderContainer {
+.container-layer-selected .change-order-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -299,7 +317,7 @@ ul .layerStore-layer:last-child {
     border-radius: 8px 0 0 8px;
 }
 
-.containerLayerSelected .changeOrder {
+.container-layer-selected .change-order {
     height: 100%;
     width: 100%;
     display: flex;
@@ -308,25 +326,29 @@ ul .layerStore-layer:last-child {
     cursor: pointer;
 }
 
-.containerLayerSelected .changeOrderUp {
-    border-radius: 8px 0 0 0;
+.container-layer-selected .change-order-up {
+    border-radius: 8px 0 0;
 }
-.containerLayerSelected .changeOrderDown {
+
+.container-layer-selected .change-order-down {
     border-radius: 0 0 0 8px;
 }
-.containerLayerSelected:first-child .changeOrderDown {
-    border-radius: 8px 0 0 8px;
-}
-.containerLayerSelected:last-child .changeOrderUp {
+
+.container-layer-selected:first-child .change-order-down {
     border-radius: 8px 0 0 8px;
 }
 
-#layerSelectedHolder .containerLayerSelected:first-child .changeOrderUp, #layerSelectedHolder .containerLayerSelected:last-child .changeOrderDown {display: none;}
-#layerSelectedHolder .containerLayerSelected:last-child .changeOrderUp {
+.container-layer-selected:last-child .change-order-up {
+    border-radius: 8px 0 0 8px;
+}
+
+#layer-selected-holder .container-layer-selected:first-child .change-order-up, #layer-selected-holder .container-layer-selected:last-child .change-order-down {display: none;}
+
+#layer-selected-holder .container-layer-selected:last-child .change-order-up {
     border: none;
 }
 
-.layerSelectedContent {
+.layer-selected-content {
     padding: 2px 7px;
     display: flex;
     flex-direction: column;
@@ -334,24 +356,24 @@ ul .layerStore-layer:last-child {
     width: 100%	;
 }
 
-.layerSelectedContent > div {
+.layer-selected-content > div {
     margin: 5px 0;
 }
 
-.containerLayerSelected .upperLine {
+.container-layer-selected .upper-line {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
 }
 
-.containerLayerSelected .upperLine .titleLayerSelected {
+.container-layer-selected .upper-line .title-layer-selected {
     font-size: 14px;
     font-weight: bold;
     cursor: default;
 }
 
-.containerLayerSelected .layerButtonsDiv {
+.container-layer-selected .layer-buttons-div {
     width: 185px;
     display: flex;
     justify-content: space-between;
@@ -359,7 +381,7 @@ ul .layerStore-layer:last-child {
     margin-left: 40px;
 }
 
-.containerLayerSelected .midLine {
+.container-layer-selected .mid-line {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -370,7 +392,7 @@ ul .layerStore-layer:last-child {
     font-size: 14px;
 }
 
-.containerLayerSelected .deleteLayerButton {
+.container-layer-selected .delete-layer-button {
     background-color: transparent;
     width: 85%;
     height: 22px;
@@ -380,18 +402,22 @@ ul .layerStore-layer:last-child {
     margin: 5px auto;
     border: none;
     border-radius: 4px;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 1px 1px rgb(0 0 0 / 20%);
     color: black;
     transition: 0.2s;
 }
 
-.containerLayerSelected .deleteLayerButton:hover {
+.container-layer-selected .delete-layer-button:hover {
     color: white;
     background-color: red;
     transition: 0.2s;
 }
 
-.containerLayerSelected button:not(.containerLayerSelected .deleteLayerButton) {
+.container-layer-selected button {
+    outline: none;
+}
+
+.container-layer-selected button:not(.container-layer-selected .delete-layer-button) {
     width: 30px;
     height: 30px;
     border-radius: 30px;
@@ -400,28 +426,24 @@ ul .layerStore-layer:last-child {
     transition: 0.2s;
 }
 
-.containerLayerSelected button:not(.containerLayerSelected .deleteLayerButton):hover {
-    box-shadow: 0 0 5px 0.5px rgba(0,0,0,0.4);
+.container-layer-selected button:not(.container-layer-selected .delete-layer-button):hover {
+    box-shadow: 0 0 5px 0.5px rgb(0 0 0 / 40%);
     transition: 0.2s;
 }
 
-.containerLayerSelected button:not(.containerLayerSelected .deleteLayerButton):active {
-    box-shadow: 0 0 5px 0.5px rgba(0,0,0,0.8);
+.container-layer-selected button:not(.container-layer-selected .delete-layer-button):active {
+    box-shadow: 0 0 5px 0.5px rgb(0 0 0 / 80%);
 }
 
-.containerLayerSelected button.active {
-    box-shadow: 0 0 5px 0.5px rgba(0,0,0,0.4);
-}
-
-.containerLayerSelected button {
-    outline: none;
+.container-layer-selected button.active {
+    box-shadow: 0 0 5px 0.5px rgb(0 0 0 / 40%);
 }
 
 custom-slider .slider {
     width: 180px;
     border-radius: 3px;
-    box-shadow: 0 0 5px 0.5px rgba(0,0,0,0.4);
-    background: linear-gradient(to right, white, #555555);
+    box-shadow: 0 0 5px 0.5px rgb(0 0 0 / 40%);
+    background: linear-gradient(to right, white, #555);
     height: 11px;
     margin: 5px;
 }
@@ -432,6 +454,6 @@ custom-slider .thumb {
     border-radius: 10px;
     position: relative;
     top: -5px;
-    border: solid 1px #555555;
+    border: solid 1px #555;
     cursor: pointer;
 }
