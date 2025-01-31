@@ -102,7 +102,14 @@
         <span id="layers-loading"></span>
       </div>
       <div id="layerStoreHolder">
-
+        <div id="filterButtons" class="btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-secondary btn-sm active"  id="filterButtonNo">
+            <input type="radio" name="No" autocomplete="off" checked> {@mapBuilder~dictionary.filter.button.no@}
+          </label>
+          <label class="btn btn-secondary btn-sm" id="filterButtonExtent">
+            <input type="radio" name="Extent" autocomplete="off"> {@mapBuilder~dictionary.filter.button.extent@}
+          </label>
+        </div>
       </div>
       <div id="baseLayer">
         {@view~map.baselayermenu.title@}
