@@ -1,17 +1,18 @@
-/** Class representing a queue structure for extents. */
+/**
+ * Class representing a queue structure for extents.
+ * @property {Array} _element extent.
+ * @property {number} _length length of the queue.
+ * @property {number} _index Current index of the queue.
+ */
 export class QueueExtent {
     /**
-     * @type {number} Current index of the queue.
-     */
-    #index= 0;
-
-    /**
-     * @param {Options|{}} options QueueExtent options.
-     * @property {array} [element] extent.
-     * @property {number} [length] length of the queue.
+     * Create a queue structure for extents
+     * @param {object} options QueueExtent options.
      */
     constructor(options) {
         options = options ? options : {};
+
+        this._index = 0;
 
         this.elements = options.element !== undefined ? [options.element] : [];
         this.maxLength = options.length !== undefined ? options.length : 10;
@@ -20,7 +21,7 @@ export class QueueExtent {
     /**
      * Add an element to the queue.
      * @param {number[]} el The extent to add.
-     * @return {number} New length of the queue.
+     * @returns {number} New length of the queue.
      */
     addElement(el) {
         if (this.isEqual(el, this.getElementAt(-1))) {
@@ -34,7 +35,7 @@ export class QueueExtent {
 
     /**
      * Remove the first element of the queue.
-     * @return {number[]} The first extent of the queue.
+     * @returns {number[]} The first extent of the queue.
      */
     removeElement() {
         return this.elements.shift();
@@ -43,7 +44,7 @@ export class QueueExtent {
     /**
      * Get the element at the given index.
      * @param {number} index The index of the element to get.
-     * @return {number[]} The extent at the given index.
+     * @returns {number[]} The extent at the given index.
      */
     getElementAt(index) {
         if (index === -1) {
@@ -54,7 +55,7 @@ export class QueueExtent {
 
     /**
      * Get the length of the queue.
-     * @return {number} Length of the queue.
+     * @returns {number} Length of the queue.
      */
     getLength() {
         return this.elements.length;
@@ -64,7 +65,7 @@ export class QueueExtent {
      * Check if two extent are equals.
      * @param {number[]} a First extent.
      * @param {number[]} b Second extent.
-     * @return {boolean} True if the two extent are equals.
+     * @returns {boolean} True if the two extent are equals.
      */
     isEqual(a, b) {
         if (a.length !== b.length) {
@@ -92,10 +93,10 @@ export class QueueExtent {
 
     /**
      * Get the index of the current extent in the history.
-     * @return {number} Current index.
+     * @returns {number} Current index.
      */
     getIndex() {
-        return this.#index;
+        return this._index;
     }
 
     /**
@@ -103,7 +104,7 @@ export class QueueExtent {
      */
     increaseIndex() {
         if (this.getIndex() < this.maxLength - 1){
-            this.#index++;
+            this._index++;
         }
     }
 
@@ -111,6 +112,6 @@ export class QueueExtent {
      * Decrease by 1 the index of the current extent in the history.
      */
     decreaseIndex() {
-        this.#index--;
+        this._index--;
     }
 }

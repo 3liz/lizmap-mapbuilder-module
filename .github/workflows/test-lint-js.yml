@@ -1,0 +1,19 @@
+name: ESLint 🔍
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  eslint:
+    name: "ESLint 🇯‌🇸‌"
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Install modules
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run eslint-fix

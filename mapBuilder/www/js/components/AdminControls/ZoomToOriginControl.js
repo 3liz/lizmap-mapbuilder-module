@@ -3,58 +3,53 @@ import {transformExtent} from "ol/proj";
 
 /**
  * Class representing a button to zoom to the origin of the map.
- * @extends Control
+ * @augments Control
+ * @property {boolean} _isPreview If the button is in a preview context.
  */
 export class ZoomToOriginControl extends Control {
+    /**
+     * Create a button to zoom to the origin of the map.
+     * @param {object} opt_options ZoomToOriginControl options.
+     */
+    constructor(opt_options) {
 
-  /**
-   * @type {boolean} If the button is in a preview context.
-   */
-  #isPreview;
+        let options = opt_options || {};
 
-  /**
-   * @typedef {Object} Options
-   * @property {boolean} [isPreview] If the button is in a preview context.
-   */
-  constructor(opt_options) {
+        let button = document.createElement('button');
+        button.className = 'fas fa-expand-arrows-alt';
+        button.title = 'Zoom to selected map extent';
 
-    let options = opt_options || {};
+        let element = document.createElement('div');
+        element.className = 'ol-zoom-origin ol-unselectable ol-control';
+        if (opt_options.isPreview) {
+            element.id = 'preview';
+        }
+        element.appendChild(button);
 
-    let button = document.createElement('button');
-    button.className = 'fas fa-expand-arrows-alt';
-    button.title = 'Zoom to selected map extent';
+        super({
+            element: element,
+            target: options.target,
+        });
 
-    let element = document.createElement('div');
-    element.className = 'ol-zoom-origin ol-unselectable ol-control';
-    if (opt_options.isPreview) {
-      element.id = 'preview';
-    }
-    element.appendChild(button);
-
-    super({
-      element: element,
-      target: options.target,
-    });
-
-    this.#isPreview = opt_options.isPreview;
-    button.addEventListener('click', this.handleZoomToOrigin.bind(this), false);
-  }
-
-  /**
-   * Handle click event to adjust the view;
-   */
-  handleZoomToOrigin() {
-    let extent;
-    if (this.#isPreview) {
-      extent = document.getElementById("_extent").textContent.split(',').map(parseFloat);
-    } else {
-      extent = document.getElementById("jforms_mapBuilderAdmin_config_extent").value.split(',').map(parseFloat);
+        this._isPreview = opt_options.isPreview;
+        button.addEventListener('click', this.handleZoomToOrigin.bind(this), false);
     }
 
-    extent = transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
+    /**
+     * Handle click event to adjust the view;
+     */
+    handleZoomToOrigin() {
+        let extent;
+        if (this._isPreview) {
+            extent = document.getElementById("_extent").textContent.split(',').map(parseFloat);
+        } else {
+            extent = document.getElementById("jforms_mapBuilderAdmin_config_extent").value.split(',').map(parseFloat);
+        }
 
-    this.getMap().getView().fit(extent, {
-      duration: 250
-    });
-  };
+        extent = transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
+
+        this.getMap().getView().fit(extent, {
+            duration: 250
+        });
+    };
 }

@@ -24,8 +24,8 @@ export class AttributeTable extends HTMLElement {
         //Data
         var lignes = [];
 
-        for (var i = 0; i < features.length; i++) {
-            var feature = features[i];
+        for (var k = 0; k < features.length; k++) {
+            var feature = features[k];
             lignes.push(html`<tr>`)
             lignes.push(html`
                   <td>
@@ -42,22 +42,22 @@ export class AttributeTable extends HTMLElement {
                 // Replace url or media by link
                 if(typeof propertieValue === 'string'){
                     if( propertieValue.slice(0,6) === 'media/' || propertieValue.slice(0,6) === '/media/' ){
-                        var rdata = propertieValue;
+                        var rdatamedia = propertieValue;
                         if( propertieValue.slice(0,6) === '/media/' )
-                            rdata = propertieValue.slice(1);
+                            rdatamedia = propertieValue.slice(1);
                         lignes.push(html`
                           <td>
-                              <a href="${lizUrls.media}?repository=${this.repositoryId}&project=${this.projectId}&path=/${rdata}"
+                              <a href="${lizUrls.media}?repository=${this.repositoryId}&project=${this.projectId}&path=/${rdatamedia}"
                                  target="_blank">${aliases[visibleProperties[j]]}</a>
                           </td>`);
                     }
                     else if( propertieValue.slice(0,4) === 'http' || propertieValue.slice(0,3) === 'www' ){
-                        var rdata = propertieValue;
+                        var rdataweb = propertieValue;
                         if(propertieValue.slice(0,3) === 'www')
-                            rdata = 'http://' + propertieValue;
+                            rdataweb = 'http://' + propertieValue;
                         lignes.push(html`
                           <td>
-                              <a href="${rdata}" target="_blank">${propertieValue}</a>
+                              <a href="${rdataweb}" target="_blank">${propertieValue}</a>
                           </td>`);
                     } else {
                         lignes.push(html`

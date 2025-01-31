@@ -10,14 +10,14 @@ import {BingMaps} from 'ol/source.js';
  * @returns {TileLayer} The raster.
  */
 export function getRaster() {
-  return new TileLayer({
-    visible: true,
-    preload: Infinity,
-    source: new BingMaps({
-      key: document.getElementById("jforms_mapBuilderAdmin_config_baseLayerKeyBing").value,
-      imagerySet: "Aerial"
-    })
-  });
+    return new TileLayer({
+        visible: true,
+        preload: Infinity,
+        source: new BingMaps({
+            key: document.getElementById("jforms_mapBuilderAdmin_config_baseLayerKeyBing").value,
+            imagerySet: "Aerial"
+        })
+    });
 }
 
 
@@ -28,14 +28,14 @@ export function getRaster() {
  * @returns {TileLayer} The raster.
  */
 export function getPreviewRaster() {
-  return new TileLayer({
-    visible: true,
-    preload: Infinity,
-    source: new BingMaps({
-      key: document.getElementById("_baseLayerKeyBing").textContent,
-      imagerySet: "Aerial"
-    })
-  });
+    return new TileLayer({
+        visible: true,
+        preload: Infinity,
+        source: new BingMaps({
+            key: document.getElementById("_baseLayerKeyBing").textContent,
+            imagerySet: "Aerial"
+        })
+    });
 }
 
 
@@ -45,9 +45,9 @@ export function getPreviewRaster() {
  * @returns {[{}]} Layer specs.
  */
 export function getInkmapSpec(activeLayer) {
-  return [{
-    "type": "BingMaps",
-    "imagerySet": activeLayer.getImagerySet(),
-    "apiKey": activeLayer.getApiKey(),
-  }];
+    return [{
+        "type": "BingMaps",
+        "imagerySet": activeLayer.getImagerySet(),
+        "apiKey": activeLayer.getApiKey(),
+    }];
 }

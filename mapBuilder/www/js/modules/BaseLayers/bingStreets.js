@@ -10,14 +10,14 @@ import {BingMaps} from 'ol/source.js';
  * @returns {TileLayer} The raster.
  */
 export function getRaster() {
-  return new TileLayer({
-    visible: true,
-    preload: Infinity,
-    source: new BingMaps({
-      key: document.getElementById("jforms_mapBuilderAdmin_config_baseLayerKeyBing").value,
-      imagerySet: "Road"
-    })
-  });
+    return new TileLayer({
+        visible: true,
+        preload: Infinity,
+        source: new BingMaps({
+            key: document.getElementById("jforms_mapBuilderAdmin_config_baseLayerKeyBing").value,
+            imagerySet: "Road"
+        })
+    });
 }
 
 
@@ -28,14 +28,14 @@ export function getRaster() {
  * @returns {TileLayer} The raster.
  */
 export function getPreviewRaster() {
-  return new TileLayer({
-    visible: true,
-    preload: Infinity,
-    source: new BingMaps({
-      key: document.getElementById("_baseLayerKeyBing").textContent,
-      imagerySet: "Road"
-    })
-  });
+    return new TileLayer({
+        visible: true,
+        preload: Infinity,
+        source: new BingMaps({
+            key: document.getElementById("_baseLayerKeyBing").textContent,
+            imagerySet: "Road"
+        })
+    });
 }
 
 
@@ -45,12 +45,12 @@ export function getPreviewRaster() {
  * @returns {[{}]|number} Layer specs.
  */
 export function getInkmapSpec(activeLayer) {
-  if (activeLayer.getApiKey() === '') {
-    return 10;
-  }
-  return [{
-    "type": "BingMaps",
-    "imagerySet": activeLayer.getImagerySet(),
-    "apiKey": activeLayer.getApiKey(),
-  }];
+    if (activeLayer.getApiKey() === '') {
+        return 10;
+    }
+    return [{
+        "type": "BingMaps",
+        "imagerySet": activeLayer.getImagerySet(),
+        "apiKey": activeLayer.getApiKey(),
+    }];
 }
