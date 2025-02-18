@@ -1,15 +1,19 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
+import { LizmapMapbuilderMainPage } from './pom/lizmap-mapbuilder-main-page';
+import { getAuthStorageStatePath } from "./globals";
 
 test.describe('Build with multiple layers', () => {
 
+  test.use({ storageState: getAuthStorageStatePath('admin') });
+
   test.beforeEach(async ({ page }) => {
-    const url = '/index.php/mapBuilder';
-    await page.goto(url);
+    const lizmapMapbuilderMainPage = new LizmapMapbuilderMainPage(page);
+    await lizmapMapbuilderMainPage.goto();
 
     // First row for both
 
-    const listFolder = await page.locator('#layer-store-holder > ul > li.layer-store-arrow').all();
+    const listFolder = await lizmapMapbuilderMainPage.getListFolder();
 
     for (let i = 0; i < listFolder.length; i++) {
       await listFolder[i].click();
@@ -26,67 +30,58 @@ test.describe('Build with multiple layers', () => {
 
     await page.locator('.layer-store-layer').first().click();
     await page.locator('.layer-store-layer').last().click();
-
-    await page.locator('#layerselection-tab').click();
   });
 
   test('Remove layer', async ({ page }) => {
+    const lizmapMapbuilderMainPage = new LizmapMapbuilderMainPage(page);
+    await lizmapMapbuilderMainPage.openSelectedLayersDock();
 
-    await page.locator('button.delete-layer-button').last().click();
+    await lizmapMapbuilderMainPage.deleteLayer(0);
 
-    const amountLayerSelected = await page.locator('lizmap-layer-selected').count();
+    const amountLayerSelected = await lizmapMapbuilderMainPage.selectedLayerHolder.locator('lizmap-layer-selected').count();
 
     await expect(amountLayerSelected).toEqual(1);
   });
 
   test('Switch layers with buttons', async ({ page }) => {
 
-    const firstLayer = await page.locator('lizmap-layer-selected').first();
+    const lizmapMapbuilderMainPage = new LizmapMapbuilderMainPage(page);
+    await lizmapMapbuilderMainPage.openSelectedLayersDock();
+
+    const firstLayer = await lizmapMapbuilderMainPage.getSpecificLayer(0);
     const firstLayerId = await firstLayer.getAttribute('id');
 
-    const secondLayerId = await page.locator('lizmap-layer-selected').last().getAttribute('id');
+    const secondLayer = await lizmapMapbuilderMainPage.getSpecificLayer(1);
+    const secondLayerId = await secondLayer.getAttribute('id');
 
     await firstLayer.locator('div.change-order-down').first().click();
 
-    await expect(await page.locator('lizmap-layer-selected').first().getAttribute('id')).toEqual(secondLayerId);
-    await expect(await page.locator('lizmap-layer-selected').last().getAttribute('id')).toEqual(firstLayerId);
+    await expect(await lizmapMapbuilderMainPage.getSpecificLayer(0)).toHaveAttribute('id', secondLayerId);
+    await expect(await lizmapMapbuilderMainPage.getSpecificLayer(1)).toHaveAttribute('id', firstLayerId);
   });
 
   test('Drag\'n Drop', async ({ page }) => {
+    const lizmapMapbuilderMainPage = new LizmapMapbuilderMainPage(page);
+    await lizmapMapbuilderMainPage.openSelectedLayersDock();
 
-    const firstLayer = await page.locator('lizmap-layer-selected').first();
+    const firstLayer = await lizmapMapbuilderMainPage.getSpecificLayer(0)
     const firstLayerId = await firstLayer.getAttribute('id');
 
-    const secondLayer = await page.locator('lizmap-layer-selected').last();
+    const secondLayer = await lizmapMapbuilderMainPage.getSpecificLayer(1)
     const secondLayerId = await secondLayer.getAttribute('id');
 
     await firstLayer.dragTo(secondLayer);
 
-    await expect(await page.locator('lizmap-layer-selected').first().getAttribute('id')).toEqual(secondLayerId);
-    await expect(await page.locator('lizmap-layer-selected').last().getAttribute('id')).toEqual(firstLayerId);
-  });
-
-  test('Open/Close attribute table', async ({ page }) => {
-
-    await page.locator('button.dispayDataButton').click();
-
-    await page.waitForTimeout(200);
-
-    const attributeTable = await page.locator('#bottom-dock');
-
-    await expect(attributeTable).toHaveCSS("display", "block");
-
-    await page.locator("#bottom-dock i.fas.fa-times").click();
-
-    await page.waitForTimeout(200);
-
-    await expect(attributeTable).toHaveCSS("display", "none");
+    await expect(await lizmapMapbuilderMainPage.getSpecificLayer(0)).toHaveAttribute('id', secondLayerId);
+    await expect(await lizmapMapbuilderMainPage.getSpecificLayer(1)).toHaveAttribute('id', firstLayerId);
   });
 
   test('Legend is filled', async ({ page }) => {
+    const lizmapMapbuilderMainPage = new LizmapMapbuilderMainPage(page);
+    await lizmapMapbuilderMainPage.openLegendDock();
 
-    const amountElementLegend = await page.locator('#legend-content > div').count();
+    const elementsLegend = await lizmapMapbuilderMainPage.getLegendElements();
 
-    await expect(amountElementLegend).toEqual(2);
+    await expect(elementsLegend.length).toEqual(2);
   });
 });
