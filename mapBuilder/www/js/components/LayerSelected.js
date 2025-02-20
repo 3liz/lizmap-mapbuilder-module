@@ -85,7 +85,10 @@ export class LayerSelected extends HTMLElement {
         </div>
         <div class="layer-selected-content">
             <div class="upper-line">
-                <span class="title-layer-selected">${this._element.getLayer().getProperties().title}</span>
+                <div class="info-layer-selected">
+                    <span class="title-layer-selected">${this._element.getLayer().getProperties().title}</span>
+                    <span class="repository-layer-selected">${this._element.getLayer().getProperties().repositoryId}</span>
+                </div>
                 <div class="layer-buttons-div">
                     ${attributeTableShow}
                     <button class="zoomToExtentButton fas fa-search-plus fa-sm"
