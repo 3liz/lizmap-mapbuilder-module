@@ -478,7 +478,7 @@ custom-slider .thumb {
 
 /* CSS for filtering buttons */
 
-#filterButtons {
+#filter-buttons {
     display: flex;
     justify-content: space-around;
     margin-bottom: 12px;
@@ -486,6 +486,6 @@ custom-slider .thumb {
     gap: 10px;
 }
 
-#filterButtons > label:first-child {
+#filter-buttons > label:first-child {
     width: 100%;
 }

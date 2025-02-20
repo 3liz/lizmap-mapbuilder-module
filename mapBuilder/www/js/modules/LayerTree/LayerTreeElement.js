@@ -31,10 +31,10 @@ export class LayerTreeElement {
 
         if (this._color === undefined) {
             this._color = this.generateColor();
-    }
+        }
 
-    this.#visible = true;
-  }
+        this._visible = true;
+    }
 
     /**
      * Used to generate a light color using the RGB pattern.
@@ -141,19 +141,19 @@ export class LayerTreeElement {
         return this._color;
     }
 
-  /**
-   * Get the visibility of the layer.
-   * @return {boolean} Visibility of the layer.
-   */
-  isVisible() {
-    return this.#visible;
-  }
+    /**
+     * Get the visibility of the layer.
+     * @returns {boolean} Visibility of the layer.
+     */
+    isVisible() {
+        return this._visible;
+    }
 
-  /**
-   * Set the visibility of the layer.
-   * @param {boolean} visible Visibility of the layer.
-   */
-  setVisible(visible) {
-    this.#visible = visible;
-  }
+    /**
+     * Set the visibility of the layer.
+     * @param {boolean} visible Visibility of the layer.
+     */
+    setVisible(visible) {
+        this._visible = visible;
+    }
 }
