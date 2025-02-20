@@ -43,11 +43,11 @@ export class LayerStore extends HTMLElement {
      * @returns {TemplateResult<1>|null} The template of the folder or null if the folder shouldn't be visible.
      */
     folderTemplate(element) {
-    if (!element.isVisible()) {
-      // We use 'null' value because "html``" is not really empty
-      return null;
-    }
-    //Check if the folder will have to load children from a project.
+        if (!element.isVisible()) {
+            // We use 'null' value because "html``" is not really empty
+            return null;
+        }
+        //Check if the folder will have to load children from a project.
         let tagLazy = element.isLazy() ? "lazy" : "";
 
         let icoSpan;
@@ -88,17 +88,17 @@ export class LayerStore extends HTMLElement {
                     childTemplate = this.folderTemplate(value);
                 } else {
                     childTemplate = this.layerTemplate(value);
-        }
+                }
                 if (childTemplate !== null) {
-          allChildTemplate = html`
+                    allChildTemplate = html`
             ${allChildTemplate}
             ${childTemplate}
         `;
-        }
-      });
-      // Prevent empty 'ul' tag which are not well displayed
-      if (allChildTemplate.strings[0] !== "") {
-        template = html`
+                }
+            });
+            // Prevent empty 'ul' tag which are not well displayed
+            if (allChildTemplate.strings[0] !== "") {
+                template = html`
             ${template}
             <ul class="layer-store-tree"
                 @mouseover='${(event) => {
@@ -111,7 +111,7 @@ export class LayerStore extends HTMLElement {
                 ${allChildTemplate}
             </ul>
         `;
-      }
+            }
         }
         return template;
     }
@@ -122,10 +122,10 @@ export class LayerStore extends HTMLElement {
      * @returns {TemplateResult<1>|null} The template of the layer or null if the layer element shouldn't be visible.
      */
     layerTemplate(element) {
-    if (!element.isVisible()) {
-      // We use 'null' value because "html``" is not really empty
-      return null;
-    }
+        if (!element.isVisible()) {
+            // We use 'null' value because "html``" is not really empty
+            return null;
+        }
 
         var styleOption = html``;
         element.getStyle().forEach(function (style) {
@@ -400,42 +400,42 @@ export class LayerStore extends HTMLElement {
         return this.tree;
     }
 
-  /**
-   * Update the tree.
-   * @param {[LayerTreeElement]} tree - The new tree.
-   */
-  updateTree(tree) {
-    this.tree = tree;
-    this.render();
-  }
+    /**
+     * Update the tree.
+     * @param {[LayerTreeElement]} tree - The new tree.
+     */
+    updateTree(tree) {
+        this.tree = tree;
+        this.render();
+    }
 
-  /**
-   * Set visibility of layers from layerStore to true.
-   * Allow the layerStore to print all layers.
-   * Call a recursive function to set all layers visible.
-   * @return {[LayerTreeElement]} - The tree.
-   */
-  setAllVisible() {
-    for (let i = 0; i < this.tree.length; i++) {
-      this.recSetVisible(this.tree[i]);
+    /**
+     * Set visibility of layers from layerStore to true.
+     * Allow the layerStore to print all layers.
+     * Call a recursive function to set all layers visible.
+     * @returns {[LayerTreeElement]} - The tree.
+     */
+    setAllVisible() {
+        for (let i = 0; i < this.tree.length; i++) {
+            this.recSetVisible(this.tree[i]);
+        }
+        return this.tree;
     }
-    return this.tree;
-  }
 
-  /**
-   * Recursive function to set all layers visible.
-   * @param {LayerTreeFolder|LayerTreeLayer} treeElement - Layer tree element to change visibility.
-   */
-  recSetVisible(treeElement) {
-    treeElement.setVisible(true);
-    if (treeElement instanceof LayerTreeLayer) {
-      return;
+    /**
+     * Recursive function to set all layers visible.
+     * @param {LayerTreeFolder|LayerTreeLayer} treeElement - Layer tree element to change visibility.
+     */
+    recSetVisible(treeElement) {
+        treeElement.setVisible(true);
+        if (treeElement instanceof LayerTreeLayer) {
+            return;
+        }
+        let children = treeElement.getChildren();
+        for (let i = 0; i < children.length; i++) {
+            this.recSetVisible(children[i]);
+        }
     }
-    let children = treeElement.getChildren();
-    for (let i = 0; i < children.length; i++) {
-      this.recSetVisible(children[i]);
-    }
-  }
 }
 
 customElements.define('lizmap-layer-store', LayerStore);

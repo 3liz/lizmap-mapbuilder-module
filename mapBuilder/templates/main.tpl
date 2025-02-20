@@ -102,7 +102,7 @@
         <span id="layers-loading"></span>
       </div>
       <div id="layer-store-holder">
-        <div id="filterButtons" class="btn-group-toggle" data-toggle="buttons">
+        <div id="filter-buttons" class="btn-group-toggle" data-toggle="buttons">
           <label class="btn btn-secondary btn-sm active"  id="filterButtonNo">
             <input type="radio" name="No" autocomplete="off" checked> {@mapBuilder~dictionary.filter.button.no@}
           </label>
