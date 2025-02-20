@@ -1,6 +1,6 @@
 import { test as setup } from '@playwright/test';
 import { Page } from '@playwright/test';
-import { auth_using_login, getAuthStorageStatePath } from './globals';
+import { authUsingLogin, getAuthStorageStatePath } from './globals';
 
 /**
  * Performs the authentication steps
@@ -23,6 +23,6 @@ export async function setEmptyBaseLayer(page) {
 }
 
 setup('authenticate as admin and add map', async ({ page }) => {
-    await auth_using_login(page, 'admin', 'admin', getAuthStorageStatePath('admin'));
+    await authUsingLogin(page, 'admin', 'admin', getAuthStorageStatePath('admin'));
     await setEmptyBaseLayer(page);
 });

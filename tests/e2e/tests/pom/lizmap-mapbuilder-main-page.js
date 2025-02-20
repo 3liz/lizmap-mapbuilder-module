@@ -85,14 +85,22 @@ exports.LizmapMapbuilderMainPage = class LizmapMapbuilderMainPage {
     }
 
     /**
-     * Opens the attribute table for the specified selected layer by its index.
-     * @param {number} index - The index of the layer in the selected layers.
+     * Opens the attribute table for the specified selected layer by its name.
+     * @param {string} name - The name of the layer in the selected layers.
      */
-    async openAttributeTable(index) {
+    async openAttributeTable(name) {
         await this.openSelectedLayersDock();
-        const layer = await this.page.locator("lizmap-layer-selected").all();
-        const button = await layer[index].locator(".displayDataButton");
-        await button.click();
+
+        const layerList = await this.page.locator("lizmap-layer-selected").all();
+
+        for (const layer of layerList) {
+            const layerTitle = await layer.locator(".title-layer-selected").innerText();
+            if (layerTitle === name) {
+                const button = await layer.locator(".displayDataButton");
+                await button.click();
+                break;
+            }
+        }
     }
 
     /**

@@ -9,7 +9,7 @@ import path from 'path';
  * @param {string} password The password
  * @param {string} user_file The path to the file where the cookies will be stored
  */
-export async function auth_using_login(page, login, password, user_file) {
+export async function authUsingLogin(page, login, password, user_file) {
     const lizmapConnectionPage = new LizmapConnectionPage(page)
 
     await lizmapConnectionPage.goto();
