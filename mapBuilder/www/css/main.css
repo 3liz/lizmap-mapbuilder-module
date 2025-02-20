@@ -368,7 +368,7 @@ ul .layer-store-layer:last-child {
 }
 
 .container-layer-selected .upper-line .title-layer-selected {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
     cursor: default;
 }
@@ -437,6 +437,16 @@ ul .layer-store-layer:last-child {
 
 .container-layer-selected button.active {
     box-shadow: 0 0 5px 0.5px rgb(0 0 0 / 40%);
+}
+
+.info-layer-selected {
+    display: flex;
+    flex-direction: column;
+}
+
+.repository-layer-selected {
+    font-size: 11px;
+    color: #464646;
 }
 
 custom-slider .slider {
