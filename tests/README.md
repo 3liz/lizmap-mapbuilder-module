@@ -94,3 +94,14 @@ execute `make shell`.
 ## Linters
 
 In order to test your code with linters, you can refer to the [linter readme file](../LINTERS.md).
+
+## Automatic End-to-End tests
+
+The `e2e` directory contains some end-to-end tests made for Playwright. Go in `e2e` directory and execute `npm install` to install Playwright (only the first time).
+
+### Playwright
+
+You have to install the browsers with `npx playwright install` (only the first time or after an update) You can then :
+* `npx playwright test --ui --project=chromium` to open a UI as in Cypress which ease testing
+* `npx playwright test` to execute all tests with all browsers
+* `npx playwright test --project=chromium` to execute all tests with the Chromium browser
