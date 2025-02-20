@@ -10,16 +10,16 @@ import path from 'path';
  * @param {string} user_file The path to the file where the cookies will be stored
  */
 export async function auth_using_login(page, login, password, user_file) {
-  const lizmapConnectionPage = new LizmapConnectionPage(page)
+    const lizmapConnectionPage = new LizmapConnectionPage(page)
 
-  await lizmapConnectionPage.goto();
+    await lizmapConnectionPage.goto();
 
-  await lizmapConnectionPage.connect(login, password);
+    await lizmapConnectionPage.connect(login, password);
 
-  await page.waitForURL('index.php');
+    await page.waitForURL('index.php');
 
-  // End of authentication steps.
-  await page.context().storageState({ path: user_file });
+    // End of authentication steps.
+    await page.context().storageState({ path: user_file });
 }
 
 /**
@@ -27,11 +27,11 @@ export async function auth_using_login(page, login, password, user_file) {
  * @returns {string} The final file path
  */
 export function playwrightTestFile()   {
-  let finalPath = path.join(__dirname);
-  for (let i = 0; i < arguments.length; i++) {
-    finalPath = path.join(finalPath, arguments[i]);
-  }
-  return finalPath;
+    let finalPath = path.join(__dirname);
+    for (let i = 0; i < arguments.length; i++) {
+        finalPath = path.join(finalPath, arguments[i]);
+    }
+    return finalPath;
 }
 
 /**
@@ -40,5 +40,5 @@ export function playwrightTestFile()   {
  * @returns {string} The path to auth storage state path
  */
 export function getAuthStorageStatePath(name) {
-  return playwrightTestFile('.auth', name + '.json');
+    return playwrightTestFile('.auth', name + '.json');
 }
