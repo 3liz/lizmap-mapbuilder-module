@@ -2,11 +2,8 @@ import {LayerTreeElement} from "./LayerTreeElement";
 
 /**
  * Class representing a folder in a Layer Tree.
- @property {Array} _children Queue length.
- @property {boolean} _opened If the folder is opened or not for the visual part.
- @property {boolean} _lazy If the folder will have to load children from a project.
- @property {boolean} _loading Loading state of the folder.
- @property {boolean} _failed If the folder got a load error.
+ * @property {Array} _children Queue length.
+ * @property {boolean} _opened If the folder is opened or not for the visual part.
  */
 export class LayerTreeFolder extends LayerTreeElement {
     /**
@@ -45,7 +42,6 @@ export class LayerTreeFolder extends LayerTreeElement {
      * This function can be used when children are loaded from
      * a project, so they can be passed to the "children" param.
      * @param {[]} children Children of the folder.
-     * TODO : update doc
      */
     createChildren(children = undefined) {
         let list = [];

@@ -103,6 +103,7 @@ export function changeList(uid, direction) {
 /**
  * Change the order of the layer with the one above.
  * @param {string} uid layer's uid
+ * @param {HTMLElement} element layer to switch
  */
 function changeOrderUp(uid, element) {
     layerArray.changeOrder(uid, "up");
@@ -115,6 +116,7 @@ function changeOrderUp(uid, element) {
 /**
  * Change the order of the layer with the one below.
  * @param {string} uid layer's uid
+ * @param {HTMLElement} element layer to switch
  */
 function changeOrderDown(uid, element) {
     layerArray.changeOrder(uid, "down");
