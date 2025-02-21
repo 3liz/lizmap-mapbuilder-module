@@ -449,6 +449,11 @@ ul .layer-store-layer:last-child {
     color: #464646;
 }
 
+.layer-store-folder.project {
+    content: url("./svg/project.svg");
+    width: 30px;
+}
+
 custom-slider .slider {
     width: 180px;
     border-radius: 3px;

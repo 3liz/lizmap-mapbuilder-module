@@ -60,7 +60,7 @@ export class LayerStore extends HTMLElement {
                 icoSpan = "fa-window-close";
                 tagLazy = "failed";
             } else {
-                icoSpan = element.isOpened() ? "fa-folder-open" : "fa-folder";
+                icoSpan = "project";
             }
         }
 
