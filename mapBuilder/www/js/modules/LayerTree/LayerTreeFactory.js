@@ -25,6 +25,7 @@ export class LayerTreeFactory {
         title: value.title,
         tooltip: value.tooltip,
         project: value.project,
+        projectName: layerTreeFolder.getProjectName(),
         repository: value.repository,
         color: value.color,
       });
@@ -44,6 +45,7 @@ export class LayerTreeFactory {
         title: value.title,
         children: value.children,
         project: value.project,
+        projectName: layerTreeFolder.getProjectName(),
         repository: value.repository,
         bbox: value.bbox,
         popup: value.popup,

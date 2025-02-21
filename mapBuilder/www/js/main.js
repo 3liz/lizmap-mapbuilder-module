@@ -464,6 +464,7 @@ $(function() {
                     serverType: 'qgis'
                 })
             });
+            newLayer.setProperties({"projectName": node.getProjectName()});
 
             // Set min/max resolution if min/max scale are defined in getCapabilities
             if (node.getMinScale()) {

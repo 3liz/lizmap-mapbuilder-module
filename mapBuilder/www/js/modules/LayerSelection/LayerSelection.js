@@ -43,15 +43,16 @@ export function addElementToLayerArray(value, color) {
         e.preventDefault();
         const data = e.dataTransfer.getData('text/plain');
         const draggedElement = document.getElementById(data);
+        const draggedElementId = draggedElement.dataset.olUid;
 
         let index = getIndexOfDrop(dropZone, e.clientY);
 
-        while (layerArray.getIndexOf(draggedElement.id) !== index) {
-            let currentIndex = layerArray.getIndexOf(draggedElement.id);
+        while (layerArray.getIndexOf(draggedElementId) !== index) {
+            let currentIndex = layerArray.getIndexOf(draggedElementId);
             if (currentIndex > index) {
-                changeList(draggedElement.id, "up");
+                changeList(draggedElementId, "up");
             } else {
-                changeList(draggedElement.id, "down");
+                changeList(draggedElementId, "down");
             }
         }
     });
@@ -90,10 +91,11 @@ export function getLayerSelectionArray() {
  * @param {string} direction Which direction to go : 'up' or 'down'.
  */
 export function changeList(uid, direction) {
+    let element = document.getElementById(`layer_${uid}`);
     if (direction === "up") {
-        changeOrderUp(uid);
+        changeOrderUp(uid, element);
     } else {
-        changeOrderDown(uid);
+        changeOrderDown(uid, element);
     }
 }
 
@@ -101,9 +103,8 @@ export function changeList(uid, direction) {
  * Change the order of the layer with the one above.
  * @param {string} uid layer's uid
  */
-function changeOrderUp(uid) {
+function changeOrderUp(uid, element) {
     layerArray.changeOrder(uid, "up");
-    let element = document.getElementById(`${uid}`);
     switchVisualLayers(
         element,
         element.previousElementSibling
@@ -114,9 +115,8 @@ function changeOrderUp(uid) {
  * Change the order of the layer with the one below.
  * @param {string} uid layer's uid
  */
-function changeOrderDown(uid) {
+function changeOrderDown(uid, element) {
     layerArray.changeOrder(uid, "down");
-    let element = document.getElementById(`${uid}`);
     switchVisualLayers(
         element,
         element.nextElementSibling

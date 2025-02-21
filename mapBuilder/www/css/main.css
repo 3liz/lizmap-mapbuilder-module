@@ -442,11 +442,14 @@ ul .layer-store-layer:last-child {
 .info-layer-selected {
     display: flex;
     flex-direction: column;
+    max-width: 140px;
+    overflow: hidden;
 }
 
 .repository-layer-selected {
     font-size: 11px;
     color: #464646;
+    white-space: nowrap;
 }
 
 .layer-store-folder.project {

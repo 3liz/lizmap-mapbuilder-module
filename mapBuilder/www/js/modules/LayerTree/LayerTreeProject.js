@@ -8,6 +8,7 @@ export class LayerTreeProject extends LayerTreeFolder {
       popup: options.popup,
       bbox: options.bbox,
       project: options.project,
+      projectName: options.title,
       repository: options.repository,
       color: options.color
     });
