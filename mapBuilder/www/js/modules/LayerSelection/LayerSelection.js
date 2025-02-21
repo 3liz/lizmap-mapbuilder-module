@@ -97,6 +97,7 @@ export function changeList(uid, direction) {
     } else {
         changeOrderDown(uid, element);
     }
+    document.dispatchEvent(new CustomEvent('layerSelectedChanges'));
 }
 
 /**

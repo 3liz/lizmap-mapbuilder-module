@@ -543,6 +543,10 @@ $(function() {
         document.getElementById('legend-content').innerHTML = legendsDiv;
     }
 
+    document.addEventListener('layerSelectedChanges', function () {
+        loadLegend();
+    });
+    
     // Open/Close dock behaviour
     $('#dock-close > button').on("click", function(){
         $('#mapmenu .dock').removeClass('active');
