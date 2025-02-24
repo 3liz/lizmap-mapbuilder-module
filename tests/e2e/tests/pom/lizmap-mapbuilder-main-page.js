@@ -169,4 +169,13 @@ exports.LizmapMapbuilderMainPage = class LizmapMapbuilderMainPage {
         return await this.page.locator('#legend-content > div').all();
     }
 
+    async setLayerStoreNoFilter() {
+        await this.page.getByRole('radio', { name: 'No' }).check();
+    }
+
+    async setLayerStoreExtentFilter() {
+        //await this.page.getByRole('radio', { name: 'Extent' }).check();
+        await this.page.locator("#filterButtonExtent").click();
+    }
+
 };
