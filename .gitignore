@@ -8,3 +8,6 @@ vendor/
 ./tests/e2e/playwright-report/
 ./tests/e2e/blob-report/
 ./tests/e2e/playwright/.cache/
+
+./tests/lizmap/instances/testing_project/*_attachments.zip
+./tests/lizmap/instances/mapbuilder/*_attachments.zip
