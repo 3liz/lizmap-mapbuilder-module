@@ -2,14 +2,21 @@ import { AbstractFilter } from "./AbstractFilter";
 
 export class KeywordsFilter extends AbstractFilter {
 
+  selectedKeywords;
+  method;
+
   /**
    * Filter the layer tree using keywords of layers.
    * @param {[LayerTreeElement]} layerTree - Layer tree to filter.
    */
-  constructor(layerTree, keywords, method) {
+  constructor(layerTree, keywordManager) {
     super(layerTree);
-    this.keywords = keywords;
-    this.method = method;
+    this.keywordManager = keywordManager;
+  }
+
+  setVariables() {
+    this.selectedKeywords = this.keywordManager.getSelectedKeywords();
+    this.method = this.keywordManager.getCalculationMethod();
   }
 
   /**
@@ -26,16 +33,17 @@ export class KeywordsFilter extends AbstractFilter {
    * @param {string[]} layerKeywords - Keywords to filter with.
    */
   calculateFilter(layerKeywords) {
-    if (this.keywords.length < 1) {
-      return false;
+    this.setVariables();
+    if (this.selectedKeywords.length < 1) {
+      return;
     }
 
     let visibility;
 
     if (this.method === "union") {
-      visibility = this.keywords.some(keyword => layerKeywords.includes(keyword));
+      visibility = this.selectedKeywords.some(keyword => layerKeywords.includes(keyword));
     } else {
-      visibility = this.keywords.every(keyword => layerKeywords.includes(keyword));
+      visibility = this.selectedKeywords.every(keyword => layerKeywords.includes(keyword));
     }
     this._currentProject.setVisible(visibility);
   }

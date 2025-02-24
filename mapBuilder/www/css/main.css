@@ -479,6 +479,26 @@ custom-slider .thumb {
 
 /* CSS for filtering buttons */
 
+#filterButtonNo {
+    width: 100%;
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    margin-bottom: 10px
+}
+
+#filterButtonNo:hover {
+    color: #fff;
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+#filterButtonNo:active {
+    color: #fff;
+    background-color: #545b62;
+    border-color: #4e555b;
+}
+
 #filter-buttons {
     display: flex;
     justify-content: space-around;
@@ -500,10 +520,6 @@ custom-slider .thumb {
 
 #filterKeywordsHandler.active {
     display: flex;
-}
-
-#filter-buttons > label:first-child {
-    width: 100%;
 }
 
 #filterKeywordsListButton {
