@@ -169,12 +169,17 @@ exports.LizmapMapbuilderMainPage = class LizmapMapbuilderMainPage {
         return await this.page.locator('#legend-content > div').all();
     }
 
+    /**
+     * Sets the layer store configuration to "No Filter".
+     */
     async setLayerStoreNoFilter() {
-        await this.page.getByRole('radio', { name: 'No' }).check();
+        await this.page.locator("#filterButtonNo").click();
     }
 
+    /**
+     * Sets the layer store configuration to "Extent filter".
+     */
     async setLayerStoreExtentFilter() {
-        //await this.page.getByRole('radio', { name: 'Extent' }).check();
         await this.page.locator("#filterButtonExtent").click();
     }
 
