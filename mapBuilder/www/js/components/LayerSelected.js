@@ -20,8 +20,10 @@ export class LayerSelected extends HTMLElement {
         super();
         this._element = element;
         this.setAttribute("class", "container-layer-selected");
-        this.setAttribute("id", element.getUid());
+        this.setAttribute("id", "layer_" + element.getUid());
         this.setAttribute("draggable", "true");
+        this.setAttribute("data-ol-uid", element.getUid());
+        this.isCSSProjectNameSet = false;
         this.render()
     }
 
@@ -87,7 +89,7 @@ export class LayerSelected extends HTMLElement {
             <div class="upper-line">
                 <div class="info-layer-selected">
                     <span class="title-layer-selected">${this._element.getLayer().getProperties().title}</span>
-                    <span class="repository-layer-selected">${this._element.getLayer().getProperties().repositoryId}</span>
+                    <span class="repository-layer-selected">${this._element.getLayer().getProperties().projectName}</span>
                 </div>
                 <div class="layer-buttons-div">
                     ${attributeTableShow}
@@ -108,12 +110,23 @@ export class LayerSelected extends HTMLElement {
         render(tpl, this);
     }
 
+    connectedCallback() {
+        if (!this.isCSSProjectNameSet) {
+            const infoElementSelector = `#${this.id} .info-layer-selected`;
+            const infoElement = document.querySelector(infoElementSelector);
+
+            infoElement.addEventListener("mouseenter", () => {
+                this.handleProjectNameCSS();
+            });
+        }
+    }
+
     /**
      * Delete the component and the layer associated to it.
      * @param {PointerEvent} event Event occurring.
      */
     actionDeleteLayerButton(event) {
-        getLayerSelectionArray().removeElement(event.target.closest(".container-layer-selected").id);
+        getLayerSelectionArray().removeElement(event.target.closest(".container-layer-selected").dataset.olUid);
         document.getElementById("layer-selected-holder").removeChild(this);
     }
 
@@ -412,6 +425,33 @@ export class LayerSelected extends HTMLElement {
             document.getElementById("bottom-dock").style.display = 'block';
         });
     }
+
+    handleProjectNameCSS() {
+        if (this.isCSSProjectNameSet) return;
+
+        this.isCSSProjectNameSet = true;
+
+        const projectNameElement = document.querySelector(`#${this.id} .info-layer-selected .repository-layer-selected`);
+        const diffWidth = projectNameElement.scrollWidth - projectNameElement.clientWidth;
+
+        if (diffWidth > 0) {
+            const transitionTime = Math.round((diffWidth / 80) * 10) / 10;
+            const css = `
+            #${this.id} .info-layer-selected:hover .repository-layer-selected {
+                transform: translateX(calc(0px - ${diffWidth}px));
+                transition: ${transitionTime}s ease-in-out;
+            }
+        `;
+            this.addDynamicStyle(css);
+        }
+    }
+
+    addDynamicStyle(css) {
+        const style = document.createElement('style');
+        style.appendChild(document.createTextNode(css));
+        document.head.appendChild(style);
+    }
+
 }
 
 customElements.define('lizmap-layer-selected', LayerSelected);

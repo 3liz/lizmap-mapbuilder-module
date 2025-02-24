@@ -2,6 +2,7 @@ import {html, render, nothing} from 'lit-html';
 import {LayerTreeFolder} from "../modules/LayerTree/LayerTreeFolder";
 import {WMSCapabilities} from "ol/format";
 import {LayerTreeLayer} from "../modules/LayerTree/LayerTreeLayer";
+import {LayerTreeProject} from "../modules/LayerTree/LayerTreeProject";
 
 /**
  * Class representing the layer store.
@@ -44,22 +45,23 @@ export class LayerStore extends HTMLElement {
      */
     folderTemplate(element) {
     //Check if the folder will have to load children from a project.
-        let tagLazy = element.isLazy() ? "lazy" : "";
+        let icoSpan = element.isOpened() ? "fa-folder-open" : "fa-folder";
+        let tagLazy = "";
 
-        let icoSpan;
+        if (element instanceof LayerTreeProject) {
+            tagLazy = element.isLazy() ? "lazy" : "";
 
-        //Check if the folder is loading, opened or closed.
-        if (element.isLoading()) {
-            icoSpan = "fa-spinner fa-pulse";
-        } else {
-            icoSpan = element.isOpened() ? "fa-folder-open" : "fa-folder";
-        }
-
-        //Check if the folder is failed to load children.
-        //It occurs when the project can't be loaded.
-        if (element.isFailed()) {
-            icoSpan = "fa-window-close";
-            tagLazy = "failed";
+            //Check if the folder is loading, opened or closed.
+            if (element.isLoading()) {
+                icoSpan = "fa-spinner fa-pulse";
+            } else if (element.isFailed()) {
+                //Check if the folder is failed to load children.
+                //It occurs when the project can't be loaded.
+                icoSpan = "fa-window-close";
+                tagLazy = "failed";
+            } else {
+                icoSpan = "project";
+            }
         }
 
         //Template of a folder.
@@ -162,35 +164,49 @@ export class LayerStore extends HTMLElement {
      * Action when a folder is clicked.
      * It can open or close the folder.
      * It can decide to load the project and put children in the folder.
-     * @param {LayerTreeFolder} element The folder clicked.
+     * @param {LayerTreeFolder|LayerTreeProject} element The folder clicked.
      * @param {Event} e Event occurring.
      */
     async action(element, e) {
-        if (element.isLazy()) {
+        const handleLazyLoading = async () => {
             element.setLoading(true);
             this.render();
-            //Prevent from multiple request
+
+            // Prevent multiple requests
             element.setLazy(false);
             e.target.closest('.lazy').children[0].className = "layer-store-folder fas fa-spinner fa-pulse";
-            //After loaded
-            let child = await this.loadTree(element);
-            element.setLazy(false);
+
+            // Load folder content
+            let children = await this.loadTree(element);
             element.setLoading(false);
-            if (child.length > 0) {
-                child.forEach((el) => {
-                    el.repository = element.getRepository();
-                    el.project = element.getProject();
-                });
-                element.createChildren(child);
+
+            if (children.length > 0) {
+                updateChildrenAttributes(children, element);
+                element.createChildren(children);
                 element.changeStatusFolder();
             } else {
                 element.setFailed();
             }
+        };
+
+        const updateChildrenAttributes = (children, element) => {
+            children.forEach((child) => {
+                child.repository = element.getRepository();
+                child.project = element.getProject();
+            });
+        };
+
+        if (element instanceof LayerTreeProject) {
+            if (element.isLazy()) {
+                await handleLazyLoading();
+            } else {
+                element.changeStatusFolder();
+            }
         } else {
             element.changeStatusFolder();
         }
-        this.render();
 
+        this.render();
     };
 
     /**

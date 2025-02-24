@@ -1,13 +1,9 @@
-import {LayerTreeLayer} from "./LayerTreeLayer";
 import {LayerTreeElement} from "./LayerTreeElement";
 
 /**
  * Class representing a folder in a Layer Tree.
- @property {Array} _children Queue length.
- @property {boolean} _opened If the folder is opened or not for the visual part.
- @property {boolean} _lazy If the folder will have to load children from a project.
- @property {boolean} _loading Loading state of the folder.
- @property {boolean} _failed If the folder got a load error.
+ * @property {Array} _children Queue length.
+ * @property {boolean} _opened If the folder is opened or not for the visual part.
  */
 export class LayerTreeFolder extends LayerTreeElement {
     /**
@@ -20,6 +16,7 @@ export class LayerTreeFolder extends LayerTreeElement {
             popup: options.popup,
             bbox: options.bbox,
             project: options.project,
+            projectName: options.projectName,
             repository: options.repository,
             color: options.color
         });
@@ -34,15 +31,9 @@ export class LayerTreeFolder extends LayerTreeElement {
 
         this._opened = false;
 
-        this._lazy = options.lazy !== undefined ? options.lazy : undefined;
-
-        this._loading = false;
-
         if (this._children.length > 0) {
             this.createChildren();
         }
-
-        this._failed = false;
     }
 
     /**
@@ -58,35 +49,9 @@ export class LayerTreeFolder extends LayerTreeElement {
         let listChild = children !== undefined ? children : this._children;
 
         listChild.forEach((value) => {
-            value.color = this.getColor();
-            if (value.hasOwnProperty("style")) {
-                value.repository = this.getRepository();
-                value.project = this.getProject();
+            const {LayerTreeFactory} = require('./LayerTreeFactory');
 
-                list.push(new LayerTreeLayer({
-                    bbox: value.bbox,
-                    attributeTable: value.hasAttributeTable,
-                    name: value.name,
-                    popup: value.popup,
-                    style: value.style,
-                    title: value.title,
-                    tooltip: value.tooltip,
-                    project: value.project,
-                    repository: value.repository,
-                    color: value.color,
-                }));
-            } else {
-                list.push(new LayerTreeFolder({
-                    title: value.title,
-                    children: value.children,
-                    lazy: value.lazy,
-                    project: value.project,
-                    repository: value.repository,
-                    bbox: value.bbox,
-                    popup: value.popup,
-                    color: value.color
-                }));
-            }
+            list.push(LayerTreeFactory.createLayerTreeElement(value, this));
         });
         this._children = list;
     }
@@ -97,38 +62,6 @@ export class LayerTreeFolder extends LayerTreeElement {
      */
     changeStatusFolder() {
         this._opened = !this._opened;
-    }
-
-    /**
-     * Get the status of the folder.
-     * @returns {boolean} Status of the folder.
-     */
-    isLazy() {
-        return !!this._lazy;
-    }
-
-    /**
-     * Set the lazy status of the folder.
-     * @param {boolean} value New lazy status.
-     */
-    setLazy(value) {
-        this._lazy = value;
-    }
-
-    /**
-     * Get the loading state of the folder.
-     * @returns {boolean} Loading state.
-     */
-    isLoading() {
-        return this._loading;
-    }
-
-    /**
-     * Set the loading state of the folder.
-     * @param {boolean} value New loading state.
-     */
-    setLoading(value) {
-        this._loading = value;
     }
 
     /**
@@ -153,20 +86,5 @@ export class LayerTreeFolder extends LayerTreeElement {
      */
     isOpened() {
         return this._opened;
-    }
-
-    /**
-     * Get the failed state of the folder.
-     * @returns {boolean} Failed state.
-     */
-    isFailed() {
-        return this._failed;
-    }
-
-    /**
-     * Set the failed state of the folder to "true".
-     */
-    setFailed() {
-        this._failed = true;
     }
 }

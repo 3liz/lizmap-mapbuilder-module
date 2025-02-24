@@ -464,6 +464,7 @@ $(function() {
                     serverType: 'qgis'
                 })
             });
+            newLayer.setProperties({"projectName": node.getProjectName()});
 
             // Set min/max resolution if min/max scale are defined in getCapabilities
             if (node.getMinScale()) {
@@ -542,6 +543,10 @@ $(function() {
         document.getElementById('legend-content').innerHTML = legendsDiv;
     }
 
+    document.addEventListener('layerSelectedChanges', function () {
+        loadLegend();
+    });
+    
     // Open/Close dock behaviour
     $('#dock-close > button').on("click", function(){
         $('#mapmenu .dock').removeClass('active');

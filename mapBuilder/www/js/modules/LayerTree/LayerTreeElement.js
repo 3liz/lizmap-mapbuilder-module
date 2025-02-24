@@ -4,6 +4,7 @@
  * @property {Array} _bbox Bbox.
  * @property {boolean} _popup Popup.
  * @property {string} _project Project id.
+ * @property {string} _projectName Project name.
  * @property {string} _repository Repository id.
  * @property {string} _color Color of the layer in the CSS sheet.
  */
@@ -20,6 +21,8 @@ export class LayerTreeElement {
         this._popup = options.popup !== undefined ? options.popup : undefined;
 
         this._project = options.project !== undefined ? options.project : undefined;
+
+        this._projectName = options.projectName !== undefined ? options.projectName : undefined;
 
         this._repository = options.repository !== undefined ? options.repository : undefined;
 
@@ -109,6 +112,14 @@ export class LayerTreeElement {
      */
     getProject() {
         return this._project;
+    }
+
+    /**
+     * Get the project name.
+     * @returns {string} Project name.
+     */
+    getProjectName() {
+        return this._projectName;
     }
 
     /**
