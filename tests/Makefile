@@ -86,7 +86,10 @@ import-lizmap-acl:
 	docker compose exec -u $(LIZMAP_USER_ID) lizmap /bin/sh -c ' \
 		php lizmap/console.php acl2:add __anonymous "lizmap.repositories.view" mapbuilder ; \
 		php lizmap/console.php acl2:add users "lizmap.repositories.view" mapbuilder ; \
-		php lizmap/console.php acl2:add admins "lizmap.repositories.view" mapbuilder'
+		php lizmap/console.php acl2:add admins "lizmap.repositories.view" mapbuilder ; \
+		php lizmap/console.php acl2:add __anonymous "lizmap.repositories.view" testingproject ; \
+		php lizmap/console.php acl2:add users "lizmap.repositories.view" testingproject ; \
+		php lizmap/console.php acl2:add admins "lizmap.repositories.view" testingproject';
 	@echo "Set mapbuilder access"
 	docker compose exec -u $(LIZMAP_USER_ID) lizmap /bin/sh -c ' \
 		php lizmap/console.php acl2:add __anonymous "mapBuilder.access" ; \
@@ -101,7 +104,7 @@ install-module:
 install-plugins:
 	docker run \
 	    -u $(LIZMAP_USER_ID):$(LIZMAP_USER_GID) \
-	    --rm -it \
+	    --rm \
 	    -e QGSRV_SERVER_PLUGINPATH=/srv/plugins \
 	    -v $(LIZMAP_DIR)/qgis-server-plugins:/srv/plugins \
 	    -v $(shell pwd)/:/src \

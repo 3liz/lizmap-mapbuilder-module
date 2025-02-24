@@ -42,8 +42,8 @@ export class LayerSelected extends HTMLElement {
         if (this._element.getLayer().getProperties().hasAttributeTable) {
             //Check if the attribute table is visible or not to adjust the component
             attributeTableShow = this._element.isAttributeTableOpened() ? html`
-          <button class="dispayDataButton fas fa-list-ul fa-sm active" @click="${(event) => this.actionDisplayDataButton(event, this._element)}" disabled></button>` : html`
-          <button class="dispayDataButton fas fa-list-ul fa-sm" @click="${(event) => this.actionDisplayDataButton(event, this._element)}"></button>`
+          <button class="displayDataButton fas fa-list-ul fa-sm active" @click="${(event) => this.actionDisplayDataButton(event, this._element)}" disabled></button>` : html`
+          <button class="displayDataButton fas fa-list-ul fa-sm" @click="${(event) => this.actionDisplayDataButton(event, this._element)}"></button>`
         }
 
         //Check if the info panel is visible or not to adjust the component
