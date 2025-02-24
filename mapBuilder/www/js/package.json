@@ -13,7 +13,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "jspdf": "^2.5.1",
+    "jspdf": "^3.0.0",
     "lit-html": "^3.1.2",
     "ol": "^10.2.1",
     "uuid": "^9.0.1"
