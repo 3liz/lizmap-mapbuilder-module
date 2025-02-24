@@ -483,11 +483,15 @@ $(function() {
 
     document.getElementById("keywordsUnionButton").addEventListener("click", function() {
       keywordsManager.setCalculationMethod("union");
+      document.getElementById("filterKeywordsListButton").classList.replace("btn-danger", "btn-info");
+      document.getElementById("filterKeywordsListWords").classList.remove("inter");
       filter();
     });
 
     document.getElementById("keywordsIntersectButton").addEventListener("click", function() {
       keywordsManager.setCalculationMethod("intersect");
+      document.getElementById("filterKeywordsListButton").classList.replace("btn-info", "btn-danger");
+      document.getElementById("filterKeywordsListWords").classList.add("inter");
       filter();
     });
 

@@ -578,3 +578,7 @@ custom-slider .thumb {
     box-shadow: 0 0 4px 0.3px rgba(0, 0, 0, 0.2);
     background-color: #e2f4ff;
 }
+
+#filterKeywordsListWords.inter > #filterKeyword.active {
+    background-color: #ffe2e2;
+}
