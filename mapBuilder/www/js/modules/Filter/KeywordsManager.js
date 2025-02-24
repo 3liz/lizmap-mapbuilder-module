@@ -15,6 +15,7 @@ export class KeywordsManager {
 
   constructor() {
     this.keywords = [];
+    this.visibleKeywords = [];
     this.selectedKeywords = [];
   }
 
@@ -26,31 +27,60 @@ export class KeywordsManager {
     keywordList.forEach(keyword => {
       if (!this.keywords.includes(keyword)) {
         this.keywords.push(keyword);
-        this.addKeywordHtml(keyword);
       }
+    });
+    this.refreshKeywordsFromSearch(document.getElementById("keywordsFindInput").textContent);
+  }
+
+  handleKeywordHtml() {
+    this.removeAllVisibleKeywordsHtml();
+    this.addKeywordsHtml()
+  }
+
+  removeAllVisibleKeywordsHtml() {
+    document.getElementById("filterKeywordsListWords").innerHTML = "";
+  }
+
+  addKeywordsHtml() {
+    this.visibleKeywords.forEach(word => {
+      let div = document.createElement("div");
+
+      div.id = "filterKeyword";
+      div.innerText = word;
+
+      div.addEventListener("click", () => {
+        if (div.className.includes("active")) {
+          div.className = "";
+          this.selectedKeywords.splice(this.selectedKeywords.indexOf(word), 1);
+        } else {
+          div.className = "active";
+          this.selectedKeywords.push(word);
+        }
+
+        const event = new CustomEvent('keywordsUpdated');
+        document.dispatchEvent(event);
+      });
+
+      if (this.selectedKeywords.includes(word)) {
+        div.className = "active";
+      }
+
+      document.getElementById("filterKeywordsListWords").append(div);
     });
   }
 
-  addKeywordHtml(word) {
-    let div = document.createElement("div");
-
-    div.id = "filterKeyword";
-    div.innerText = word;
-
-    div.addEventListener("click", () => {
-      if (div.className.includes("active")) {
-        div.className = "";
-        this.selectedKeywords.splice(this.selectedKeywords.indexOf(word), 1);
-      } else {
-        div.className = "active";
-        this.selectedKeywords.push(word);
-      }
-
-      const event = new CustomEvent('keywordsUpdated');
-      document.dispatchEvent(event);
-    });
-
-    document.getElementById("filterKeywordsListWords").append(div);
+  refreshKeywordsFromSearch(searchContent) {
+    if (searchContent.length === "") {
+      this.visibleKeywords = this.keywords;
+    } else {
+      this.visibleKeywords = [];
+      this.keywords.forEach(word => {
+        if (word.toLowerCase().includes(searchContent.toLowerCase())) {
+          this.visibleKeywords.push(word);
+        }
+      });
+    }
+    this.handleKeywordHtml();
   }
 
   getKeywords() {

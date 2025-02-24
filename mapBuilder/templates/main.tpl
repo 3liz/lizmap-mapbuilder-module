@@ -126,7 +126,7 @@
                 </label>
               </div>
               <div class="input-group input-group-sm ml-3 mr-2">
-                <input type="text" class="form-control" placeholder="{@mapBuilder~dictionary.filter.keywords.search.placeholder@}" aria-label="Username">
+                <input id="keywordsFindInput" type="text" class="form-control" placeholder="{@mapBuilder~dictionary.filter.keywords.search.placeholder@}" aria-label="Username">
               </div>
             </div>
             <div id="filterKeywordsListWords"></div>

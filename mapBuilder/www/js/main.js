@@ -490,6 +490,18 @@ $(function() {
       keywordsManager.setCalculationMethod("intersect");
       filter();
     });
+
+    const textInputKeywords = document.getElementById("keywordsFindInput");
+
+    let timeout;
+
+    textInputKeywords.addEventListener("input", function () {
+      clearTimeout(timeout);
+
+      timeout = setTimeout(() => {
+        keywordsManager.refreshKeywordsFromSearch(textInputKeywords.value);
+      }, 400);
+    });
   }
 
   /**
