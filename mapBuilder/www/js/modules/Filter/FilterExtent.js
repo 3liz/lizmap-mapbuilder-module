@@ -6,29 +6,38 @@ export class ExtentFilter extends AbstractFilter {
 
     /**
      * Filter the layer tree using extent of layers.
-     * @param {[import("../LayerTree/LayerTreeElement").LayerTreeElement]} layerTree - Layer tree to filter.
+     * @param {[import("../LayerTree/LayerTreeFolder").LayerTreeFolder]} layerTree - Layer tree to filter.
      */
     constructor(layerTree) {
         super(layerTree);
     }
 
     /**
+     * Filters the given layer tree element using a recursive filter function.
+     * @param {import("../LayerTree/LayerTreeElement").LayerTreeElement} layerTreeElement - The layer tree element to be filtered.
+     */
+    filterProj(layerTreeElement) {
+        this.recFilter(layerTreeElement);
+    }
+
+    /**
      * Recursive function to filter a layer.
      * @param {import("../LayerTree/LayerTreeElement").LayerTreeElement} layerTreeElement - Layer tree element to filter.
+     * @returns {boolean} - true if the filter has been calculated. Otherwise, false.
      */
     recFilter(layerTreeElement) {
         if (layerTreeElement.getBbox()) {
-            const visibility = this.calculateFilter(layerTreeElement);
-            this.switchAllVisible(visibility);
-            return;
+            this.calculateFilter(layerTreeElement);
+            return true;
+        } else if (layerTreeElement.hasChildren()) {
+            let children = layerTreeElement.getChildren();
+            for (let i = 0; i < children.length; i++) {
+                if (this.recFilter(children[i])) {
+                    return true;
+                }
+            }
         }
-        if (!layerTreeElement.hasChildren()) {
-            return;
-        }
-        let children = layerTreeElement.getChildren();
-        for (let i = 0; i < children.length; i++) {
-            this.recFilter(children[i]);
-        }
+        return false;
     }
 
     /**
@@ -43,7 +52,7 @@ export class ExtentFilter extends AbstractFilter {
         let mapBuilderExtent = transformExtent(currentExtent, currentProjection, 'EPSG:4326');
 
         let visible = intersects(layerExtent, mapBuilderExtent);
-        layerTreeElement.setVisible(visible);
+        this._currentProject.setVisible(visible);
         return visible
     }
 

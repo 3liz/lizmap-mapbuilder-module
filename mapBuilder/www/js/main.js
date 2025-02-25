@@ -462,7 +462,7 @@ $(function() {
 
             button.addEventListener("click", async () => {
                 if (filterName === "No") {
-                    listTree = layerStore.setAllVisible();
+                    listTree = layerStore.setProjectAllVisible();
                 } else if (filterName === "Extent") {
                     const filterInstance = new ExtentFilter(listTree);
                     await filterInstance.filter();

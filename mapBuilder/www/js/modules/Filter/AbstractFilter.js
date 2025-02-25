@@ -1,4 +1,5 @@
 import { LayerTreeFolder } from "../LayerTree/LayerTreeFolder";
+import { LayerTreeProject } from "../LayerTree/LayerTreeProject";
 
 export class AbstractFilter {
 
@@ -15,40 +16,23 @@ export class AbstractFilter {
      */
     async filter() {
         for (let i = 0; i < this._layerTree.length; i++) {
-            this._currentElement = this._layerTree[i];
-            this.recFilter(this._layerTree[i]);
-        }
-    }
-
-    /**
-     * Recursive function to filter a layer.
-     * @param {import("../LayerTree/LayerTreeFolder").LayerTreeFolder|import("../LayerTree/LayerTreeLayer").LayerTreeLayer} layerTreeElement - Layer tree element to filter.
-     */
-    // eslint-disable-next-line no-unused-vars
-    recFilter(layerTreeElement) {
-        throw new Error("Method 'recFilter()' must be implemented.");
-    }
-
-    /**
-     * Set a layer to a decided visibility.
-     * @param {boolean} visibility - Visibility of the layer.
-     */
-    switchAllVisible(visibility) {
-        this.recSwitchAllVisible(this._currentElement, visibility);
-    }
-
-    /**
-     * Recursive function to set a layer to a decided visibility.
-     * @param {import("../LayerTree/LayerTreeFolder").LayerTreeFolder|import("../LayerTree/LayerTreeLayer").LayerTreeLayer} layerTreeElement - Layer tree element to set invisible.
-     * @param {boolean} visibility - Visibility of the layer.
-     */
-    recSwitchAllVisible(layerTreeElement, visibility) {
-        if (layerTreeElement instanceof LayerTreeFolder) {
-            let children = layerTreeElement.getChildren();
-            for (let i = 0; i < children.length; i++) {
-                this.recSwitchAllVisible(children[i], visibility);
+            this._currentFolder = this._layerTree[i];
+            for (let k = 0; k < this._currentFolder.getChildren().length; k++) {
+                if (this._currentFolder.getChildren()[k] instanceof LayerTreeProject) {
+                    this._currentProject = this._currentFolder.getChildren()[k]
+                    this.filterProj(this._currentProject);
+                }
             }
         }
-        layerTreeElement.setVisible(visibility);
+    }
+
+    /**
+     * Filters the given layer tree element based on specific criteria.
+     * @param {import("../LayerTree/LayerTreeElement").LayerTreeElement} layerTreeElement - The layer tree element to be filtered.
+     * @throws {Error} Throws an error if the method is not implemented.
+     */
+    // eslint-disable-next-line no-unused-vars
+    filterProj(layerTreeElement) {
+        throw new Error("Method 'filterProj()' must be implemented.");
     }
 }

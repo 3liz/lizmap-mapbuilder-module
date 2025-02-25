@@ -5,6 +5,7 @@ import {LayerTreeFolder} from "./LayerTreeFolder";
  *  @property {boolean} _lazy If the folder will have to load children from a project.
  *  @property {boolean} _loading Loading state of the folder.
  *  @property {boolean} _failed If the folder got a load error.
+ * @property {boolean} _visible Visibility of the layer for filtering.
  */
 export class LayerTreeProject extends LayerTreeFolder {
 
@@ -24,6 +25,8 @@ export class LayerTreeProject extends LayerTreeFolder {
         this._loading = false;
 
         this._failed = false;
+
+        this._visible = true;
     }
 
     /**
@@ -71,5 +74,21 @@ export class LayerTreeProject extends LayerTreeFolder {
      */
     setFailed() {
         this._failed = true;
+    }
+
+    /**
+     * Get the visibility of the layer.
+     * @returns {boolean} Visibility of the layer.
+     */
+    isVisible() {
+        return this._visible;
+    }
+
+    /**
+     * Set the visibility of the layer.
+     * @param {boolean} visible Visibility of the layer.
+     */
+    setVisible(visible) {
+        this._visible = visible;
     }
 }
