@@ -89,7 +89,10 @@ import-lizmap-acl:
 		php lizmap/console.php acl2:add admins "lizmap.repositories.view" mapbuilder ; \
 		php lizmap/console.php acl2:add __anonymous "lizmap.repositories.view" testingproject ; \
 		php lizmap/console.php acl2:add users "lizmap.repositories.view" testingproject ; \
-		php lizmap/console.php acl2:add admins "lizmap.repositories.view" testingproject';
+		php lizmap/console.php acl2:add admins "lizmap.repositories.view" testingproject ; \
+		php lizmap/console.php acl2:add __anonymous "lizmap.repositories.view" airportstest ; \
+		php lizmap/console.php acl2:add users "lizmap.repositories.view" airportstest ; \
+		php lizmap/console.php acl2:add admins "lizmap.repositories.view" airportstest';
 	@echo "Set mapbuilder access"
 	docker compose exec -u $(LIZMAP_USER_ID) lizmap /bin/sh -c ' \
 		php lizmap/console.php acl2:add __anonymous "mapBuilder.access" ; \

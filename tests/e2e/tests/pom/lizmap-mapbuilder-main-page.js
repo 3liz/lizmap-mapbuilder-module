@@ -27,6 +27,7 @@ exports.LizmapMapbuilderMainPage = class LizmapMapbuilderMainPage {
         // Layer Store nav
         this.layerStoreHolder = page.locator("#layer-store-holder");
         this.baseLayerSelect = page.locator("#baseLayerSelect");
+        this.keywordsFinder = page.locator("#keywordsFindInput");
 
         // Selected Layers nav
         this.selectedLayerHolder = page.locator("#layer-selected-holder");
@@ -183,4 +184,39 @@ exports.LizmapMapbuilderMainPage = class LizmapMapbuilderMainPage {
         await this.page.locator("#filterButtonExtent").click();
     }
 
+    /**
+     * Sets the layer store configuration to "Keywords filter".
+     */
+    async setLayerStoreKeywordsFilter() {
+        await this.page.locator("#filterButtonKeywords").click();
+    }
+
+    /**
+     * Open list of keywords.
+     */
+    async openCloseKeywordsList() {
+        await this.page.locator("#filterKeywordsListButton").click();
+    }
+
+    /**
+     * Set the keywords filter to the "union" mode.
+     */
+    async setUnionKeywordsFilter() {
+        await this.page.locator("#keywordsUnionButton").click();
+    }
+
+    /**
+     * Set the keywords filter to the "intersection" mode.
+     */
+    async setIntersectionKeywordsFilter() {
+        await this.page.locator("#keywordsIntersectButton").click();
+    }
+
+    /**
+     * Clicks on a keyword element on the page.
+     * @param {string} keyword - The keyword text to locate and click on.
+     */
+    async clickOnKeyword(keyword) {
+        await this.page.getByText(keyword).click();
+    }
 };
