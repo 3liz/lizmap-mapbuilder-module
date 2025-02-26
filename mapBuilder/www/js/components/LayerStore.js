@@ -41,14 +41,19 @@ export class LayerStore extends HTMLElement {
     /**
      * Template for a folder.
      * @param {LayerTreeFolder} element The folder to render.
-     * @returns {TemplateResult<1>} The template of the folder.
+     * @returns {TemplateResult<1>|null} The template of the folder or null if the folder shouldn't be visible.
      */
     folderTemplate(element) {
-    //Check if the folder will have to load children from a project.
+        //Check if the folder will have to load children from a project.
         let icoSpan = element.isOpened() ? "fa-folder-open" : "fa-folder";
         let tagLazy = "";
 
         if (element instanceof LayerTreeProject) {
+            if (!element.isVisible()) {
+                // We use 'null' value because "html``" is not really empty
+                return null;
+            }
+
             tagLazy = element.isLazy() ? "lazy" : "";
 
             //Check if the folder is loading, opened or closed.
@@ -83,28 +88,33 @@ export class LayerStore extends HTMLElement {
             element.getChildren().forEach(value => {
                 let childTemplate;
                 if (value instanceof LayerTreeFolder) {
-                    childTemplate = html`
-              ${this.folderTemplate(value)}
-          `;
+                    childTemplate = this.folderTemplate(value);
                 } else {
-                    childTemplate = html`
-              ${this.layerTemplate(value)}
-          `;
+                    childTemplate = this.layerTemplate(value);
                 }
-                allChildTemplate = html`
+                if (childTemplate !== null) {
+                    allChildTemplate = html`
             ${allChildTemplate}
             ${childTemplate}
         `;
+                }
             });
-            template = html`
-          ${template}
-          <ul class="layer-store-tree"
-              @mouseover='${(event) => {event.target.closest("ul").style = `background-color: ${element.getHoverColor()}; transition: 0.2s;`}}' 
-              @mouseout='${(event) => {event.target.closest("ul").style = `background-color: ${element.getColor()}; transition: 0.2s;`}}' 
-              style="background-color: ${element.getColor()}">
-              ${allChildTemplate}
-          </ul>
-      `;
+            // Prevent empty 'ul' tag which are not well displayed
+            if (allChildTemplate.strings[0] !== "") {
+                template = html`
+            ${template}
+            <ul class="layer-store-tree"
+                @mouseover='${(event) => {
+                    event.target.closest("ul").style = `background-color: ${element.getHoverColor()}; transition: 0.2s;`
+                }}'
+                @mouseout='${(event) => {
+                    event.target.closest("ul").style = `background-color: ${element.getColor()}; transition: 0.2s;`
+                }}'
+                style="background-color: ${element.getColor()}">
+                ${allChildTemplate}
+            </ul>
+        `;
+            }
         }
         return template;
     }
@@ -112,7 +122,7 @@ export class LayerStore extends HTMLElement {
     /**
      * Template for a layer.
      * @param {LayerTreeLayer} element The layer to render.
-     * @returns {TemplateResult<1>} The template of the layer.
+     * @returns {TemplateResult<1>|null} The template of the layer or null if the layer element shouldn't be visible.
      */
     layerTemplate(element) {
         var styleOption = html``;
@@ -400,6 +410,42 @@ export class LayerStore extends HTMLElement {
      */
     getTree() {
         return this.tree;
+    }
+
+    /**
+     * Update the tree.
+     * @param {[LayerTreeElement]} tree - The new tree.
+     */
+    updateTree(tree) {
+        this.tree = tree;
+        this.render();
+    }
+
+    /**
+     * Set visibility of projects from layerStore to true.
+     * @returns {[LayerTreeElement]} - The tree.
+     */
+    setProjectAllVisible() {
+        for (let i = 0; i < this.tree.length; i++) {
+            this.recSetVisible(this.tree[i]);
+        }
+        return this.tree;
+    }
+
+    /**
+     * Recursive function to set all project visible.
+     * @param {LayerTreeFolder} treeElement - Layer tree element to change visibility.
+     */
+    recSetVisible(treeElement) {
+        if (treeElement instanceof LayerTreeProject) {
+            treeElement.setVisible(true);
+            return;
+        }
+        const children = treeElement.getChildren();
+
+        for (let i = 0; i < children.length; i++) {
+            this.recSetVisible(children[i]);
+        }
     }
 }
 

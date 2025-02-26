@@ -84,4 +84,25 @@ test.describe('Build with multiple layers', () => {
 
         await expect(elementsLegend.length).toEqual(2);
     });
+
+    test('Handle extent filter', async ({ page }) => {
+
+        const lizmapMapbuilderMainPage = new LizmapMapbuilderMainPage(page);
+        await lizmapMapbuilderMainPage.openLayerStoreDock();
+
+        await page.locator('li.layer-store-arrow.lazy:nth-child(1)').click()
+        await page.waitForTimeout(250);
+        await page.locator('.layer-store-layer').first().click();
+
+        const parentLocator = lizmapMapbuilderMainPage.layerStoreHolder.locator('.layer-store-tree');
+        let childrenCount = await parentLocator.locator(':scope > ul').count();
+
+        expect(childrenCount).toEqual(5);
+
+        await lizmapMapbuilderMainPage.setLayerStoreExtentFilter();
+
+        childrenCount = await parentLocator.locator(':scope > ul').count();
+
+        expect(childrenCount).toEqual(2);
+    });
 });
