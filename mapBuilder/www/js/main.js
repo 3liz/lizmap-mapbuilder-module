@@ -370,9 +370,9 @@ $(function() {
             });
         }
 
-    // Filter if is active
-    filter();
-  }
+        // Filter if is active
+        filter();
+    }
 
     mapBuilder.map.on('moveend', onMoveEnd);
 
@@ -437,13 +437,13 @@ $(function() {
     });
 
     // Keywords manager
-  let keywordsManager = new KeywordsManager();
+    let keywordsManager = new KeywordsManager();
 
-  document.addEventListener('keywordsUpdated', () => {
-    filter();
-  });
+    document.addEventListener('keywordsUpdated', () => {
+        filter();
+    });
 
-  //Build the tree
+    //Build the tree
     var listTree = [];
 
     var layerStore;
@@ -454,114 +454,124 @@ $(function() {
 
     // Carry filter buttons
     let listFilters = {
-    Extent: new ExtentFilter(layerStore),
-    Keywords: new KeywordsFilter(layerStore, keywordsManager)
-  };
-  let selectedFilters = [];
-  initFilterButtons();
-  initEventKeywordsFilters();
+        Extent: new ExtentFilter(layerStore),
+        Keywords: new KeywordsFilter(layerStore, keywordsManager)
+    };
+    let selectedFilters = [];
+    initFilterButtons();
+    initEventKeywordsFilters();
 
-  function initEventKeywordsFilters() {
-    const button = document.getElementById("filterButtonKeywords");
+    /**
+     * Initializes event listeners for managing keyword filters in the UI.
+     */
+    function initEventKeywordsFilters() {
+        const button = document.getElementById("filterButtonKeywords");
 
-    button.addEventListener("click", function() {
-      if (!button.classList.contains("active")) {
-        document.getElementById("filterKeywordsHandler").classList.add("active");
-      } else {
-        document.getElementById("filterKeywordsHandler").classList.remove("active");
-      }
-    });
+        button.addEventListener("click", function() {
+            if (!button.classList.contains("active")) {
+                document.getElementById("filter-keywords-handler").classList.add("active");
+            } else {
+                document.getElementById("filter-keywords-handler").classList.remove("active");
+            }
+        });
 
-    document.getElementById("filterKeywordsListButton").addEventListener("click", function() {
-      const list = document.getElementById("filterKeywordsList")
-      if (list.classList.contains("active")) {
-        list.classList.remove("active");
-      } else {
-        list.classList.add("active");
-      }
-    });
+        document.getElementById("filter-keywords-list-button").addEventListener("click", function() {
+            const list = document.getElementById("filter-keywords-list")
+            if (list.classList.contains("active")) {
+                list.classList.remove("active");
+            } else {
+                list.classList.add("active");
+            }
+        });
 
-    document.getElementById("keywordsUnionButton").addEventListener("click", function() {
-      keywordsManager.setCalculationMethod("union");
-      document.getElementById("filterKeywordsListButton").classList.replace("btn-danger", "btn-info");
-      document.getElementById("filterKeywordsListWords").classList.remove("inter");
-      filter();
-    });
+        document.getElementById("keywordsUnionButton").addEventListener("click", function() {
+            keywordsManager.setCalculationMethod("union");
+            document.getElementById("filter-keywords-list-button").classList.replace("btn-danger", "btn-info");
+            document.getElementById("filter-keywords-list-words").classList.remove("inter");
+            filter();
+        });
 
-    document.getElementById("keywordsIntersectButton").addEventListener("click", function() {
-      keywordsManager.setCalculationMethod("intersect");
-      document.getElementById("filterKeywordsListButton").classList.replace("btn-info", "btn-danger");
-      document.getElementById("filterKeywordsListWords").classList.add("inter");
-      filter();
-    });
+        document.getElementById("keywordsIntersectButton").addEventListener("click", function() {
+            keywordsManager.setCalculationMethod("intersect");
+            document.getElementById("filter-keywords-list-button").classList.replace("btn-info", "btn-danger");
+            document.getElementById("filter-keywords-list-words").classList.add("inter");
+            filter();
+        });
 
-    const textInputKeywords = document.getElementById("keywordsFindInput");
+        const textInputKeywords = document.getElementById("keywordsFindInput");
 
-    let timeout;
+        let timeout;
 
-    textInputKeywords.addEventListener("input", function () {
-      clearTimeout(timeout);
+        textInputKeywords.addEventListener("input", function () {
+            clearTimeout(timeout);
 
-      timeout = setTimeout(() => {
-        keywordsManager.refreshKeywordsFromSearch(textInputKeywords.value);
-      }, 400);
-    });
-  }
+            timeout = setTimeout(() => {
+                keywordsManager.refreshKeywordsFromSearch(textInputKeywords.value);
+            }, 400);
+        });
+    }
 
-  /**
-   * Initialize filter buttons.
-   */
-  function initFilterButtons() {
+    /**
+     * Initialize filter buttons.
+     */
+    function initFilterButtons() {
     // ButtonNoFilter
-    document.getElementById("filterButtonNo").addEventListener("click", function() {
-      selectedFilters = [];
-      resetTree();
-      document.getElementById("filterButtonExtent").classList.remove("active");
-      document.getElementById("filterButtonKeywords").classList.remove("active");
-    });
+        document.getElementById("filter-button-no").addEventListener("click", function() {
+            selectedFilters = [];
+            resetTree();
+            document.getElementById("filterButtonExtent").classList.remove("active");
+            document.getElementById("filterButtonKeywords").classList.remove("active");
+        });
 
-    const filtersUpdate = new CustomEvent('selectedFiltersUpdated');
+        const filtersUpdate = new CustomEvent('selectedFiltersUpdated');
 
-    document.querySelectorAll('#filter-buttons > label').forEach(button => {
-      const filterName = button.children[0].name;
+        document.querySelectorAll('#filter-buttons > label').forEach(button => {
+            const filterName = button.children[0].name;
 
-      button.addEventListener("click", () => {
-        if (!button.classList.contains("active")) {
-          selectedFilters.push(filterName);
-          document.dispatchEvent(filtersUpdate);
+            button.addEventListener("click", () => {
+                if (!button.classList.contains("active")) {
+                    selectedFilters.push(filterName);
+                    document.dispatchEvent(filtersUpdate);
+                } else {
+                    selectedFilters.splice(selectedFilters.indexOf(filterName), 1);
+                    document.dispatchEvent(filtersUpdate);
+                }
+            });
+        });
+    }
+
+    document.addEventListener('selectedFiltersUpdated', () => {
+        if (selectedFilters.length < 1) {
+            resetTree();
         } else {
-          selectedFilters.splice(selectedFilters.indexOf(filterName), 1);
-          document.dispatchEvent(filtersUpdate);
+            resetTree(false)
+            filter();
         }
-      });
     });
-  }
 
-  document.addEventListener('selectedFiltersUpdated', () => {
-    if (selectedFilters.length < 1) {
-      resetTree();
-    } else {
-      resetTree(false)
-      filter();
+    /**
+     * This method iterates through an array of selected filters, applying each filter function from the `listFilters` object.
+     */
+    async function filter() {
+        layerStore.setProjectAllVisible();
+
+        for (let i = 0; i < selectedFilters.length; i++) {
+            listFilters[selectedFilters[i]].filter();
+        }
     }
-  });
 
-  async function filter() {
-    layerStore.setProjectAllVisible();
-
-    for (let i = 0; i < selectedFilters.length; i++) {
-      listFilters[selectedFilters[i]].filter();
-    }
-  }
-
-  function resetTree(complete = true) {
-    listTree = layerStore.setProjectAllVisible();
-    if (complete) {
-    document.getElementById("filterKeywordsList").classList.remove("active");
-    document.getElementById("filterKeywordsHandler").classList.remove("active");
-}
+    /**
+     * Resets the state of the tree structure and updates it.
+     * If the `complete` parameter is set to true, additional UI elements are reset.
+     * @param {boolean} [complete] - Indicates if a complete reset should occur, including UI elements.
+     */
+    function resetTree(complete = true) {
+        listTree = layerStore.setProjectAllVisible();
+        if (complete) {
+            document.getElementById("filter-keywords-list").classList.remove("active");
+            document.getElementById("filter-keywords-handler").classList.remove("active");
+        }
         layerStore.updateTree(listTree);
-
     }
 
     /* Handle custom addLayerButton clicks */

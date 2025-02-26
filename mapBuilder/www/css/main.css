@@ -479,7 +479,7 @@ custom-slider .thumb {
 
 /* CSS for filtering buttons */
 
-#filterButtonNo {
+#filter-button-no {
     width: 100%;
     color: #fff;
     background-color: #6c757d;
@@ -487,13 +487,13 @@ custom-slider .thumb {
     margin-bottom: 10px
 }
 
-#filterButtonNo:hover {
+#filter-button-no:hover {
     color: #fff;
     background-color: #5a6268;
     border-color: #545b62;
 }
 
-#filterButtonNo:active {
+#filter-button-no:active {
     color: #fff;
     background-color: #545b62;
     border-color: #4e555b;
@@ -508,26 +508,26 @@ custom-slider .thumb {
     cursor: pointer;
 }
 
-#filterKeywordsHandler {
+#filter-keywords-handler {
     display: none;
     justify-content: space-around;
     flex-wrap: wrap;
     gap: 10px;
     max-width: 390px;
-    margin: auto auto 12px auto;
+    margin: auto auto 12px;
     width: 90%;
 }
 
-#filterKeywordsHandler.active {
+#filter-keywords-handler.active {
     display: flex;
 }
 
-#filterKeywordsListButton {
+#filter-keywords-list-button {
     width: 100%;
     z-index: 2;
 }
 
-#filterKeywordsList {
+#filter-keywords-list {
     width: 100%;
     margin-top: -20px;
     z-index: 1;
@@ -537,17 +537,17 @@ custom-slider .thumb {
     font-size: .875rem;
     border-radius: 0 0 8px 8px;
     overflow-y: scroll;
-    max-height: 0px;
+    max-height: 0;
     transition: ease 0.3s;
 }
 
-#filterKeywordsList.active {
+#filter-keywords-list.active {
     max-height: 145px;
-    box-shadow: 0 0 4px 0.3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 4px 0.3px rgb(0 0 0 / 30%);
     margin-top: -12px;
 }
 
-#filterKeywordsListWords {
+#filter-keywords-list-words {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
@@ -555,14 +555,14 @@ custom-slider .thumb {
     padding: 3px;
 }
 
-#filterKeywordsListUtilsBar {
+#filter-keywords-list-utils-bar {
     width: 100%;
     display: flex;
     margin: 8px 8px 0;
     align-items: center;
 }
 
-#filterKeyword {
+#filter-keyword {
     margin: 5px;
     cursor: pointer;
     padding: 5px 9px;
@@ -570,15 +570,15 @@ custom-slider .thumb {
     transition: ease 0.1s;
 }
 
-#filterKeyword:hover {
-    box-shadow: 0 0 4px 0.3px rgba(0, 0, 0, 0.2);
+#filter-keyword:hover {
+    box-shadow: 0 0 4px 0.3px rgb(0 0 0 / 20%);
 }
 
-#filterKeyword.active {
-    box-shadow: 0 0 4px 0.3px rgba(0, 0, 0, 0.2);
+#filter-keyword.active {
+    box-shadow: 0 0 4px 0.3px rgb(0 0 0 / 20%);
     background-color: #e2f4ff;
 }
 
-#filterKeywordsListWords.inter > #filterKeyword.active {
+#filter-keywords-list-words.inter > #filter-keyword.active {
     background-color: #ffe2e2;
 }

@@ -102,7 +102,7 @@
         <span id="layers-loading"></span>
       </div>
       <div id="layer-store-holder">
-        <button id="filterButtonNo" type="button" class="btn btn-secondary btn-sm">{@mapBuilder~dictionary.filter.button.no@}</button>
+        <button id="filter-button-no" type="button" class="btn btn-secondary btn-sm">{@mapBuilder~dictionary.filter.button.no@}</button>
         <div id="filter-buttons" class="btn-group-toggle" data-toggle="buttons">
           <label class="btn btn-secondary btn-sm" id="filterButtonExtent">
             <input type="checkbox" name="Extent" autocomplete="off"> {@mapBuilder~dictionary.filter.button.extent@}
@@ -111,12 +111,12 @@
             <input type="checkbox" name="Keywords" autocomplete="off"> {@mapBuilder~dictionary.filter.button.keywords@}
           </label>
         </div>
-        <div id="filterKeywordsHandler">
-          <button id="filterKeywordsListButton" type="button" class="btn btn-sm btn-info dropdown-toggle">
+        <div id="filter-keywords-handler">
+          <button id="filter-keywords-list-button" type="button" class="btn btn-sm btn-info dropdown-toggle">
             {@mapBuilder~dictionary.filter.keywords.list@}
           </button>
-          <div id="filterKeywordsList" class="">
-            <div id="filterKeywordsListUtilsBar">
+          <div id="filter-keywords-list" class="">
+            <div id="filter-keywords-list-utils-bar">
               <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 <label id="keywordsUnionButton" class="btn btn-outline-secondary btn-sm active">
                   <input type="radio" name="options" checked> {@mapBuilder~dictionary.filter.keywords.radio.union@}
@@ -129,7 +129,7 @@
                 <input id="keywordsFindInput" type="text" class="form-control" placeholder="{@mapBuilder~dictionary.filter.keywords.search.placeholder@}" aria-label="Username">
               </div>
             </div>
-            <div id="filterKeywordsListWords"></div>
+            <div id="filter-keywords-list-words"></div>
           </div>
         </div>
       </div>

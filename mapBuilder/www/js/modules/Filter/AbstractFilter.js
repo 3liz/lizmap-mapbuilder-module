@@ -1,14 +1,13 @@
-import { LayerTreeFolder } from "../LayerTree/LayerTreeFolder";
 import { LayerTreeProject } from "../LayerTree/LayerTreeProject";
 
 export class AbstractFilter {
 
     /**
      * Filter the layer tree.
-     * @param {LayerTreeFolder[]} layerTree - Layer tree to filter.
+     * @param {import("../../components/LayerStore").LayerStore} layerStore - Layer Store tree to filter.
      */
     constructor(layerStore) {
-      this._layerStore = layerStore;
+        this._layerStore = layerStore;
     }
 
     /**

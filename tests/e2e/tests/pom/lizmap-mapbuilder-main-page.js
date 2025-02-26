@@ -174,7 +174,7 @@ exports.LizmapMapbuilderMainPage = class LizmapMapbuilderMainPage {
      * Sets the layer store configuration to "No Filter".
      */
     async setLayerStoreNoFilter() {
-        await this.page.locator("#filterButtonNo").click();
+        await this.page.locator("#filter-button-no").click();
     }
 
     /**
@@ -195,7 +195,7 @@ exports.LizmapMapbuilderMainPage = class LizmapMapbuilderMainPage {
      * Open list of keywords.
      */
     async openCloseKeywordsList() {
-        await this.page.locator("#filterKeywordsListButton").click();
+        await this.page.locator("#filter-keywords-list-button").click();
     }
 
     /**

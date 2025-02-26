@@ -105,7 +105,7 @@ export class LayerTreeProject extends LayerTreeFolder {
 
     /**
      * Get the keywords of the layer.
-     * @return {string[]} Keywords of the layer.
+     * @returns {string[]} Keywords of the layer.
      */
     getKeywords() {
         return this._keywords;
