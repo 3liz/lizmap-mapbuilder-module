@@ -4,6 +4,30 @@
 
 ### Added
 
+## 2.3.0 - 2025-02-27
+
+### Added
+
+* Filters on which project to show in the `LayerStore` : 
+   * Filter by extent
+   * Filter by keywords between "Union" & "Intersection
+* `ESLint` for JavaScript code quality
+* `StyleLint` for CSS code quality
+* `PHP CS Fixer` for PHP code quality
+* `PHP Stan` for PHP code quality
+* `Playwright` for e2e tests
+* Some testing projects
+* New logo for project layers in the `LayerStore`
+* Indicator from which project a selected layer comes from
+
+### Changed
+
+* `LayerStore` structure for projects
+
+### Fixed
+
+* Update the order of layers in the legend dock
+
 ## 2.2.1 - 2025-01-20
 
 ### Fixed
