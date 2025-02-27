@@ -1,29 +1,32 @@
-import { LayerTreeFolder } from "../LayerTree/LayerTreeFolder";
 import { LayerTreeProject } from "../LayerTree/LayerTreeProject";
 
 export class AbstractFilter {
 
     /**
      * Filter the layer tree.
-     * @param {LayerTreeFolder[]} layerTree - Layer tree to filter.
+     * @param {import("../../components/LayerStore").LayerStore} layerStore - Layer Store tree to filter.
      */
-    constructor(layerTree) {
-        this._layerTree = layerTree;
+    constructor(layerStore) {
+        this._layerStore = layerStore;
     }
 
     /**
      * Filter the layer tree.
      */
-    async filter() {
+    filter() {
+        this._layerTree = this._layerStore.getTree();
         for (let i = 0; i < this._layerTree.length; i++) {
             this._currentFolder = this._layerTree[i];
             for (let k = 0; k < this._currentFolder.getChildren().length; k++) {
                 if (this._currentFolder.getChildren()[k] instanceof LayerTreeProject) {
                     this._currentProject = this._currentFolder.getChildren()[k]
-                    this.filterProj(this._currentProject);
+                    if (this._currentProject.isVisible()) {
+                        this.filterProj(this._currentProject);
+                    }
                 }
             }
         }
+        this._layerStore.updateTree(this._layerTree);
     }
 
     /**

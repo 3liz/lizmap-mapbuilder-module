@@ -102,13 +102,35 @@
         <span id="layers-loading"></span>
       </div>
       <div id="layer-store-holder">
+        <button id="filter-button-no" type="button" class="btn btn-secondary btn-sm">{@mapBuilder~dictionary.filter.button.no@}</button>
         <div id="filter-buttons" class="btn-group-toggle" data-toggle="buttons">
-          <label class="btn btn-secondary btn-sm active"  id="filterButtonNo">
-            <input type="radio" name="No" autocomplete="off" checked> {@mapBuilder~dictionary.filter.button.no@}
-          </label>
           <label class="btn btn-secondary btn-sm" id="filterButtonExtent">
-            <input type="radio" name="Extent" autocomplete="off"> {@mapBuilder~dictionary.filter.button.extent@}
+            <input type="checkbox" name="Extent" autocomplete="off"> {@mapBuilder~dictionary.filter.button.extent@}
           </label>
+          <label class="btn btn-secondary btn-sm" id="filterButtonKeywords">
+            <input type="checkbox" name="Keywords" autocomplete="off"> {@mapBuilder~dictionary.filter.button.keywords@}
+          </label>
+        </div>
+        <div id="filter-keywords-handler">
+          <button id="filter-keywords-list-button" type="button" class="btn btn-sm btn-info dropdown-toggle">
+            {@mapBuilder~dictionary.filter.keywords.list@}
+          </button>
+          <div id="filter-keywords-list" class="">
+            <div id="filter-keywords-list-utils-bar">
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label id="keywordsUnionButton" class="btn btn-outline-secondary btn-sm active">
+                  <input type="radio" name="options" checked> {@mapBuilder~dictionary.filter.keywords.radio.union@}
+                </label>
+                <label id="keywordsIntersectButton" class="btn btn-outline-secondary btn-sm">
+                  <input type="radio" name="options"> {@mapBuilder~dictionary.filter.keywords.radio.intersect@}
+                </label>
+              </div>
+              <div class="input-group input-group-sm ml-3 mr-2">
+                <input id="keywordsFindInput" type="text" class="form-control" placeholder="{@mapBuilder~dictionary.filter.keywords.search.placeholder@}" aria-label="Username">
+              </div>
+            </div>
+            <div id="filter-keywords-list-words"></div>
+          </div>
         </div>
       </div>
       <div id="base-layer">

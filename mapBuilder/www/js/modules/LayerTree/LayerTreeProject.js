@@ -6,6 +6,7 @@ import {LayerTreeFolder} from "./LayerTreeFolder";
  *  @property {boolean} _loading Loading state of the folder.
  *  @property {boolean} _failed If the folder got a load error.
  * @property {boolean} _visible Visibility of the layer for filtering.
+ * @property {string[]} _keywords Keywords of the project.
  */
 export class LayerTreeProject extends LayerTreeFolder {
 
@@ -27,6 +28,8 @@ export class LayerTreeProject extends LayerTreeFolder {
         this._failed = false;
 
         this._visible = true;
+
+        this._keywords = [];
     }
 
     /**
@@ -90,5 +93,21 @@ export class LayerTreeProject extends LayerTreeFolder {
      */
     setVisible(visible) {
         this._visible = visible;
+    }
+
+    /**
+     * Set the keywords of the layer.
+     * @param {string[]} keywords Keywords of the layer.
+     */
+    setKeywords(keywords) {
+        this._keywords = keywords;
+    }
+
+    /**
+     * Get the keywords of the layer.
+     * @returns {string[]} Keywords of the layer.
+     */
+    getKeywords() {
+        return this._keywords;
     }
 }

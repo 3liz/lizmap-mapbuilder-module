@@ -17,11 +17,13 @@ export class LayerStore extends HTMLElement {
     /**
      * Create a layer store.
      * @param {HTMLElement} container The HTMLElement where the layer store will be rendered.
+     * @param {import("../modules/Filter/KeywordsManager").KeywordsManager} keywordsManager The keywords manager.
      */
-    constructor(container) {
+    constructor(container, keywordsManager) {
         super();
         this.container = container;
         this.tree = [];
+        this.keywordsManager = keywordsManager;
 
         mapBuilder.layerStoreTree.forEach((value) => {
             this.tree.push(new LayerTreeFolder({
@@ -221,19 +223,25 @@ export class LayerStore extends HTMLElement {
 
     /**
      * Load the project and create the tree.
-     * @param {LayerTreeFolder} folder Folder with specs of the project to load.
+     * @param {LayerTreeProject} project Folder with specs of the project to load.
      * @returns {Promise<[]>} The children of the folder.
      */
-    async loadTree(folder) {
-        var repositoryId = folder.getRepository();
-        var projectId = folder.getProject();
+    async loadTree(project) {
+        var repositoryId = project.getRepository();
+        var projectId = project.getProject();
         var url = lizUrls.wms + "?repository=" + repositoryId + "&project=" + projectId + "&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
         var parser = new WMSCapabilities();
 
         const promises = [
             new Promise(resolve => {
-                $.get(url, function (capabilities) {
+                $.get(url, (capabilities) => {
                     var result = parser.read(capabilities);
+
+                    const wordList = result["Service"]["KeywordList"]
+
+                    this.keywordsManager.addKeywordFromList(wordList);
+                    project.setKeywords(wordList);
+
                     if (result.hasOwnProperty('Capability')) {
                         var node = result.Capability;
 
