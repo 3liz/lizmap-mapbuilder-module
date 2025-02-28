@@ -4,6 +4,20 @@
 
 ### Added
 
+## 2.3.1 - 2025-02-28
+
+### Added
+
+* If the configured extent is empty, a default one is loaded
+
+### Update
+
+* Global values now pass through a JSON from PHP to JS
+
+### Fixed
+
+* Catching errors of configured extent
+
 ## 2.3.0 - 2025-02-27
 
 ### Added
