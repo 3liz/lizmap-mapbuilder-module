@@ -1,6 +1,4 @@
 // it is important to set global var before any imports
-__webpack_public_path__ = lizUrls.basepath+'mapBuilder/js/';
-
 import $ from 'jquery';
 
 import 'ol/ol.css';
@@ -44,7 +42,30 @@ var originalZoom = 6;
 // 1 inch = 2,54 cm = 25,4 mm
 const INCHTOMM = 25.4;
 
-$(function() {
+document.addEventListener('DOMContentLoaded', () => {
+    // Parsing JSONs
+    const lizUrlsJSON = JSON.parse(document.getElementById('conf-script-lizUrls').textContent);
+    const mapBuilderJSON = JSON.parse(document.getElementById('conf-script-mapBuilder').textContent);
+    const lizDictJSON = JSON.parse(document.getElementById('conf-script-lizDict').textContent);
+
+    // Initializing vars
+    let mapBuilder = {};
+
+    const { layerStoreTree, extent, baseLayerKeyOSMCycleMap, baseLayerKeyBing, baseLayerKeyIGN } = mapBuilderJSON;
+    Object.assign(mapBuilder, { layerStoreTree, extent, baseLayerKeyOSMCycleMap, baseLayerKeyBing, baseLayerKeyIGN });
+    mapBuilder.baseLayer = mapBuilderJSON["baseLayer"];
+
+    let lizDict = lizDictJSON["lizDict"];
+
+    let lizUrls = {};
+    const { basepath, config, wms, media, mapcontext_add, mapcontext_delete, mapcontext_get } = lizUrlsJSON["lizUrls"];
+    Object.assign(lizUrls, { basepath, config, wms, media, mapcontext_add, mapcontext_delete, mapcontext_get });
+
+    window.lizUrls = lizUrls;
+    window.mapBuilder = mapBuilder;
+    window.lizDict = lizDict;
+
+    __webpack_public_path__ = lizUrls.basepath+'mapBuilder/js/';
 
     /**
      * Add a flash message to the page
@@ -349,7 +370,19 @@ $(function() {
 
     // Extent is set in mapBuilder.ini.php => fit view on it and override originalCenter and originalZoom
     if(mapBuilder.hasOwnProperty('extent')){
-        mapBuilder.map.getView().fit(transformExtent(mapBuilder.extent, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
+
+        if (mapBuilder.extent.length < 1) {
+            mapBuilder.extent = [-4.65,40.63,9.10,51.68];
+            mAddMessage(lizDict["empty.extent.configuration"], "info", true, 10000);
+        }
+
+        try {
+            mapBuilder.map.getView().fit(transformExtent(mapBuilder.extent, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
+        } catch (e) {
+            mAddMessage(lizDict["error.extent"], "danger", true, 10000)
+            console.error(e)
+            mapBuilder.map.getView().fit(transformExtent([-4.65,40.63,9.10,51.68], 'EPSG:4326', mapBuilder.map.getView().getProjection()));
+        }
 
         originalCenter = mapBuilder.map.getView().getCenter();
         originalZoom = mapBuilder.map.getView().getZoom();
