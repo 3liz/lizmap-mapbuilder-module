@@ -46,6 +46,11 @@ export class ZoomToOriginControl extends Control {
             extent = document.getElementById("jforms_mapBuilderAdmin_config_extent").value.split(',').map(parseFloat);
         }
 
+        // Error in extent
+        if (extent.length < 4) {
+            extent = [-4.65,40.63,9.10,51.68];
+        }
+
         extent = transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
 
         this.getMap().getView().fit(extent, {

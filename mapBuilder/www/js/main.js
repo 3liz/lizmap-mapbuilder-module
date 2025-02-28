@@ -349,6 +349,11 @@ $(function() {
 
     // Extent is set in mapBuilder.ini.php => fit view on it and override originalCenter and originalZoom
     if(mapBuilder.hasOwnProperty('extent')){
+        if (mapBuilder.extent.length < 1) {
+            mapBuilder.extent = [-4.65,40.63,9.10,51.68];
+            mAddMessage(lizDict["empty.extent.configuration"], "info", true, 10000);
+        }
+
         try {
             mapBuilder.map.getView().fit(transformExtent(mapBuilder.extent, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
         } catch (e) {
