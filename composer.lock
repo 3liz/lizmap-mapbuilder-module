@@ -629,16 +629,16 @@
         },
         {
             "name": "jelix/castor",
-            "version": "v1.1.4",
+            "version": "v1.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jelix/castor.git",
-                "reference": "ade9f5a9cc4cd8dd5ffbe243519bc77becb20da4"
+                "reference": "094d61e83f05fc085cf92da9cb82ada3d0c26c4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jelix/castor/zipball/ade9f5a9cc4cd8dd5ffbe243519bc77becb20da4",
-                "reference": "ade9f5a9cc4cd8dd5ffbe243519bc77becb20da4",
+                "url": "https://api.github.com/repos/jelix/castor/zipball/094d61e83f05fc085cf92da9cb82ada3d0c26c4d",
+                "reference": "094d61e83f05fc085cf92da9cb82ada3d0c26c4d",
                 "shasum": ""
             },
             "require": {
@@ -679,9 +679,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jelix/castor/issues",
-                "source": "https://github.com/jelix/castor/tree/v1.1.4"
+                "source": "https://github.com/jelix/castor/tree/v1.1.5"
             },
-            "time": "2024-11-29T15:05:40+00:00"
+            "time": "2025-02-14T13:20:58+00:00"
         },
         {
             "name": "jelix/composer-module-setup",
@@ -904,16 +904,16 @@
         },
         {
             "name": "jelix/jelix",
-            "version": "v1.8.15",
+            "version": "v1.8.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jelix/jelix.git",
-                "reference": "f57c345b1c1338398a4428a83517ba9259617abf"
+                "reference": "e51ad351625d0b703ecb13af0f0563680fbc1629"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jelix/jelix/zipball/f57c345b1c1338398a4428a83517ba9259617abf",
-                "reference": "f57c345b1c1338398a4428a83517ba9259617abf",
+                "url": "https://api.github.com/repos/jelix/jelix/zipball/e51ad351625d0b703ecb13af0f0563680fbc1629",
+                "reference": "e51ad351625d0b703ecb13af0f0563680fbc1629",
                 "shasum": ""
             },
             "require": {
@@ -994,9 +994,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jelix/jelix/issues",
-                "source": "https://github.com/jelix/jelix/tree/v1.8.15"
+                "source": "https://github.com/jelix/jelix/tree/v1.8.16"
             },
-            "time": "2025-01-24T15:43:01+00:00"
+            "time": "2025-02-06T15:04:24+00:00"
         },
         {
             "name": "jelix/properties-file",
