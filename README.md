@@ -3,7 +3,7 @@
 [![Release 🚀](https://github.com/3liz/lizmap-mapbuilder-module/actions/workflows/release.yml/badge.svg)](https://github.com/3liz/lizmap-mapbuilder-module/actions/workflows/release.yml)
 [![Packagist](https://img.shields.io/packagist/v/lizmap/lizmap-mapbuilder-module)](https://packagist.org/packages/lizmap/lizmap-mapbuilder-module)
 
-![demo](demo.jpg "3Liz Map Builder")
+![demo](demo.png "3Liz Map Builder")
 
 You can have a look at our [map builder demo](https://demo.lizmap.com/mapbuilder/).
 * OSM project
