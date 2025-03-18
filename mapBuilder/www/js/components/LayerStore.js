@@ -74,7 +74,7 @@ export class LayerStore extends HTMLElement {
         //Template of a folder.
         let template = html`
         <li class='layer-store-arrow ${tagLazy}' @click='${(event) => this.action(element, event)}'>
-        <span class='layer-store-folder  fas ${icoSpan}'></span>
+        <span class='layer-store-folder  fas ${icoSpan} ${tagLazy}'></span>
         <span class="layer-store-title">${element.getTitle()}</span>
         ${!element.getProject()
                 ? html`

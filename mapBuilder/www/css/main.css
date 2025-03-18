@@ -454,7 +454,12 @@ ul .layer-store-layer:last-child {
 }
 
 .layer-store-folder.project {
-    content: url("./svg/project.svg");
+    content: url("./svg/project-loaded.svg");
+    width: 30px;
+}
+
+.layer-store-folder.project.lazy {
+    content: url("./svg/project-close.svg");
     width: 30px;
 }
 
