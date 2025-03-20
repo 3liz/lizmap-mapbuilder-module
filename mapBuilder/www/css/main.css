@@ -590,7 +590,7 @@ custom-slider .thumb {
     max-width: 250px;
     cursor: default;
     margin: 5px;
-    opacity: 100%;
+    opacity: 1;
 }
 
 .flash-message-text {
@@ -602,50 +602,50 @@ custom-slider .thumb {
     margin-bottom: 0;
 }
 
+.flash-message-text:hover {
+    transition: 0.2s;
+}
+
 .flash-message:not(.closable) > .flash-message-text {
     cursor: default;
 }
 
 .flash-message-text.type-info {
-    background-color: rgb(210, 226, 255);
+    background-color: rgb(210 226 255);
 }
 
 .flash-message-text.type-danger {
-    background-color: rgb(255, 210, 210);
+    background-color: rgb(255 210 210);
 }
 
 .flash-message-text.type-success {
-    background-color: rgb(191, 244, 197);
+    background-color: rgb(191 244 197);
 }
 
-
-.flash-message-text:hover {
-    transition: 0.2s;
-}
 
 .closable > .flash-message-text.type-info:hover {
-    background-color: rgb(200, 216, 255);
+    background-color: rgb(200 216 255);
 }
 
 .closable > .flash-message-text.type-danger:hover {
-    background-color: rgb(255, 200, 200);
+    background-color: rgb(255 200 200);
 }
 
 .closable > .flash-message-text.type-success:hover {
-    background-color: rgb(181, 234, 187);
+    background-color: rgb(181 234 187);
 }
 
 
 .closable > .flash-message-text.type-info:active {
-    background-color: rgb(184, 200, 255);
+    background-color: rgb(184 200 255);
 }
 
 .closable > .flash-message-text.type-danger:active {
-    background-color: rgb(255, 184, 184);
+    background-color: rgb(255 184 184);
 }
 
 .closable > .flash-message-text.type-success:active {
-    background-color: rgb(165, 225, 161);
+    background-color: rgb(165 225 161);
 }
 
 
@@ -656,15 +656,15 @@ custom-slider .thumb {
 }
 
 .timer-bar-holder.type-info {
-    background-color: rgb(171, 198, 255);
+    background-color: rgb(171 198 255);
 }
 
 .timer-bar-holder.type-danger {
-    background-color: rgb(255, 171, 171);
+    background-color: rgb(255 171 171);
 }
 
 .timer-bar-holder.type-success {
-    background-color: rgb(136, 228, 146);
+    background-color: rgb(136 228 146);
 }
 
 
@@ -672,17 +672,18 @@ custom-slider .thumb {
     width: 100%;
     height: 5px;
     border-radius: 0 0 0 7px;
+
     /* add a transition: linear ...s into a js script */
 }
 
 .timer-bar-scroller.type-info {
-    background-color: rgb(84, 142, 255);
+    background-color: rgb(84 142 255);
 }
 
 .timer-bar-scroller.type-danger {
-    background-color: rgb(255, 76, 76);
+    background-color: rgb(255 76 76);
 }
 
 .timer-bar-scroller.type-success {
-    background-color: rgb(44, 179, 62);
+    background-color: rgb(44 179 62);
 }
