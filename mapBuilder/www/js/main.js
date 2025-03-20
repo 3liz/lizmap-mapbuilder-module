@@ -27,6 +27,7 @@ import './modules/bottom-dock.js';
 import {LayerStore} from "./components/LayerStore";
 import {addElementToLayerArray} from "./modules/LayerSelection/LayerSelection.js";
 import {CustomProgress} from "./components/inkmap/ProgressBar";
+import {FlashMessage} from "./components/FlashMessage"
 
 import {getJobStatus, queuePrint} from './dist/inkmap.js';
 
@@ -76,41 +77,22 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {HTMLElement} The message element
      */
     function mAddMessage( aMessage, aType, aClose, aTimer ) {
-        var mType = 'info';
-        var mTypeList = ['info', 'danger', 'success'];
-        var mClose = false;
-        var mDismissible = '';
+        const mTypeList = ['info', 'danger', 'success'];
+        let mType = 'info';
 
-        if ( $.inArray(aType, mTypeList) != -1 )
+        if (mTypeList.includes(aType)) {
             mType = aType;
-
-        if ( aClose ){
-            mClose = true;
-            mDismissible = 'alert-dismissible';
         }
 
-        var html = '<div class="alert alert-'+mType+' '+mDismissible+' fade show" role="alert">';
-
-        html += aMessage;
-
-        if ( mClose ){
-            html += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\
-                <span aria-hidden="true">&times;</span>\
-              </button>';
-        }
-
-        html += '</div>';
-
-        var elt = $(html);
-        $('#message').append(elt);
+        const flashM = new FlashMessage(aMessage, mType, aClose, aTimer);
 
         if(aTimer !== undefined){
             setTimeout(function() {
-                $(".alert").alert('close');
+                flashM.removeElement();
             }, aTimer);
         }
 
-        return elt;
+        return flashM.getElement();
     }
 
     /**
