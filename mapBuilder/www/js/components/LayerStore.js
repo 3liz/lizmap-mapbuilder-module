@@ -196,6 +196,7 @@ export class LayerStore extends HTMLElement {
                 updateChildrenAttributes(children, element);
                 element.createChildren(children);
                 element.changeStatusFolder();
+                element.loadBbox();
             } else {
                 element.setFailed();
             }

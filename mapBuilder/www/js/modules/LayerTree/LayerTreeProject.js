@@ -1,4 +1,5 @@
 import {LayerTreeFolder} from "./LayerTreeFolder";
+import {extend} from 'ol/extent';
 
 /**
  *  Class representing a folder that represents a project.
@@ -30,6 +31,57 @@ export class LayerTreeProject extends LayerTreeFolder {
         this._visible = true;
 
         this._keywords = [];
+    }
+
+    /**
+     * Load a bbox value for the project that includes all children bbox.
+     * It is used for filtering.
+     */
+    loadBbox() {
+        const firstBbox = this.getFirstBbox(this._children[0]);
+        this.setBbox(this.recLoadBbox(this, firstBbox));
+    }
+
+    /**
+     * Retrieves the first bounding box (bbox) found in the given project.
+     * @param {object} layerTreeElement - The layer tree element to search for a bounding box.
+     * @returns {import("ol/extent").Extent} The bounding box object of the first layer tree element.
+     * @throws {Error} If no layer in the tree contains a bounding box.
+     */
+    getFirstBbox(layerTreeElement) {
+        if (layerTreeElement.getBbox()) {
+            return layerTreeElement.getBbox();
+        } else if (layerTreeElement.hasChildren()) {
+            let children = layerTreeElement.getChildren();
+            for (let i = 0; i < children.length; i++) {
+                if (layerTreeElement.getBbox()) {
+                    return layerTreeElement.getBbox();
+                }
+            }
+        }
+        throw new Error("Project doesn't have layers with bbox.")
+    }
+
+    /**
+     * Recursive func used to return a bbox.
+     * @param {import("./LayerTreeElement").LayerTreeElement} layerTreeElement - Current element in the tree
+     * @param {import("ol/extent").Extent} currentBbox - Current bbox
+     * @returns {import("ol/extent").Extent} A bbox.
+     */
+    recLoadBbox(layerTreeElement, currentBbox) {
+        if (layerTreeElement.getBbox()) {
+            return layerTreeElement.getBbox();
+        }
+        for (let i = 0; i < this._children.length; i++) {
+            currentBbox = extend(
+                currentBbox,
+                this.recLoadBbox(
+                    layerTreeElement.getChildren()[i],
+                    currentBbox
+                )
+            );
+        }
+        return currentBbox
     }
 
     /**
