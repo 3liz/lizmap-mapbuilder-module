@@ -25,7 +25,7 @@ import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from '
 import './modules/bottom-dock.js';
 
 import {LayerStore} from "./components/LayerStore";
-import {addElementToLayerArray} from "./modules/LayerSelection/LayerSelection.js";
+import {addElementToLayerArray, updateFromLayerTree} from "./modules/LayerSelection/LayerSelection.js";
 import {CustomProgress} from "./components/inkmap/ProgressBar";
 import {FlashMessage} from "./components/FlashMessage"
 
@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Refresh the layerSelected tree to reflect OL layer's state
+     * @returns {Array} An array of layer objects representing the selected layers in the map, organized by z-index.
      */
     function refreshLayerSelected() {
         var layerTree = [];
@@ -106,6 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 var layerObject = {
                     repositoryId: layer.getProperties().repositoryId,
                     projectId: layer.getProperties().projectId,
+                    projectName: layer.getProperties().projectName,
+                    elementColor: layer.getProperties().elementColor,
                     title: layer.getProperties().title,
                     styles: layer.getSource().getParams().STYLES,
                     hasAttributeTable: layer.getProperties().hasAttributeTable,
@@ -126,6 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Refresh legends
         loadLegend();
+
+        return layerTree;
     }
 
     var dragZoomControl = class DragZoomControl extends Control {
@@ -663,6 +668,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelector("#layers-loading > .spinner-grow:first-child").remove();
             });
 
+            newLayer.setProperties({"elementColor": element.style.backgroundColor});
+
             mapBuilder.map.addLayer(newLayer);
             refreshLayerSelected();
 
@@ -890,6 +897,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     title: layerProperties.title,
                     repositoryId: layerProperties.repositoryId,
                     projectId: layerProperties.projectId,
+                    projectName: layerProperties.projectName,
+                    elementColor: layerProperties.elementColor,
                     opacity: layerProperties.opacity,
                     bbox: layerProperties.bbox,
                     popup: layerProperties.popup,
@@ -964,6 +973,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     mapBuilder.map.getView().setCenter(mapcontext.center);
                     mapBuilder.map.getView().setZoom(mapcontext.zoom);
 
+                    let layerTree = [];
+
                     // Load layers if present
                     if(mapcontext.layers.length > 0){
                         for (var k = 0; k < mapcontext.layers.length; k++) {
@@ -973,6 +984,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 title: layerContext.title,
                                 repositoryId: layerContext.repositoryId,
                                 projectId: layerContext.projectId,
+                                projectName: layerContext.projectName,
+                                elementColor: layerContext.elementColor,
                                 opacity: layerContext.opacity,
                                 bbox: layerContext.bbox,
                                 popup: layerContext.popup,
@@ -992,8 +1005,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             mapBuilder.map.addLayer(newLayer);
                         }
-                        refreshLayerSelected();
+                        layerTree = refreshLayerSelected();
                     }
+                    updateFromLayerTree(layerTree)
                 }
             });
 
