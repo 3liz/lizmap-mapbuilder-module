@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "jspdf": "^2.5.1",
-    "lit-html": "^3.1.2",
+    "lit-html": "^3.3.0",
     "ol": "^10.2.1",
     "uuid": "^9.0.1"
   }
