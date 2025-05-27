@@ -31,7 +31,10 @@ export class ExtentFilter extends AbstractFilter {
         let currentProjection = mapBuilder.map.getView().getProjection();
         let mapBuilderExtent = transformExtent(currentExtent, currentProjection, 'EPSG:4326');
 
-        let visible = intersects(layerExtent, mapBuilderExtent);
+        let visible = true;
+        if (layerExtent) {
+            visible = intersects(layerExtent, mapBuilderExtent);
+        }
         this._currentProject.setVisible(visible);
         return visible
     }
