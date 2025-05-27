@@ -483,7 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const button = document.getElementById("filterButtonKeywords");
 
         button.addEventListener("click", function() {
-            if (!button.classList.contains("active")) {
+            if (button.classList.contains("active")) {
                 document.getElementById("filter-keywords-handler").classList.add("active");
             } else {
                 document.getElementById("filter-keywords-handler").classList.remove("active");
@@ -530,24 +530,18 @@ document.addEventListener('DOMContentLoaded', () => {
      * Initialize filter buttons.
      */
     function initFilterButtons() {
-    // ButtonNoFilter
-        document.getElementById("filter-button-no").addEventListener("click", function() {
-            selectedFilters = [];
-            resetTree();
-            document.getElementById("filterButtonExtent").classList.remove("active");
-            document.getElementById("filterButtonKeywords").classList.remove("active");
-        });
-
         const filtersUpdate = new CustomEvent('selectedFiltersUpdated');
 
-        document.querySelectorAll('#filter-buttons > label').forEach(button => {
-            const filterName = button.children[0].name;
+        document.querySelectorAll('#filter-buttons > button').forEach(button => {
+            const filterName = button.name;
 
             button.addEventListener("click", () => {
                 if (!button.classList.contains("active")) {
+                    button.classList.add("active");
                     selectedFilters.push(filterName);
                     document.dispatchEvent(filtersUpdate);
                 } else {
+                    button.classList.remove("active");
                     selectedFilters.splice(selectedFilters.indexOf(filterName), 1);
                     document.dispatchEvent(filtersUpdate);
                 }

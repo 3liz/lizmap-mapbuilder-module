@@ -510,7 +510,29 @@ custom-slider .thumb {
     margin-bottom: 12px;
     flex-wrap: wrap;
     gap: 10px;
-    cursor: pointer;
+}
+
+#filter-buttons > button {
+    font-size: 14px;
+    color: #2c4b5c;
+    padding: 4px 8px;
+    border-radius: 3px;
+    background-color: #f9f9f9;
+    border: solid 3px #43718c;
+}
+
+#filter-buttons > button:hover {
+    background-color: #f1faff;
+    transition: linear 0.1s;
+}
+
+#filter-buttons > button:active {
+    background-color: #e2f4ff;
+}
+
+#filter-buttons > button.active {
+    color: white;
+    background-color: #43718c;;
 }
 
 #filter-keywords-handler {

@@ -102,14 +102,13 @@
         <span id="layers-loading"></span>
       </div>
       <div id="layer-store-holder">
-        <button id="filter-button-no" type="button" class="btn btn-secondary btn-sm">{@mapBuilder~dictionary.filter.button.no@}</button>
         <div id="filter-buttons" class="btn-group-toggle" data-toggle="buttons">
-          <label class="btn btn-secondary btn-sm" id="filterButtonExtent">
-            <input type="checkbox" name="Extent" autocomplete="off"> {@mapBuilder~dictionary.filter.button.extent@}
-          </label>
-          <label class="btn btn-secondary btn-sm" id="filterButtonKeywords">
-            <input type="checkbox" name="Keywords" autocomplete="off"> {@mapBuilder~dictionary.filter.button.keywords@}
-          </label>
+          <button class="" id="filterButtonExtent" name="Extent">
+            {@mapBuilder~dictionary.filter.button.extent@}
+          </button>
+          <button class="" id="filterButtonKeywords" name="Keywords">
+            {@mapBuilder~dictionary.filter.button.keywords@}
+          </button>
         </div>
         <div id="filter-keywords-handler">
           <button id="filter-keywords-list-button" type="button" class="btn btn-sm btn-info dropdown-toggle">
