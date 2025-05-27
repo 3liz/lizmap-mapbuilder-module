@@ -4,6 +4,23 @@
 
 ### Added
 
+## 2.4.0 - 2025-05-27
+
+### Added
+
+* Projects logos when loaded or not
+
+### Update
+
+* Demo image on README
+* Better way to filter by extent (details on [#86](https://github.com/3liz/lizmap-mapbuilder-module/pull/86))
+* Visuals of flash messages ([#87](https://github.com/3liz/lizmap-mapbuilder-module/pull/87))
+* Visual of filters to determine if they are applied or not ([#97](https://github.com/3liz/lizmap-mapbuilder-module/pull/97))
+
+### Fixed
+
+* Layers selected are now updated with new visual whenever we load a map from a saved one
+
 ## 2.3.1 - 2025-02-28
 
 ### Added

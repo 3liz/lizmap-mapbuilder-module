@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module xmlns="http://jelix.org/ns/module/1.0">
     <info id="mapBuilderAdmin3liz.com" name="mapBuilderAdmin" createdate="2019-02-28">
-        <version date="2025-02-28">2.3.1</version>
+        <version date="2025-05-27">2.4.0</version>
         <label lang="en_US">mapBuilderAdmin</label>
         <description lang="en_US">Jelix module for Lizmap, administration of mapBuilder module</description>
         <license>Mozilla Public License 2.0</license>
