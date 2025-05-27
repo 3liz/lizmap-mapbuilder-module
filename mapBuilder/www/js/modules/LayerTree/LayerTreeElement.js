@@ -137,4 +137,12 @@ export class LayerTreeElement {
     getColor() {
         return this._color;
     }
+
+    /**
+     * Sets the bounding box value for the object.
+     * @param {import("ol/extent").Extent} bbox - The bounding box to be set.
+     */
+    setBbox(bbox) {
+        this._bbox = bbox;
+    }
 }

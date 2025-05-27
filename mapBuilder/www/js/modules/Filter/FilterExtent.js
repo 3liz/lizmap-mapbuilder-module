@@ -17,27 +17,7 @@ export class ExtentFilter extends AbstractFilter {
      * @param {import("../LayerTree/LayerTreeElement").LayerTreeElement} layerTreeElement - The layer tree element to be filtered.
      */
     filterProj(layerTreeElement) {
-        this.recFilter(layerTreeElement);
-    }
-
-    /**
-     * Recursive function to filter a layer.
-     * @param {import("../LayerTree/LayerTreeElement").LayerTreeElement} layerTreeElement - Layer tree element to filter.
-     * @returns {boolean} - true if the filter has been calculated. Otherwise, false.
-     */
-    recFilter(layerTreeElement) {
-        if (layerTreeElement.getBbox()) {
-            this.calculateFilter(layerTreeElement);
-            return true;
-        } else if (layerTreeElement.hasChildren()) {
-            let children = layerTreeElement.getChildren();
-            for (let i = 0; i < children.length; i++) {
-                if (this.recFilter(children[i])) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        this.calculateFilter(layerTreeElement);
     }
 
     /**
