@@ -158,4 +158,34 @@ test.describe('Build with multiple layers', () => {
         await expect(page.getByRole('listitem').filter({ hasText: 'Project demo' })).toBeVisible();
         await expect(page.getByRole('listitem').filter({ hasText: 'Paris' })).toBeVisible();
     });
+
+    test('Handle map save', async ({ page }) => {
+        const footwaysEl = await page.getByRole('listitem').filter({ hasText: 'Mapbuilder' }).locator('div');
+
+        const footwaysBgColor = await footwaysEl.evaluate(el => window.getComputedStyle(el).backgroundColor);
+
+        const lizmapMapbuilderMainPage = new LizmapMapbuilderMainPage(page);
+        await lizmapMapbuilderMainPage.openMyMapsDock();
+
+        await page.waitForTimeout(250);
+
+        await lizmapMapbuilderMainPage.mapTitleInput.fill("map");
+        await lizmapMapbuilderMainPage.saveMapContextButton.click();
+
+        await page.locator(".btn-mapcontext-run");
+
+        await lizmapMapbuilderMainPage.openSelectedLayersDock();
+
+        await page.waitForTimeout(250);
+
+        const amountSelected = await lizmapMapbuilderMainPage.selectedLayerHolder.locator("lizmap-layer-selected").count();
+
+        const firstEl = await lizmapMapbuilderMainPage.selectedLayerHolder.locator("lizmap-layer-selected").nth(0).locator(".change-order-container");
+
+        const firstElBgColor = await firstEl.evaluate(el => window.getComputedStyle(el).backgroundColor);
+
+        await expect(amountSelected).toEqual(2);
+        await expect(footwaysBgColor).toEqual(firstElBgColor);
+
+    });
 });
