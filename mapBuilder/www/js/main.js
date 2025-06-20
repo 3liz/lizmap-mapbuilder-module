@@ -662,7 +662,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelector("#layers-loading > .spinner-grow:first-child").remove();
             });
 
-            newLayer.setProperties({"elementColor": element.style.backgroundColor});
+            // When the image loading generate an error
+            newLayer.getSource().on('imageloaderror', function () {
+                document.querySelector("#layers-loading > .spinner-grow:first-child").remove();
+
+                if (document.getElementById("message").children.length <= 7) {
+                    mAddMessage(
+                        lizDict['layer.error'] +
+                        ' (' +
+                        newLayer.getProperties().title +
+                        ' : ' +
+                        newLayer.getProperties().projectName +
+                        ')',
+                        'danger',
+                        true,
+                        2000
+                    );
+                }
+            });
 
             mapBuilder.map.addLayer(newLayer);
             refreshLayerSelected();
