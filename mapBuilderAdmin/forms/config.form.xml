@@ -11,12 +11,12 @@
     </menulist>
 
     <input ref="extent" type="string" pattern="/^-?\d{1,3}\.?\d*,-?\d{1,2}\.?\d*,-?\d{1,3}\.?\d*,-?\d{1,2}\.?\d*$/">
-      <label locale="view~default.project.bbox.label" />
+      <label locale="mapBuilderAdmin~admin.form.extent.label" />
       <help locale="mapBuilderAdmin~admin.form.extent.help" />
     </input>
 
     <checkboxes ref="baseLayer" required="true">
-      <label locale="view~map.baselayermenu.title" />
+      <label locale="mapBuilderAdmin~admin.form.baselayermenu.label" />
       <datasource class="mapBuilder~listBaseLayer" />
     </checkboxes>
 
