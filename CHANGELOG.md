@@ -2,7 +2,20 @@
 
 ## Unreleased
 
+## 2.4.1 - 2025-06-23
+
 ### Added
+
+* Compatibility with Lizmap 3.9
+
+### Fixed
+
+* Loading icon repeated when a layer was in error
+
+### Backend
+
+* Upgrade PHPStan to 2.1.17
+* Upgrade Jelix to 1.8.18.1
 
 ## 2.4.0 - 2025-05-27
 
