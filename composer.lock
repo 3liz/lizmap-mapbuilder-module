@@ -1343,16 +1343,16 @@
         },
         {
             "name": "proj4php/proj4php",
-            "version": "2.0.17",
+            "version": "v2.0.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/proj4php/proj4php.git",
-                "reference": "3558c265a86c3243547391c0944f8303dee493b3"
+                "reference": "7be0e5c813d80251154eb1d72384e7cac873737c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/proj4php/proj4php/zipball/3558c265a86c3243547391c0944f8303dee493b3",
-                "reference": "3558c265a86c3243547391c0944f8303dee493b3",
+                "url": "https://api.github.com/repos/proj4php/proj4php/zipball/7be0e5c813d80251154eb1d72384e7cac873737c",
+                "reference": "7be0e5c813d80251154eb1d72384e7cac873737c",
                 "shasum": ""
             },
             "require": {
@@ -1401,9 +1401,9 @@
             ],
             "support": {
                 "issues": "https://github.com/proj4php/proj4php/issues",
-                "source": "https://github.com/proj4php/proj4php/tree/2.0.17"
+                "source": "https://github.com/proj4php/proj4php/tree/v2.0.18"
             },
-            "time": "2024-07-19T19:46:30+00:00"
+            "time": "2025-02-11T19:01:16+00:00"
         },
         {
             "name": "psr/container",
