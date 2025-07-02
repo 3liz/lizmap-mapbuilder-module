@@ -4,14 +4,17 @@ updates:
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "cron"
+      cronjob: "0 6 5 */4 *"
 
   - package-ecosystem: "npm"
     directory: "/mapBuilder/www/js/"
     schedule:
-      interval: "monthly"
+      interval: "cron"
+      cronjob: "0 6 5 */4 *"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "cron"
+      cronjob: "0 6 5 */4 *"
