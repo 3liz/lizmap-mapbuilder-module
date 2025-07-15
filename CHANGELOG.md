@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.4.2 - 2025-07-15
+
+### Fixed
+
+* LayerName building with QGIS configuration
+
 ## 2.4.1 - 2025-06-23
 
 ### Added
