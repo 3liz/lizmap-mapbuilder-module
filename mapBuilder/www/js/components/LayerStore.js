@@ -328,19 +328,20 @@ export class LayerStore extends HTMLElement {
 
         // Layer name is used as a key in lizmap config
         var layerName = layer.Name;
+        let configLayerName = layer.Name;
 
         // If key is not present, it might because a shortname has been defined in QGIS
         if (!cfg.layers.hasOwnProperty(layer.Name)) {
             for (var key in cfg.layers) {
                 if (cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname === layer.Name)) {
-                    layerName = cfg.layers[key].name;
+                    configLayerName = cfg.layers[key].name;
                 }
             }
         }
 
         // Create node
-        if (cfg.layers.hasOwnProperty(layerName)) {
-            var myObj = {title: cfg.layers[layerName].title, name: layerName, popup: cfg.layers[layerName].popup};
+        if (cfg.layers.hasOwnProperty(configLayerName)) {
+            var myObj = {title: cfg.layers[configLayerName].title, name: layerName, popup: cfg.layers[configLayerName].popup};
 
             if (layer.hasOwnProperty('Style')) {
                 myObj.style = layer.Style;
@@ -354,20 +355,20 @@ export class LayerStore extends HTMLElement {
             if (layer.hasOwnProperty('MaxScaleDenominator') && layer.MaxScaleDenominator !== undefined) {
                 myObj.maxScale = layer.MaxScaleDenominator;
             }
-            if (cfg.attributeLayers.hasOwnProperty(layerName)
-        && cfg.attributeLayers[layerName].hideLayer !== "True"
-        && cfg.attributeLayers[layerName].pivot !== "True") {
+            if (cfg.attributeLayers.hasOwnProperty(configLayerName)
+        && cfg.attributeLayers[configLayerName].hideLayer !== "True"
+        && cfg.attributeLayers[configLayerName].pivot !== "True") {
                 myObj.hasAttributeTable = true;
             }
-            if (cfg.layers.hasOwnProperty(layerName)
-        && cfg.layers[layerName].abstract !== "") {
-                myObj.tooltip = cfg.layers[layerName].abstract;
+            if (cfg.layers.hasOwnProperty(configLayerName)
+        && cfg.layers[configLayerName].abstract !== "") {
+                myObj.tooltip = cfg.layers[configLayerName].abstract;
             }
             myArray.push(myObj);
         }
 
         // Layer has children and is not a group as layer => folder
-        if (layer.hasOwnProperty('Layer') && cfg.layers[layerName].groupAsLayer === 'False') {
+        if (layer.hasOwnProperty('Layer') && cfg.layers[configLayerName].groupAsLayer === 'False') {
             myObj.folder = true;
             myObj.children = this.buildLayerTree(layer.Layer, cfg);
         }
