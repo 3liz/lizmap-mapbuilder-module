@@ -18,7 +18,7 @@ Steps:
   indicate the version of the docker image into `LIZMAP_VERSION_TAG`:
 
   ```bash
-  make run LIZMAP_VERSION_TAG=3.8.0-rc.4
+  make run LIZMAP_VERSION_TAG=3.8
   ```
 
 - Add the test data
