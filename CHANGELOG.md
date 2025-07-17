@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.4.3 - 2025-07-17
+
+### Fixed
+
+* Remove schema public from PostgreSQL install script
+
 ## 2.4.2 - 2025-07-15
 
 ### Fixed
