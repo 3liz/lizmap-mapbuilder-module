@@ -17,11 +17,13 @@ export class LayerStore extends HTMLElement {
     /**
      * Create a layer store.
      * @param {HTMLElement} container The HTMLElement where the layer store will be rendered.
+     * @param {import("../modules/Filter/KeywordsManager").KeywordsManager} keywordsManager The keywords manager.
      */
-    constructor(container) {
+    constructor(container, keywordsManager) {
         super();
         this.container = container;
         this.tree = [];
+        this.keywordsManager = keywordsManager;
 
         mapBuilder.layerStoreTree.forEach((value) => {
             this.tree.push(new LayerTreeFolder({
@@ -41,14 +43,19 @@ export class LayerStore extends HTMLElement {
     /**
      * Template for a folder.
      * @param {LayerTreeFolder} element The folder to render.
-     * @returns {TemplateResult<1>} The template of the folder.
+     * @returns {TemplateResult<1>|null} The template of the folder or null if the folder shouldn't be visible.
      */
     folderTemplate(element) {
-    //Check if the folder will have to load children from a project.
+        //Check if the folder will have to load children from a project.
         let icoSpan = element.isOpened() ? "fa-folder-open" : "fa-folder";
         let tagLazy = "";
 
         if (element instanceof LayerTreeProject) {
+            if (!element.isVisible()) {
+                // We use 'null' value because "html``" is not really empty
+                return null;
+            }
+
             tagLazy = element.isLazy() ? "lazy" : "";
 
             //Check if the folder is loading, opened or closed.
@@ -67,7 +74,7 @@ export class LayerStore extends HTMLElement {
         //Template of a folder.
         let template = html`
         <li class='layer-store-arrow ${tagLazy}' @click='${(event) => this.action(element, event)}'>
-        <span class='layer-store-folder  fas ${icoSpan}'></span>
+        <span class='layer-store-folder  fas ${icoSpan} ${tagLazy}'></span>
         <span class="layer-store-title">${element.getTitle()}</span>
         ${!element.getProject()
                 ? html`
@@ -83,28 +90,33 @@ export class LayerStore extends HTMLElement {
             element.getChildren().forEach(value => {
                 let childTemplate;
                 if (value instanceof LayerTreeFolder) {
-                    childTemplate = html`
-              ${this.folderTemplate(value)}
-          `;
+                    childTemplate = this.folderTemplate(value);
                 } else {
-                    childTemplate = html`
-              ${this.layerTemplate(value)}
-          `;
+                    childTemplate = this.layerTemplate(value);
                 }
-                allChildTemplate = html`
+                if (childTemplate !== null) {
+                    allChildTemplate = html`
             ${allChildTemplate}
             ${childTemplate}
         `;
+                }
             });
-            template = html`
-          ${template}
-          <ul class="layer-store-tree"
-              @mouseover='${(event) => {event.target.closest("ul").style = `background-color: ${element.getHoverColor()}; transition: 0.2s;`}}' 
-              @mouseout='${(event) => {event.target.closest("ul").style = `background-color: ${element.getColor()}; transition: 0.2s;`}}' 
-              style="background-color: ${element.getColor()}">
-              ${allChildTemplate}
-          </ul>
-      `;
+            // Prevent empty 'ul' tag which are not well displayed
+            if (allChildTemplate.strings[0] !== "") {
+                template = html`
+            ${template}
+            <ul class="layer-store-tree"
+                @mouseover='${(event) => {
+                    event.target.closest("ul").style = `background-color: ${element.getHoverColor()}; transition: 0.2s;`
+                }}'
+                @mouseout='${(event) => {
+                    event.target.closest("ul").style = `background-color: ${element.getColor()}; transition: 0.2s;`
+                }}'
+                style="background-color: ${element.getColor()}">
+                ${allChildTemplate}
+            </ul>
+        `;
+            }
         }
         return template;
     }
@@ -112,7 +124,7 @@ export class LayerStore extends HTMLElement {
     /**
      * Template for a layer.
      * @param {LayerTreeLayer} element The layer to render.
-     * @returns {TemplateResult<1>} The template of the layer.
+     * @returns {TemplateResult<1>|null} The template of the layer or null if the layer element shouldn't be visible.
      */
     layerTemplate(element) {
         var styleOption = html``;
@@ -184,6 +196,7 @@ export class LayerStore extends HTMLElement {
                 updateChildrenAttributes(children, element);
                 element.createChildren(children);
                 element.changeStatusFolder();
+                element.loadBbox();
             } else {
                 element.setFailed();
             }
@@ -211,19 +224,25 @@ export class LayerStore extends HTMLElement {
 
     /**
      * Load the project and create the tree.
-     * @param {LayerTreeFolder} folder Folder with specs of the project to load.
+     * @param {LayerTreeProject} project Folder with specs of the project to load.
      * @returns {Promise<[]>} The children of the folder.
      */
-    async loadTree(folder) {
-        var repositoryId = folder.getRepository();
-        var projectId = folder.getProject();
+    async loadTree(project) {
+        var repositoryId = project.getRepository();
+        var projectId = project.getProject();
         var url = lizUrls.wms + "?repository=" + repositoryId + "&project=" + projectId + "&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
         var parser = new WMSCapabilities();
 
         const promises = [
             new Promise(resolve => {
-                $.get(url, function (capabilities) {
+                $.get(url, (capabilities) => {
                     var result = parser.read(capabilities);
+
+                    const wordList = result["Service"]["KeywordList"]
+
+                    this.keywordsManager.addKeywordFromList(wordList);
+                    project.setKeywords(wordList);
+
                     if (result.hasOwnProperty('Capability')) {
                         var node = result.Capability;
 
@@ -309,19 +328,20 @@ export class LayerStore extends HTMLElement {
 
         // Layer name is used as a key in lizmap config
         var layerName = layer.Name;
+        let configLayerName = layer.Name;
 
         // If key is not present, it might because a shortname has been defined in QGIS
         if (!cfg.layers.hasOwnProperty(layer.Name)) {
             for (var key in cfg.layers) {
                 if (cfg.layers[key].hasOwnProperty('shortname') && (cfg.layers[key].shortname === layer.Name)) {
-                    layerName = cfg.layers[key].name;
+                    configLayerName = cfg.layers[key].name;
                 }
             }
         }
 
         // Create node
-        if (cfg.layers.hasOwnProperty(layerName)) {
-            var myObj = {title: cfg.layers[layerName].title, name: layerName, popup: cfg.layers[layerName].popup};
+        if (cfg.layers.hasOwnProperty(configLayerName)) {
+            var myObj = {title: cfg.layers[configLayerName].title, name: layerName, popup: cfg.layers[configLayerName].popup};
 
             if (layer.hasOwnProperty('Style')) {
                 myObj.style = layer.Style;
@@ -335,20 +355,20 @@ export class LayerStore extends HTMLElement {
             if (layer.hasOwnProperty('MaxScaleDenominator') && layer.MaxScaleDenominator !== undefined) {
                 myObj.maxScale = layer.MaxScaleDenominator;
             }
-            if (cfg.attributeLayers.hasOwnProperty(layerName)
-        && cfg.attributeLayers[layerName].hideLayer !== "True"
-        && cfg.attributeLayers[layerName].pivot !== "True") {
+            if (cfg.attributeLayers.hasOwnProperty(configLayerName)
+        && cfg.attributeLayers[configLayerName].hideLayer !== "True"
+        && cfg.attributeLayers[configLayerName].pivot !== "True") {
                 myObj.hasAttributeTable = true;
             }
-            if (cfg.layers.hasOwnProperty(layerName)
-        && cfg.layers[layerName].abstract !== "") {
-                myObj.tooltip = cfg.layers[layerName].abstract;
+            if (cfg.layers.hasOwnProperty(configLayerName)
+        && cfg.layers[configLayerName].abstract !== "") {
+                myObj.tooltip = cfg.layers[configLayerName].abstract;
             }
             myArray.push(myObj);
         }
 
         // Layer has children and is not a group as layer => folder
-        if (layer.hasOwnProperty('Layer') && cfg.layers[layerName].groupAsLayer === 'False') {
+        if (layer.hasOwnProperty('Layer') && cfg.layers[configLayerName].groupAsLayer === 'False') {
             myObj.folder = true;
             myObj.children = this.buildLayerTree(layer.Layer, cfg);
         }
@@ -400,6 +420,42 @@ export class LayerStore extends HTMLElement {
      */
     getTree() {
         return this.tree;
+    }
+
+    /**
+     * Update the tree.
+     * @param {[LayerTreeElement]} tree - The new tree.
+     */
+    updateTree(tree) {
+        this.tree = tree;
+        this.render();
+    }
+
+    /**
+     * Set visibility of projects from layerStore to true.
+     * @returns {[LayerTreeElement]} - The tree.
+     */
+    setProjectAllVisible() {
+        for (let i = 0; i < this.tree.length; i++) {
+            this.recSetVisible(this.tree[i]);
+        }
+        return this.tree;
+    }
+
+    /**
+     * Recursive function to set all project visible.
+     * @param {LayerTreeFolder} treeElement - Layer tree element to change visibility.
+     */
+    recSetVisible(treeElement) {
+        if (treeElement instanceof LayerTreeProject) {
+            treeElement.setVisible(true);
+            return;
+        }
+        const children = treeElement.getChildren();
+
+        for (let i = 0; i < children.length; i++) {
+            this.recSetVisible(children[i]);
+        }
     }
 }
 

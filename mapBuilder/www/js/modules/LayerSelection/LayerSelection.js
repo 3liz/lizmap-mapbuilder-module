@@ -59,6 +59,55 @@ export function addElementToLayerArray(value, color) {
 }
 
 /**
+ * Removes all layers from the layerArray and corresponding DOM elements.
+ */
+function removeAll() {
+    let listUID = [];
+
+    layerArray.getArray().forEach(function (layer) {
+        listUID.push(layer.getUid());
+    });
+
+    listUID.forEach(function (uid) {
+        document.getElementById("layer_" + uid).remove();
+        layerArray.removeElement(uid);
+    });
+}
+
+/**
+ * Retrieves a layer from the collection of layers by its unique identifier (uid).
+ * @param {string} uid - The unique identifier of the layer to retrieve.
+ * @returns {object|null} The layer object associated with the given uid, or null if no matching layer is found.
+ */
+function getLayerFromUid(uid) {
+    const allLayers = mapBuilder.map.getAllLayers();
+
+    for (let i = 0; i < allLayers.length; i++) {
+        if (allLayers[i].ol_uid === uid) {
+            return allLayers[i];
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Updates the layers based on the provided `layerTree` structure.
+ * This method clears all existing layers and updates the LaerStore
+ * by adding elements with corresponding colors to the layer array.
+ * @param {Array} layerTree - An array representing the structure of the layer tree.
+ */
+export function updateFromLayerTree(layerTree) {
+    removeAll();
+
+    layerTree.reverse()
+
+    layerTree.forEach(function (layer) {
+        addElementToLayerArray(getLayerFromUid(layer.ol_uid), layer.elementColor);
+    });
+}
+
+/**
  * Used to get the index of the layer where the user dropped the dragged layer.
  * @param {HTMLElement} layers Represents the "layer-selected-holder" div.
  * @param {number} y Y coordinate of the drop.

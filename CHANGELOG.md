@@ -2,7 +2,87 @@
 
 ## Unreleased
 
+## 2.4.3 - 2025-07-17
+
+### Fixed
+
+* Remove schema public from PostgreSQL install script
+
+## 2.4.2 - 2025-07-15
+
+### Fixed
+
+* LayerName building with QGIS configuration
+
+## 2.4.1 - 2025-06-23
+
 ### Added
+
+* Compatibility with Lizmap 3.9
+
+### Fixed
+
+* Loading icon repeated when a layer was in error
+
+### Backend
+
+* Upgrade PHPStan to 2.1.17
+* Upgrade Jelix to 1.8.18.1
+
+## 2.4.0 - 2025-05-27
+
+### Added
+
+* Projects logos when loaded or not
+
+### Update
+
+* Demo image on README
+* Better way to filter by extent (details on [#86](https://github.com/3liz/lizmap-mapbuilder-module/pull/86))
+* Visuals of flash messages ([#87](https://github.com/3liz/lizmap-mapbuilder-module/pull/87))
+* Visual of filters to determine if they are applied or not ([#97](https://github.com/3liz/lizmap-mapbuilder-module/pull/97))
+
+### Fixed
+
+* Layers selected are now updated with new visual whenever we load a map from a saved one
+
+## 2.3.1 - 2025-02-28
+
+### Added
+
+* If the configured extent is empty, a default one is loaded
+
+### Update
+
+* Global values now pass through a JSON from PHP to JS
+
+### Fixed
+
+* Catching errors of configured extent
+
+## 2.3.0 - 2025-02-27
+
+### Added
+
+* Filters on which project to show in the `LayerStore` : 
+   * Filter by extent
+   * Filter by keywords between "Union" & "Intersection
+* `ESLint` for JavaScript code quality
+* `StyleLint` for CSS code quality
+* `PHP CS Fixer` for PHP code quality
+* `PHP Stan` for PHP code quality
+* `Playwright` for e2e tests
+* Some testing projects
+* New logo for project layers in the `LayerStore`
+* Indicator from which project a selected layer comes from
+
+### Changed
+
+* `LayerStore` structure for projects
+
+### Fixed
+
+* Update the order of layers in the legend dock
 
 ## 2.2.1 - 2025-01-20
 

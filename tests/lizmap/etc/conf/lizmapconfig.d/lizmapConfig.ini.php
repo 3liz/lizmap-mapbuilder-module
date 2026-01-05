@@ -10,3 +10,8 @@ allowUserDefinedThemes=1
 label=Testing project
 path="/srv/projects/testing_project/"
 allowUserDefinedThemes=1
+
+[repository:airportstest]
+label=Airports test
+path="/srv/projects/airportsTest/"
+allowUserDefinedThemes=1

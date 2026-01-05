@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "paris",
+"features": [ 
+{ "type": "Feature", "properties": { "id": 1, "name": "CDG" }, "geometry": { "type": "Point", "coordinates": [ 2.558098, 49.006742 ] } },
+{ "type": "Feature", "properties": { "id": 2, "name": "ORY" }, "geometry": { "type": "Point", "coordinates": [ 2.367736, 48.727683 ] } }
+]
+}
