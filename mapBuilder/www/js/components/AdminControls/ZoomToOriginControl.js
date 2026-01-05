@@ -41,9 +41,15 @@ export class ZoomToOriginControl extends Control {
     handleZoomToOrigin() {
         let extent;
         if (this._isPreview) {
-            extent = document.getElementById("_extent").textContent.split(',').map(parseFloat);
+            extent = document.getElementById("_extent").textContent.split(',');
         } else {
-            extent = document.getElementById("jforms_mapBuilderAdmin_config_extent").value.split(',').map(parseFloat);
+            extent = document.getElementById("jforms_mapBuilderAdmin_config_extent").value.split(',');
+        }
+        extent = extent.map(parseFloat).filter(value => !isNaN(value));
+
+        // Error in extent
+        if (extent.length < 4) {
+            extent = [-4.65,40.63,9.10,51.68];
         }
 
         extent = transformExtent(extent, 'EPSG:4326', 'EPSG:3857');

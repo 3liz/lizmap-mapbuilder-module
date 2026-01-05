@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis saveUser="neo" saveUserFull="Neo" saveDateTime="2025-02-25T15:31:25" projectname="" version="3.34.4-Prizren">
+<qgis saveUser="neo" saveUserFull="Neo" saveDateTime="2025-02-25T15:25:44" projectname="" version="3.34.4-Prizren">
   <homePath path=""/>
   <title></title>
   <transaction mode="Disabled"/>
@@ -22,18 +22,18 @@
     <customproperties>
       <Option/>
     </customproperties>
-    <layer-tree-layer expanded="1" legend_exp="" name="points" checked="Qt::Checked" patch_size="-1,-1" legend_split_behavior="0" id="points_cbd657a2_d172_4318_86f9_36f02b7dcdee" source="./points.geojson" providerKey="ogr">
+    <layer-tree-layer expanded="1" legend_exp="" name="points" checked="Qt::Checked" patch_size="-1,-1" legend_split_behavior="0" id="points_e6681b07_b7aa_47ec_b13a_d4a69a9c0762" source="./points.geojson" providerKey="ogr">
       <customproperties>
         <Option/>
       </customproperties>
     </layer-tree-layer>
     <custom-order enabled="0">
-      <item>points_cbd657a2_d172_4318_86f9_36f02b7dcdee</item>
+      <item>points_e6681b07_b7aa_47ec_b13a_d4a69a9c0762</item>
     </custom-order>
   </layer-tree-group>
   <snapping-settings minScale="0" tolerance="12" maxScale="0" enabled="0" intersection-snapping="0" mode="2" type="1" unit="1" self-snapping="0" scaleDependencyMode="0">
     <individual-layer-settings>
-      <layer-setting minScale="0" tolerance="12" maxScale="0" enabled="0" type="1" units="1" id="points_cbd657a2_d172_4318_86f9_36f02b7dcdee"/>
+      <layer-setting minScale="0" tolerance="12" maxScale="0" enabled="0" type="1" units="1" id="points_e6681b07_b7aa_47ec_b13a_d4a69a9c0762"/>
     </individual-layer-settings>
   </snapping-settings>
   <relations/>
@@ -41,10 +41,10 @@
   <mapcanvas name="theMapCanvas" annotationsVisible="1">
     <units>degrees</units>
     <extent>
-      <xmin>20.85151994610234283</xmin>
-      <ymin>43.62116552354152077</ymin>
-      <xmax>20.90165874537490964</xmax>
-      <ymax>43.62116654081287948</ymax>
+      <xmin>6.85362601013294626</xmin>
+      <ymin>60.62045223831250951</ymin>
+      <xmax>6.8970365229460926</xmax>
+      <ymax>60.62045346232355314</ymax>
     </extent>
     <rotation>0</rotation>
     <destinationsrs>
@@ -67,7 +67,7 @@
   <legend updateDrawingOrder="true">
     <legendlayer checked="Qt::Checked" name="points" drawingOrder="-1" open="true" showFeatureCount="0">
       <filegroup hidden="false" open="true">
-        <legendlayerfile layerid="points_cbd657a2_d172_4318_86f9_36f02b7dcdee" isInOverview="0" visible="1"/>
+        <legendlayerfile layerid="points_e6681b07_b7aa_47ec_b13a_d4a69a9c0762" isInOverview="0" visible="1"/>
       </filegroup>
     </legendlayer>
   </legend>
@@ -135,18 +135,18 @@
   <projectlayers>
     <maplayer autoRefreshMode="Disabled" simplifyAlgorithm="0" minScale="100000000" simplifyLocal="1" legendPlaceholderImage="" readOnly="0" refreshOnNotifyEnabled="0" simplifyDrawingHints="0" refreshOnNotifyMessage="" maxScale="0" autoRefreshTime="0" wkbType="Point" simplifyMaxScale="1" geometry="Point" hasScaleBasedVisibilityFlag="0" styleCategories="AllStyleCategories" type="vector" simplifyDrawingTol="1" symbologyReferenceScale="-1" labelsEnabled="0">
       <extent>
-        <xmin>20.8539999999999992</xmin>
-        <ymin>43.62199999999999989</ymin>
-        <xmax>20.89699999999999847</xmax>
-        <ymax>43.62199999999999989</ymax>
+        <xmin>6.85400000000000009</xmin>
+        <ymin>60.62199999999999989</ymin>
+        <xmax>6.89700000000000024</xmax>
+        <ymax>60.62199999999999989</ymax>
       </extent>
       <wgs84extent>
-        <xmin>20.8539999999999992</xmin>
-        <ymin>43.62199999999999989</ymin>
-        <xmax>20.89699999999999847</xmax>
-        <ymax>43.62199999999999989</ymax>
+        <xmin>6.85400000000000009</xmin>
+        <ymin>60.62199999999999989</ymin>
+        <xmax>6.89700000000000024</xmax>
+        <ymax>60.62199999999999989</ymax>
       </wgs84extent>
-      <id>points_cbd657a2_d172_4318_86f9_36f02b7dcdee</id>
+      <id>points_e6681b07_b7aa_47ec_b13a_d4a69a9c0762</id>
       <datasource>./points.geojson</datasource>
       <shortname>points</shortname>
       <keywordList>
@@ -248,7 +248,7 @@
                 <Option name="type" value="collection" type="QString"/>
               </Option>
             </data_defined_properties>
-            <layer enabled="1" pass="0" locked="0" class="SimpleLine" id="{efd9aa8a-943b-4ae2-bf05-79b690713f58}">
+            <layer enabled="1" pass="0" locked="0" class="SimpleLine" id="{b62987eb-1d8e-4c6d-b774-04e33e25b13a}">
               <Option type="Map">
                 <Option name="align_dash_pattern" value="0" type="QString"/>
                 <Option name="capstyle" value="square" type="QString"/>
@@ -260,7 +260,7 @@
                 <Option name="dash_pattern_offset_unit" value="MM" type="QString"/>
                 <Option name="draw_inside_polygon" value="0" type="QString"/>
                 <Option name="joinstyle" value="bevel" type="QString"/>
-                <Option name="line_color" value="232,113,141,255" type="QString"/>
+                <Option name="line_color" value="164,113,88,255" type="QString"/>
                 <Option name="line_style" value="solid" type="QString"/>
                 <Option name="line_width" value="0.6" type="QString"/>
                 <Option name="line_width_unit" value="MM" type="QString"/>
@@ -297,15 +297,15 @@
                 <Option name="type" value="collection" type="QString"/>
               </Option>
             </data_defined_properties>
-            <layer enabled="1" pass="0" locked="0" class="SimpleFill" id="{f2391fa6-04a6-4624-9bb5-d3ba91c05cba}">
+            <layer enabled="1" pass="0" locked="0" class="SimpleFill" id="{5617f99a-ff00-44e2-81d4-ea78924feb64}">
               <Option type="Map">
                 <Option name="border_width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
-                <Option name="color" value="232,113,141,255" type="QString"/>
+                <Option name="color" value="164,113,88,255" type="QString"/>
                 <Option name="joinstyle" value="bevel" type="QString"/>
                 <Option name="offset" value="0,0" type="QString"/>
                 <Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
                 <Option name="offset_unit" value="MM" type="QString"/>
-                <Option name="outline_color" value="166,81,101,255" type="QString"/>
+                <Option name="outline_color" value="117,81,63,255" type="QString"/>
                 <Option name="outline_style" value="solid" type="QString"/>
                 <Option name="outline_width" value="0.2" type="QString"/>
                 <Option name="outline_width_unit" value="MM" type="QString"/>
@@ -330,18 +330,18 @@
                 <Option name="type" value="collection" type="QString"/>
               </Option>
             </data_defined_properties>
-            <layer enabled="1" pass="0" locked="0" class="SimpleMarker" id="{1306b1ab-b334-40e2-9dc1-286acfea59e4}">
+            <layer enabled="1" pass="0" locked="0" class="SimpleMarker" id="{3f3b3bfa-fd7f-481b-a148-017da74913e6}">
               <Option type="Map">
                 <Option name="angle" value="0" type="QString"/>
                 <Option name="cap_style" value="square" type="QString"/>
-                <Option name="color" value="232,113,141,255" type="QString"/>
+                <Option name="color" value="164,113,88,255" type="QString"/>
                 <Option name="horizontal_anchor_point" value="1" type="QString"/>
                 <Option name="joinstyle" value="bevel" type="QString"/>
                 <Option name="name" value="diamond" type="QString"/>
                 <Option name="offset" value="0,0" type="QString"/>
                 <Option name="offset_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
                 <Option name="offset_unit" value="MM" type="QString"/>
-                <Option name="outline_color" value="166,81,101,255" type="QString"/>
+                <Option name="outline_color" value="117,81,63,255" type="QString"/>
                 <Option name="outline_style" value="solid" type="QString"/>
                 <Option name="outline_width" value="0.2" type="QString"/>
                 <Option name="outline_width_map_unit_scale" value="3x:0,0,0,0,0,0" type="QString"/>
@@ -373,11 +373,11 @@
                 <Option name="type" value="collection" type="QString"/>
               </Option>
             </data_defined_properties>
-            <layer enabled="1" pass="0" locked="0" class="SimpleMarker" id="{d8f7c6eb-81cf-424a-a23e-0e494d3e2700}">
+            <layer enabled="1" pass="0" locked="0" class="SimpleMarker" id="{6e908ba9-21b0-4ad4-873a-b35afb84fec2}">
               <Option type="Map">
                 <Option name="angle" value="0" type="QString"/>
                 <Option name="cap_style" value="square" type="QString"/>
-                <Option name="color" value="141,90,153,255" type="QString"/>
+                <Option name="color" value="0,229,4,255" type="QString"/>
                 <Option name="horizontal_anchor_point" value="1" type="QString"/>
                 <Option name="joinstyle" value="bevel" type="QString"/>
                 <Option name="name" value="circle" type="QString"/>
@@ -419,7 +419,7 @@
                 <Option name="type" value="collection" type="QString"/>
               </Option>
             </data_defined_properties>
-            <layer enabled="1" pass="0" locked="0" class="SimpleMarker" id="{0d6a8206-46e3-436a-8dd3-d8acc6fe0bd1}">
+            <layer enabled="1" pass="0" locked="0" class="SimpleMarker" id="{437cb079-0a38-4891-9397-3b8724903a56}">
               <Option type="Map">
                 <Option name="angle" value="0" type="QString"/>
                 <Option name="cap_style" value="square" type="QString"/>
@@ -475,7 +475,7 @@
                   <Option name="type" value="collection" type="QString"/>
                 </Option>
               </data_defined_properties>
-              <layer enabled="1" pass="0" locked="0" class="SimpleLine" id="{6246451d-9a1d-4620-8ec5-2389a77a22c3}">
+              <layer enabled="1" pass="0" locked="0" class="SimpleLine" id="{c4a7ef6a-75eb-4688-a547-85b593bc199c}">
                 <Option type="Map">
                   <Option name="align_dash_pattern" value="0" type="QString"/>
                   <Option name="capstyle" value="square" type="QString"/>
@@ -626,7 +626,7 @@ def my_form_open(dialog, layer, feature):
     </maplayer>
   </projectlayers>
   <layerorder>
-    <layer id="points_cbd657a2_d172_4318_86f9_36f02b7dcdee"/>
+    <layer id="points_e6681b07_b7aa_47ec_b13a_d4a69a9c0762"/>
   </layerorder>
   <properties>
     <Digitizing>
@@ -693,12 +693,7 @@ def my_form_open(dialog, layer, feature):
     </Variables>
     <WCSLayers type="QStringList"/>
     <WCSUrl type="QString"></WCSUrl>
-    <WFSLayers type="QStringList">
-      <value>points_cbd657a2_d172_4318_86f9_36f02b7dcdee</value>
-    </WFSLayers>
-    <WFSLayersPrecision>
-      <points_cbd657a2_d172_4318_86f9_36f02b7dcdee type="int">8</points_cbd657a2_d172_4318_86f9_36f02b7dcdee>
-    </WFSLayersPrecision>
+    <WFSLayers type="QStringList"/>
     <WFSTLayers>
       <Delete type="QStringList"/>
       <Insert type="QStringList"/>
@@ -715,27 +710,27 @@ def my_form_open(dialog, layer, feature):
     <WMSContactPosition type="QString"></WMSContactPosition>
     <WMSDefaultMapUnitsPerMm type="double">1</WMSDefaultMapUnitsPerMm>
     <WMSExtent type="QStringList">
-      <value>20.8526030889999987</value>
-      <value>43.61075969800000252</value>
-      <value>20.897753526999999</value>
-      <value>43.63475414700000243</value>
+      <value>6.85292492800000019</value>
+      <value>60.60880866800000177</value>
+      <value>6.89807507200000014</value>
+      <value>60.635191331999998</value>
     </WMSExtent>
     <WMSFeatureInfoUseAttributeFormSettings type="bool">false</WMSFeatureInfoUseAttributeFormSettings>
     <WMSFees type="QString">conditions unknown</WMSFees>
     <WMSImageQuality type="int">90</WMSImageQuality>
     <WMSKeywordList type="QStringList">
+      <value>nord</value>
       <value>europe</value>
       <value>dots</value>
-      <value>east</value>
     </WMSKeywordList>
     <WMSMaxAtlasFeatures type="int">1</WMSMaxAtlasFeatures>
     <WMSOnlineResource type="QString"></WMSOnlineResource>
     <WMSPrecision type="QString">8</WMSPrecision>
-    <WMSRootName type="QString">eastPoints</WMSRootName>
+    <WMSRootName type="QString">norwayPoints</WMSRootName>
     <WMSSegmentizeFeatureInfoGeometry type="bool">false</WMSSegmentizeFeatureInfoGeometry>
     <WMSServiceAbstract type="QString"></WMSServiceAbstract>
     <WMSServiceCapabilities type="bool">true</WMSServiceCapabilities>
-    <WMSServiceTitle type="QString">eastPoints</WMSServiceTitle>
+    <WMSServiceTitle type="QString">norwayPoints</WMSServiceTitle>
     <WMSTileBuffer type="int">0</WMSTileBuffer>
     <WMSUrl type="QString"></WMSUrl>
     <WMSUseLayerIDs type="bool">false</WMSUseLayerIDs>
@@ -788,10 +783,10 @@ def my_form_open(dialog, layer, feature):
     </contact>
     <links/>
     <dates>
-      <date value="2025-02-17T17:18:39" type="Created"/>
+      <date value="2025-02-25T11:04:02" type="Created"/>
     </dates>
     <author>Neo</author>
-    <creation>2025-02-17T17:18:39</creation>
+    <creation>2025-02-25T11:04:02</creation>
   </projectMetadata>
   <Annotations/>
   <Layouts/>
@@ -800,7 +795,7 @@ def my_form_open(dialog, layer, feature):
   <Sensors/>
   <ProjectViewSettings UseProjectScales="0" rotation="0">
     <Scales/>
-    <DefaultViewExtent xmax="20.90165874537490964" ymin="43.60651718483212846" xmin="20.85151994610234283" ymax="43.63581487952227178">
+    <DefaultViewExtent xmax="6.8970365229460926" ymin="60.6077697788325338" xmin="6.85362601013294626" ymax="60.63313592180352884">
       <spatialrefsys nativeFormat="Wkt">
         <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],MEMBER["World Geodetic System 1984 (G2139)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
         <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
@@ -814,7 +809,7 @@ def my_form_open(dialog, layer, feature):
       </spatialrefsys>
     </DefaultViewExtent>
   </ProjectViewSettings>
-  <ProjectStyleSettings RandomizeDefaultSymbolColor="1" projectStyleId="attachment:///qBYDdd_styles.db" DefaultSymbolOpacity="1">
+  <ProjectStyleSettings RandomizeDefaultSymbolColor="1" projectStyleId="attachment:///cHsVTb_styles.db" DefaultSymbolOpacity="1">
     <databases/>
   </ProjectStyleSettings>
   <ProjectTimeSettings timeStepUnit="h" cumulativeTemporalRange="0" frameRate="1" timeStep="1"/>
@@ -865,7 +860,7 @@ def my_form_open(dialog, layer, feature):
       </spatialrefsys>
     </CoordinateCustomCrs>
   </ProjectDisplaySettings>
-  <ProjectGpsSettings destinationLayer="points_cbd657a2_d172_4318_86f9_36f02b7dcdee" autoAddTrackVertices="0" destinationFollowsActiveLayer="1" destinationLayerProvider="ogr" destinationLayerName="points" autoCommitFeatures="0" destinationLayerSource="/home/neo/Documents/Alternance/lizmap-mapbuilder-module/tests/lizmap/instances/testing_project/points.geojson">
+  <ProjectGpsSettings destinationLayer="points_e6681b07_b7aa_47ec_b13a_d4a69a9c0762" autoAddTrackVertices="0" destinationFollowsActiveLayer="1" destinationLayerProvider="ogr" destinationLayerName="points" autoCommitFeatures="0" destinationLayerSource="/home/neo/Documents/Alternance/lizmap-mapbuilder-module/tests/lizmap/instances/mapbuilder/points.geojson">
     <timeStampFields/>
   </ProjectGpsSettings>
 </qgis>

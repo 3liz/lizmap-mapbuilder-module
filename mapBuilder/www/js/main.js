@@ -1,6 +1,4 @@
 // it is important to set global var before any imports
-__webpack_public_path__ = lizUrls.basepath+'mapBuilder/js/';
-
 import $ from 'jquery';
 
 import 'ol/ol.css';
@@ -27,10 +25,16 @@ import {always as alwaysCondition, shiftKeyOnly as shiftKeyOnlyCondition} from '
 import './modules/bottom-dock.js';
 
 import {LayerStore} from "./components/LayerStore";
-import {addElementToLayerArray} from "./modules/LayerSelection/LayerSelection.js";
+import {addElementToLayerArray, updateFromLayerTree} from "./modules/LayerSelection/LayerSelection.js";
 import {CustomProgress} from "./components/inkmap/ProgressBar";
+import {FlashMessage} from "./components/FlashMessage"
 
 import {getJobStatus, queuePrint} from './dist/inkmap.js';
+
+import {KeywordsManager} from "./modules/Filter/KeywordsManager";
+// Filters
+import {ExtentFilter} from './modules/Filter/FilterExtent.js';
+import {KeywordsFilter} from './modules/Filter/FilterKeywords.js';
 
 // Extent on metropolitan France if not defined in mapBuilder.ini.php
 var originalCenter = [217806.92414447578, 5853470.637803803];
@@ -39,7 +43,30 @@ var originalZoom = 6;
 // 1 inch = 2,54 cm = 25,4 mm
 const INCHTOMM = 25.4;
 
-$(function() {
+document.addEventListener('DOMContentLoaded', () => {
+    // Parsing JSONs
+    const lizUrlsJSON = JSON.parse(document.getElementById('conf-script-lizUrls').textContent);
+    const mapBuilderJSON = JSON.parse(document.getElementById('conf-script-mapBuilder').textContent);
+    const lizDictJSON = JSON.parse(document.getElementById('conf-script-lizDict').textContent);
+
+    // Initializing vars
+    let mapBuilder = {};
+
+    const { layerStoreTree, extent, baseLayerKeyOSMCycleMap, baseLayerKeyBing, baseLayerKeyIGN } = mapBuilderJSON;
+    Object.assign(mapBuilder, { layerStoreTree, extent, baseLayerKeyOSMCycleMap, baseLayerKeyBing, baseLayerKeyIGN });
+    mapBuilder.baseLayer = mapBuilderJSON["baseLayer"];
+
+    let lizDict = lizDictJSON["lizDict"];
+
+    let lizUrls = {};
+    const { basepath, config, wms, media, mapcontext_add, mapcontext_delete, mapcontext_get } = lizUrlsJSON["lizUrls"];
+    Object.assign(lizUrls, { basepath, config, wms, media, mapcontext_add, mapcontext_delete, mapcontext_get });
+
+    window.lizUrls = lizUrls;
+    window.mapBuilder = mapBuilder;
+    window.lizDict = lizDict;
+
+    __webpack_public_path__ = lizUrls.basepath+'mapBuilder/js/';
 
     /**
      * Add a flash message to the page
@@ -50,45 +77,27 @@ $(function() {
      * @returns {HTMLElement} The message element
      */
     function mAddMessage( aMessage, aType, aClose, aTimer ) {
-        var mType = 'info';
-        var mTypeList = ['info', 'danger', 'success'];
-        var mClose = false;
-        var mDismissible = '';
+        const mTypeList = ['info', 'danger', 'success'];
+        let mType = 'info';
 
-        if ( $.inArray(aType, mTypeList) != -1 )
+        if (mTypeList.includes(aType)) {
             mType = aType;
-
-        if ( aClose ){
-            mClose = true;
-            mDismissible = 'alert-dismissible';
         }
 
-        var html = '<div class="alert alert-'+mType+' '+mDismissible+' fade show" role="alert">';
-
-        html += aMessage;
-
-        if ( mClose ){
-            html += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\
-                <span aria-hidden="true">&times;</span>\
-              </button>';
-        }
-
-        html += '</div>';
-
-        var elt = $(html);
-        $('#message').append(elt);
+        const flashM = new FlashMessage(aMessage, mType, aClose, aTimer);
 
         if(aTimer !== undefined){
             setTimeout(function() {
-                $(".alert").alert('close');
+                flashM.removeElement();
             }, aTimer);
         }
 
-        return elt;
+        return flashM.getElement();
     }
 
     /**
      * Refresh the layerSelected tree to reflect OL layer's state
+     * @returns {Array} An array of layer objects representing the selected layers in the map, organized by z-index.
      */
     function refreshLayerSelected() {
         var layerTree = [];
@@ -98,6 +107,8 @@ $(function() {
                 var layerObject = {
                     repositoryId: layer.getProperties().repositoryId,
                     projectId: layer.getProperties().projectId,
+                    projectName: layer.getProperties().projectName,
+                    elementColor: layer.getProperties().elementColor,
                     title: layer.getProperties().title,
                     styles: layer.getSource().getParams().STYLES,
                     hasAttributeTable: layer.getProperties().hasAttributeTable,
@@ -118,6 +129,8 @@ $(function() {
 
         // Refresh legends
         loadLegend();
+
+        return layerTree;
     }
 
     var dragZoomControl = class DragZoomControl extends Control {
@@ -344,7 +357,19 @@ $(function() {
 
     // Extent is set in mapBuilder.ini.php => fit view on it and override originalCenter and originalZoom
     if(mapBuilder.hasOwnProperty('extent')){
-        mapBuilder.map.getView().fit(transformExtent(mapBuilder.extent, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
+
+        if (mapBuilder.extent.length < 1) {
+            mapBuilder.extent = [-4.65,40.63,9.10,51.68];
+            mAddMessage(lizDict["empty.extent.configuration"], "info", true, 10000);
+        }
+
+        try {
+            mapBuilder.map.getView().fit(transformExtent(mapBuilder.extent, 'EPSG:4326', mapBuilder.map.getView().getProjection()));
+        } catch (e) {
+            mAddMessage(lizDict["error.extent"], "danger", true, 10000)
+            console.error(e)
+            mapBuilder.map.getView().fit(transformExtent([-4.65,40.63,9.10,51.68], 'EPSG:4326', mapBuilder.map.getView().getProjection()));
+        }
 
         originalCenter = mapBuilder.map.getView().getCenter();
         originalZoom = mapBuilder.map.getView().getZoom();
@@ -364,6 +389,9 @@ $(function() {
                 }
             });
         }
+
+        // Filter if is active
+        filter();
     }
 
     mapBuilder.map.on('moveend', onMoveEnd);
@@ -428,14 +456,137 @@ $(function() {
         });
     });
 
+    // Keywords manager
+    let keywordsManager = new KeywordsManager();
+
+    document.addEventListener('keywordsUpdated', () => {
+        filter();
+    });
+
     //Build the tree
     var listTree = [];
 
     var layerStore;
 
-    layerStore = new LayerStore(document.getElementById("layer-store-holder"));
+    layerStore = new LayerStore(document.getElementById("layer-store-holder"), keywordsManager);
 
     listTree = layerStore.getTree();
+
+    // Carry filter buttons
+    let listFilters = {
+        Extent: new ExtentFilter(layerStore),
+        Keywords: new KeywordsFilter(layerStore, keywordsManager)
+    };
+    let selectedFilters = [];
+    initFilterButtons();
+    initEventKeywordsFilters();
+
+    /**
+     * Initializes event listeners for managing keyword filters in the UI.
+     */
+    function initEventKeywordsFilters() {
+        const button = document.getElementById("filterButtonKeywords");
+
+        button.addEventListener("click", function() {
+            if (button.classList.contains("active")) {
+                document.getElementById("filter-keywords-handler").classList.add("active");
+            } else {
+                document.getElementById("filter-keywords-handler").classList.remove("active");
+            }
+        });
+
+        document.getElementById("filter-keywords-list-button").addEventListener("click", function() {
+            const list = document.getElementById("filter-keywords-list")
+            if (list.classList.contains("active")) {
+                list.classList.remove("active");
+            } else {
+                list.classList.add("active");
+            }
+        });
+
+        document.getElementById("keywordsUnionButton").addEventListener("click", function() {
+            keywordsManager.setCalculationMethod("union");
+            document.getElementById("filter-keywords-list-button").classList.replace("btn-danger", "btn-info");
+            document.getElementById("filter-keywords-list-words").classList.remove("inter");
+            filter();
+        });
+
+        document.getElementById("keywordsIntersectButton").addEventListener("click", function() {
+            keywordsManager.setCalculationMethod("intersect");
+            document.getElementById("filter-keywords-list-button").classList.replace("btn-info", "btn-danger");
+            document.getElementById("filter-keywords-list-words").classList.add("inter");
+            filter();
+        });
+
+        const textInputKeywords = document.getElementById("keywordsFindInput");
+
+        let timeout;
+
+        textInputKeywords.addEventListener("input", function () {
+            clearTimeout(timeout);
+
+            timeout = setTimeout(() => {
+                keywordsManager.refreshKeywordsFromSearch(textInputKeywords.value);
+            }, 400);
+        });
+    }
+
+    /**
+     * Initialize filter buttons.
+     */
+    function initFilterButtons() {
+        const filtersUpdate = new CustomEvent('selectedFiltersUpdated');
+
+        document.querySelectorAll('#filter-buttons > button').forEach(button => {
+            const filterName = button.name;
+
+            button.addEventListener("click", () => {
+                if (!button.classList.contains("active")) {
+                    button.classList.add("active");
+                    selectedFilters.push(filterName);
+                    document.dispatchEvent(filtersUpdate);
+                } else {
+                    button.classList.remove("active");
+                    selectedFilters.splice(selectedFilters.indexOf(filterName), 1);
+                    document.dispatchEvent(filtersUpdate);
+                }
+            });
+        });
+    }
+
+    document.addEventListener('selectedFiltersUpdated', () => {
+        if (selectedFilters.length < 1) {
+            resetTree();
+        } else {
+            resetTree(false)
+            filter();
+        }
+    });
+
+    /**
+     * This method iterates through an array of selected filters, applying each filter function from the `listFilters` object.
+     */
+    async function filter() {
+        layerStore.setProjectAllVisible();
+
+        for (let i = 0; i < selectedFilters.length; i++) {
+            listFilters[selectedFilters[i]].filter();
+        }
+    }
+
+    /**
+     * Resets the state of the tree structure and updates it.
+     * If the `complete` parameter is set to true, additional UI elements are reset.
+     * @param {boolean} [complete] - Indicates if a complete reset should occur, including UI elements.
+     */
+    function resetTree(complete = true) {
+        listTree = layerStore.setProjectAllVisible();
+        if (complete) {
+            document.getElementById("filter-keywords-list").classList.remove("active");
+            document.getElementById("filter-keywords-handler").classList.remove("active");
+        }
+        layerStore.updateTree(listTree);
+    }
 
     /* Handle custom addLayerButton clicks */
     document.querySelector('#layer-store-holder').addEventListener('click', function (e) {
@@ -511,6 +662,25 @@ $(function() {
                 document.querySelector("#layers-loading > .spinner-grow:first-child").remove();
             });
 
+            // When the image loading generate an error
+            newLayer.getSource().on('imageloaderror', function () {
+                document.querySelector("#layers-loading > .spinner-grow:first-child").remove();
+
+                if (document.getElementById("message").children.length <= 7) {
+                    mAddMessage(
+                        lizDict['layer.error'] +
+                        ' (' +
+                        newLayer.getProperties().title +
+                        ' : ' +
+                        newLayer.getProperties().projectName +
+                        ')',
+                        'danger',
+                        true,
+                        2000
+                    );
+                }
+            });
+
             mapBuilder.map.addLayer(newLayer);
             refreshLayerSelected();
 
@@ -546,7 +716,7 @@ $(function() {
     document.addEventListener('layerSelectedChanges', function () {
         loadLegend();
     });
-    
+
     // Open/Close dock behaviour
     $('#dock-close > button').on("click", function(){
         $('#mapmenu .dock').removeClass('active');
@@ -738,6 +908,8 @@ $(function() {
                     title: layerProperties.title,
                     repositoryId: layerProperties.repositoryId,
                     projectId: layerProperties.projectId,
+                    projectName: layerProperties.projectName,
+                    elementColor: layerProperties.elementColor,
                     opacity: layerProperties.opacity,
                     bbox: layerProperties.bbox,
                     popup: layerProperties.popup,
@@ -812,6 +984,8 @@ $(function() {
                     mapBuilder.map.getView().setCenter(mapcontext.center);
                     mapBuilder.map.getView().setZoom(mapcontext.zoom);
 
+                    let layerTree = [];
+
                     // Load layers if present
                     if(mapcontext.layers.length > 0){
                         for (var k = 0; k < mapcontext.layers.length; k++) {
@@ -821,6 +995,8 @@ $(function() {
                                 title: layerContext.title,
                                 repositoryId: layerContext.repositoryId,
                                 projectId: layerContext.projectId,
+                                projectName: layerContext.projectName,
+                                elementColor: layerContext.elementColor,
                                 opacity: layerContext.opacity,
                                 bbox: layerContext.bbox,
                                 popup: layerContext.popup,
@@ -840,8 +1016,9 @@ $(function() {
 
                             mapBuilder.map.addLayer(newLayer);
                         }
-                        refreshLayerSelected();
+                        layerTree = refreshLayerSelected();
                     }
+                    updateFromLayerTree(layerTree)
                 }
             });
 
