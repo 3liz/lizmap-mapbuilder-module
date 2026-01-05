@@ -102,7 +102,35 @@
         <span id="layers-loading"></span>
       </div>
       <div id="layer-store-holder">
-
+        <div id="filter-buttons" class="btn-group-toggle" data-toggle="buttons">
+          <button class="" id="filterButtonExtent" name="Extent">
+            {@mapBuilder~dictionary.filter.button.extent@}
+          </button>
+          <button class="" id="filterButtonKeywords" name="Keywords">
+            {@mapBuilder~dictionary.filter.button.keywords@}
+          </button>
+        </div>
+        <div id="filter-keywords-handler">
+          <button id="filter-keywords-list-button" type="button" class="btn btn-sm btn-info dropdown-toggle">
+            {@mapBuilder~dictionary.filter.keywords.list@}
+          </button>
+          <div id="filter-keywords-list" class="">
+            <div id="filter-keywords-list-utils-bar">
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label id="keywordsUnionButton" class="btn btn-outline-secondary btn-sm active">
+                  <input type="radio" name="options" checked> {@mapBuilder~dictionary.filter.keywords.radio.union@}
+                </label>
+                <label id="keywordsIntersectButton" class="btn btn-outline-secondary btn-sm">
+                  <input type="radio" name="options"> {@mapBuilder~dictionary.filter.keywords.radio.intersect@}
+                </label>
+              </div>
+              <div class="input-group input-group-sm ml-3 mr-2">
+                <input id="keywordsFindInput" type="text" class="form-control" placeholder="{@mapBuilder~dictionary.filter.keywords.search.placeholder@}" aria-label="Username">
+              </div>
+            </div>
+            <div id="filter-keywords-list-words"></div>
+          </div>
+        </div>
       </div>
       <div id="base-layer">
         {@view~map.baselayermenu.title@}

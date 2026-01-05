@@ -268,7 +268,7 @@ export class LayerSelected extends HTMLElement {
     actionDisplayDataButton(e, element) {
         document.getElementById("attribute-btn").classList.add("active");
 
-        var idLayer = e.target.closest(".container-layer-selected").id;
+        var idLayer = e.target.closest(".container-layer-selected").dataset.olUid;
         var layer;
         var layerElement;
 

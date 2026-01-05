@@ -10,6 +10,12 @@
  */
 class defaultCtrl extends jController
 {
+    protected $jsonOnJs = array(
+        'mapBuilder' => array(),
+        'lizUrls' => array(),
+        'lizDict' => array(),
+    );
+
     public function index()
     {
         // Access control
@@ -66,7 +72,7 @@ class defaultCtrl extends jController
         );
 
         // Load lizUrls before mapbuilder. Webpack public path needs it
-        $rep->addJSCode('var lizUrls = '.json_encode($lizUrls).';', true);
+        $this->fillJson('lizUrls', 'lizUrls', $lizUrls);
 
         $rep->addJSLink(jApp::urlBasePath().'mapBuilder/js/mapbuilder.js');
 
@@ -110,15 +116,17 @@ class defaultCtrl extends jController
         }
 
         // Write tree as JSON
-        $rep->addJSCode('var mapBuilder = {"layerStoreTree": '.json_encode($nestedTree).'};');
+        $this->fillJson('mapBuilder', 'layerStoreTree', $nestedTree);
 
         // Get original extent from ini file if set
         if (array_key_exists('extent', $readConfigPath)) {
-            $rep->addJSCode('mapBuilder.extent = ['.$readConfigPath['extent'].'];');
+            $extent = array_map('floatval', explode(',', $readConfigPath['extent']));
+
+            $this->fillJson('mapBuilder', 'extent', $extent);
         }
         // Get base layer from ini file if set
         if (array_key_exists('baseLayer', $readConfigPath)) {
-            $rep->addJSCode("mapBuilder.baseLayer = '".$readConfigPath['baseLayer']."';");
+            $this->fillJson('mapBuilder', 'baseLayer', $readConfigPath['baseLayer']);
 
             jClasses::inc('mapBuilder~listBaseLayer');
             $listBaseLayer = (new listBaseLayer(0))->getData(0);
@@ -139,15 +147,15 @@ class defaultCtrl extends jController
         }
         // Get base layer key from ini file if set
         if (array_key_exists('baseLayerKeyOSMCycleMap', $readConfigPath)) {
-            $rep->addJSCode("mapBuilder.baseLayerKeyOSMCycleMap = '".$readConfigPath['baseLayerKeyOSMCycleMap']."';");
+            $this->fillJson('mapBuilder', 'baseLayerKeyOSMCycleMap', $readConfigPath['baseLayerKeyOSMCycleMap']);
         }
         // Get base layer key from ini file if set
         if (array_key_exists('baseLayerKeyBing', $readConfigPath)) {
-            $rep->addJSCode("mapBuilder.baseLayerKeyBing = '".$readConfigPath['baseLayerKeyBing']."';");
+            $this->fillJson('mapBuilder', 'baseLayerKeyBing', $readConfigPath['baseLayerKeyBing']);
         }
         // Get base layer key from ini file if set
         if (array_key_exists('baseLayerKeyIGN', $readConfigPath)) {
-            $rep->addJSCode("mapBuilder.baseLayerKeyIGN = '".$readConfigPath['baseLayerKeyIGN']."';");
+            $this->fillJson('mapBuilder', 'baseLayerKeyIGN', $readConfigPath['baseLayerKeyIGN']);
         }
         // Get attributeTableTool key from ini file if set
         if (array_key_exists('attributeTableTool', $readConfigPath)) {
@@ -174,7 +182,7 @@ class defaultCtrl extends jController
                 }
             }
         }
-        $rep->addJSCode('var lizDict = '.json_encode($data).';');
+        $this->fillJson('lizDict', 'lizDict', $data);
 
         $rep->body->assign('repositoryLabel', $title);
         $rep->body->assign('isConnected', jAuth::isConnected());
@@ -197,6 +205,21 @@ class defaultCtrl extends jController
             $rep->addHeadContent($css);
         }
 
+        $this->putJsonOnJs($rep);
+
         return $rep;
+    }
+
+    protected function putJsonOnJs($rep)
+    {
+        foreach ($this->jsonOnJs as $key => $value) {
+            $encodedJson = json_encode($value);
+            $rep->addHeadContent('<script id="conf-script-'.$key.'" type="application/json">'.$encodedJson.'</script>');
+        }
+    }
+
+    protected function fillJson($id, $key, $value)
+    {
+        $this->jsonOnJs[$id][$key] = $value;
     }
 }
