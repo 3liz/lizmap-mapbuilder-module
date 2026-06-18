@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.4.5 - 2026-06-18
+
+### Fixed
+
+* JS distribution
+
 ## 2.4.4 - 2026-06-18
 
 ### Fixed
