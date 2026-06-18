@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 2.4.4 - 2026-06-18
+
+### Fixed
+
+* Display folders and layers
+* Repository and project parameters
+* Style list extracted from WMS GetCapabilities
+* Update JS dependencies
+
 ## 2.4.3 - 2025-07-17
 
 ### Fixed
