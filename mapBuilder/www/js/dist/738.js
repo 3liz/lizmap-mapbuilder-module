@@ -1,2 +1,2 @@
-"use strict";(self.webpackChunkol_webpack=self.webpackChunkol_webpack||[]).push([[738],{2738:(e,r,t)=>{t.r(r),t.d(r,{getInkmapSpec:()=>a,getPreviewRaster:()=>s,getRaster:()=>c});var n=t(4235),u=t(7896);function c(){return new n.A({source:new u.A})}function s(){return c()}function a(e){return[{type:"XYZ",url:e.getUrls()[0]}]}}}]);
+"use strict";(self.webpackChunkol_webpack=self.webpackChunkol_webpack||[]).push([[357,500,738],{2738(e,p,c){function k(e){return[{type:"XYZ",url:e.getUrls()[0]}]}c.d(p,{getInkmapSpec:()=>k})}}]);
 //# sourceMappingURL=738.js.map
