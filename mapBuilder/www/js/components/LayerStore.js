@@ -355,7 +355,12 @@ export class LayerStore extends HTMLElement {
             };
 
             if (layer.hasOwnProperty('Style')) {
-                myObj.style = layer.Style;
+                myObj.style = layer.Style.filter((style) => {
+                    if (style.hasOwnProperty('LegendURL')) {
+                        return style.LegendURL[0].OnlineResource.includes(`LAYER=${layerName}`);
+                    }
+                    return true;
+                });
             }
             if (layer.hasOwnProperty('EX_GeographicBoundingBox')) {
                 myObj.bbox = layer.EX_GeographicBoundingBox;
