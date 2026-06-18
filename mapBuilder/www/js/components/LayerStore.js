@@ -206,6 +206,10 @@ export class LayerStore extends HTMLElement {
             children.forEach((child) => {
                 child.repository = element.getRepository();
                 child.project = element.getProject();
+                // Check if the child has children and continue update
+                if (child.hasOwnProperty('children') && child.children.length > 0) {
+                    updateChildrenAttributes(child.children, element);
+                }
             });
         };
 
