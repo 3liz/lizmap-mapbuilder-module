@@ -280,6 +280,7 @@ export class LayerStore extends HTMLElement {
             if (results[0] && results[1]) {
                 // Cache project config for later use
                 mapBuilder.lizMap[repositoryId + '|' + projectId] = {};
+                mapBuilder.lizMap[repositoryId + '|' + projectId].capabilities = results[0];
                 mapBuilder.lizMap[repositoryId + '|' + projectId].config = results[1];
 
                 return this.buildLayerTree(results[0], results[1]);
@@ -341,7 +342,13 @@ export class LayerStore extends HTMLElement {
 
         // Create node
         if (cfg.layers.hasOwnProperty(configLayerName)) {
-            var myObj = {title: cfg.layers[configLayerName].title, name: layerName, popup: cfg.layers[configLayerName].popup};
+            var myObj = {
+                title: cfg.layers[configLayerName].title,
+                name: layerName,
+                popup: cfg.layers[configLayerName].popup,
+                style: [{Name:''}],
+                folder: false,
+            };
 
             if (layer.hasOwnProperty('Style')) {
                 myObj.style = layer.Style;

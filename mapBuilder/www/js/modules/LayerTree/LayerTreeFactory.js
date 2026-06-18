@@ -12,7 +12,8 @@ export class LayerTreeFactory {
     static createLayerTreeElement(value, layerTreeFolder) {
         value.color = layerTreeFolder.getColor();
 
-        if (value.hasOwnProperty("style")) {
+        if (value.hasOwnProperty("style") && !value.folder) {
+            // if it has a style and is not a floder it is a layer
             value.repository = layerTreeFolder.getRepository();
             value.project = layerTreeFolder.getProject();
 
@@ -30,6 +31,7 @@ export class LayerTreeFactory {
                 color: value.color,
             });
         } else if (value.lazy) {
+            // if it has no style, is not a folder and is lazy it is a project
             return new LayerTreeProject({
                 title: value.title,
                 children: value.children,
@@ -41,6 +43,7 @@ export class LayerTreeFactory {
                 color: value.color
             });
         } else {
+            // it is a folder
             return new LayerTreeFolder({
                 title: value.title,
                 children: value.children,
