@@ -630,21 +630,21 @@
         },
         {
             "name": "jelix/castor",
-            "version": "v1.1.5",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jelix/castor.git",
-                "reference": "094d61e83f05fc085cf92da9cb82ada3d0c26c4d"
+                "reference": "14fe3dc42f8289493fae6246c4e7a8cc7b7694bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jelix/castor/zipball/094d61e83f05fc085cf92da9cb82ada3d0c26c4d",
-                "reference": "094d61e83f05fc085cf92da9cb82ada3d0c26c4d",
+                "url": "https://api.github.com/repos/jelix/castor/zipball/14fe3dc42f8289493fae6246c4e7a8cc7b7694bf",
+                "reference": "14fe3dc42f8289493fae6246c4e7a8cc7b7694bf",
                 "shasum": ""
             },
             "require": {
                 "jelix/simplelocalization": "1.7.*",
-                "php": ">=5.6"
+                "php": ">=7.4"
             },
             "require-dev": {
                 "phpunit/phpunit": "9.6.*"
@@ -652,7 +652,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "1.x": "1.1-dev",
+                    "dev-master": "2.0-dev"
                 }
             },
             "autoload": {
@@ -680,9 +681,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jelix/castor/issues",
-                "source": "https://github.com/jelix/castor/tree/v1.1.5"
+                "source": "https://github.com/jelix/castor/tree/v1.2.0"
             },
-            "time": "2025-02-14T13:20:58+00:00"
+            "time": "2026-03-23T22:04:29+00:00"
         },
         {
             "name": "jelix/composer-module-setup",
@@ -786,16 +787,16 @@
         },
         {
             "name": "jelix/file-utilities",
-            "version": "v1.8.5",
+            "version": "v1.8.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jelix/file-utilities.git",
-                "reference": "6501a2cafc155797c03dc748bf87b116b9f63511"
+                "reference": "513e719bb74bfc3f62338a3a6bf27f3192fabb59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jelix/file-utilities/zipball/6501a2cafc155797c03dc748bf87b116b9f63511",
-                "reference": "6501a2cafc155797c03dc748bf87b116b9f63511",
+                "url": "https://api.github.com/repos/jelix/file-utilities/zipball/513e719bb74bfc3f62338a3a6bf27f3192fabb59",
+                "reference": "513e719bb74bfc3f62338a3a6bf27f3192fabb59",
                 "shasum": ""
             },
             "require": {
@@ -848,9 +849,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jelix/file-utilities/issues",
-                "source": "https://github.com/jelix/file-utilities/tree/v1.8.5"
+                "source": "https://github.com/jelix/file-utilities/tree/v1.8.6"
             },
-            "time": "2022-10-13T09:08:43+00:00"
+            "time": "2026-04-02T13:14:24+00:00"
         },
         {
             "name": "jelix/inifile",
@@ -905,29 +906,29 @@
         },
         {
             "name": "jelix/jelix",
-            "version": "v1.8.21",
+            "version": "v1.8.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jelix/jelix.git",
-                "reference": "cbc031ecf90091dbf6dbcd8e8612e6c1e3c116de"
+                "reference": "8074fd2111ee47af43f20ea3c1272430bdfb5e73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jelix/jelix/zipball/cbc031ecf90091dbf6dbcd8e8612e6c1e3c116de",
-                "reference": "cbc031ecf90091dbf6dbcd8e8612e6c1e3c116de",
+                "url": "https://api.github.com/repos/jelix/jelix/zipball/8074fd2111ee47af43f20ea3c1272430bdfb5e73",
+                "reference": "8074fd2111ee47af43f20ea3c1272430bdfb5e73",
                 "shasum": ""
             },
             "require": {
                 "defuse/php-encryption": "^2.4.0",
                 "google/recaptcha": "~1.2.4",
-                "jelix/castor": "^1.1.1",
+                "jelix/castor": "^1.2.0",
                 "jelix/composer-module-setup": "^1.1.0",
                 "jelix/fakeserverconf": "^1.0.0",
                 "jelix/file-utilities": "^1.8.5",
                 "jelix/inifile": "^3.3.2",
                 "jelix/properties-file": "^1.2.3",
                 "jelix/simplelocalization": "^1.7.2",
-                "jelix/version": "^2.0.1",
+                "jelix/version": "^2.0.2",
                 "php": ">=7.4.0",
                 "phpmailer/phpmailer": "~6.12.0",
                 "psr/event-dispatcher": "~1.0.0",
@@ -995,9 +996,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jelix/jelix/issues",
-                "source": "https://github.com/jelix/jelix/tree/v1.8.21"
+                "source": "https://github.com/jelix/jelix/tree/v1.8.23"
             },
-            "time": "2025-11-25T10:27:44+00:00"
+            "time": "2026-03-24T15:51:20+00:00"
         },
         {
             "name": "jelix/properties-file",
@@ -1104,23 +1105,23 @@
         },
         {
             "name": "jelix/version",
-            "version": "v2.0.1",
+            "version": "v2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jelix/version.git",
-                "reference": "e66b39c5caf40f82b48e79f4956142f65dac4770"
+                "reference": "b9246986e5e913bcdd3162051954869f7340c01d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jelix/version/zipball/e66b39c5caf40f82b48e79f4956142f65dac4770",
-                "reference": "e66b39c5caf40f82b48e79f4956142f65dac4770",
+                "url": "https://api.github.com/repos/jelix/version/zipball/b9246986e5e913bcdd3162051954869f7340c01d",
+                "reference": "b9246986e5e913bcdd3162051954869f7340c01d",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.6"
             },
             "require-dev": {
-                "phpunit/phpunit": "8.5.*"
+                "phpunit/phpunit": "11.5.*"
             },
             "type": "library",
             "autoload": {
@@ -1148,9 +1149,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jelix/version/issues",
-                "source": "https://github.com/jelix/version/tree/v2.0.1"
+                "source": "https://github.com/jelix/version/tree/v2.0.2"
             },
-            "time": "2022-03-15T21:48:45+00:00"
+            "time": "2026-03-23T21:22:38+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -2672,16 +2673,16 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.33.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "a3cc8b044a6ea513310cbd48ef7333b384945638"
+                "reference": "141046a8f9477948ff284fa65be2095baafb94f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/a3cc8b044a6ea513310cbd48ef7333b384945638",
-                "reference": "a3cc8b044a6ea513310cbd48ef7333b384945638",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/141046a8f9477948ff284fa65be2095baafb94f2",
+                "reference": "141046a8f9477948ff284fa65be2095baafb94f2",
                 "shasum": ""
             },
             "require": {
@@ -2731,7 +2732,7 @@
                 "portable"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.33.0"
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -2751,20 +2752,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-09-09T11:45:10+00:00"
+            "time": "2026-04-10T16:19:22+00:00"
         },
         {
             "name": "symfony/polyfill-intl-grapheme",
-            "version": "v1.33.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
-                "reference": "380872130d3a5dd3ace2f4010d95125fde5d5c70"
+                "reference": "4864388bfbd3001ce88e234fab652acd91fdc57e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/380872130d3a5dd3ace2f4010d95125fde5d5c70",
-                "reference": "380872130d3a5dd3ace2f4010d95125fde5d5c70",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/4864388bfbd3001ce88e234fab652acd91fdc57e",
+                "reference": "4864388bfbd3001ce88e234fab652acd91fdc57e",
                 "shasum": ""
             },
             "require": {
@@ -2813,7 +2814,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.33.0"
+                "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -2833,11 +2834,11 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-27T09:58:17+00:00"
+            "time": "2026-04-26T13:13:48+00:00"
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
-            "version": "v1.33.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
@@ -2898,7 +2899,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.33.0"
+                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -2922,16 +2923,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.33.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "6d857f4d76bd4b343eac26d6b539585d2bc56493"
+                "reference": "6a21eb99c6973357967f6ce3708cd55a6bec6315"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/6d857f4d76bd4b343eac26d6b539585d2bc56493",
-                "reference": "6d857f4d76bd4b343eac26d6b539585d2bc56493",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/6a21eb99c6973357967f6ce3708cd55a6bec6315",
+                "reference": "6a21eb99c6973357967f6ce3708cd55a6bec6315",
                 "shasum": ""
             },
             "require": {
@@ -2983,7 +2984,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.33.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -3003,11 +3004,11 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-12-23T08:48:59+00:00"
+            "time": "2026-04-10T17:25:58+00:00"
         },
         {
             "name": "symfony/polyfill-php73",
-            "version": "v1.33.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php73.git",
@@ -3063,7 +3064,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php73/tree/v1.33.0"
+                "source": "https://github.com/symfony/polyfill-php73/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -3087,16 +3088,16 @@
         },
         {
             "name": "symfony/polyfill-php80",
-            "version": "v1.33.0",
+            "version": "v1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php80.git",
-                "reference": "0cc9dd0f17f61d8131e7df6b84bd344899fe2608"
+                "reference": "dfb55726c3a76ea3b6459fcfda1ec2d80a682411"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/0cc9dd0f17f61d8131e7df6b84bd344899fe2608",
-                "reference": "0cc9dd0f17f61d8131e7df6b84bd344899fe2608",
+                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/dfb55726c3a76ea3b6459fcfda1ec2d80a682411",
+                "reference": "dfb55726c3a76ea3b6459fcfda1ec2d80a682411",
                 "shasum": ""
             },
             "require": {
@@ -3147,7 +3148,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php80/tree/v1.33.0"
+                "source": "https://github.com/symfony/polyfill-php80/tree/v1.37.0"
             },
             "funding": [
                 {
@@ -3167,7 +3168,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-01-02T08:10:11+00:00"
+            "time": "2026-04-10T16:19:22+00:00"
         },
         {
             "name": "symfony/polyfill-php81",
@@ -3457,16 +3458,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v6.4.30",
+            "version": "v6.4.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "50590a057841fa6bf69d12eceffce3465b9e32cb"
+                "reference": "2adaf4106f2ef4c67271971bde6d3fe0a6936432"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/50590a057841fa6bf69d12eceffce3465b9e32cb",
-                "reference": "50590a057841fa6bf69d12eceffce3465b9e32cb",
+                "url": "https://api.github.com/repos/symfony/string/zipball/2adaf4106f2ef4c67271971bde6d3fe0a6936432",
+                "reference": "2adaf4106f2ef4c67271971bde6d3fe0a6936432",
                 "shasum": ""
             },
             "require": {
@@ -3522,7 +3523,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v6.4.30"
+                "source": "https://github.com/symfony/string/tree/v6.4.34"
             },
             "funding": [
                 {
@@ -3542,7 +3543,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-21T18:03:05+00:00"
+            "time": "2026-02-08T20:44:54+00:00"
         }
     ],
     "aliases": [],
@@ -3552,5 +3553,5 @@
     "prefer-lowest": false,
     "platform": {},
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
