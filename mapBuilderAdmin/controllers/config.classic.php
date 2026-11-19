@@ -16,11 +16,11 @@ class configCtrl extends jController
 {
     // Configure access via jacl2 rights management
     public $pluginParams = array(
-        '*' => array('jacl2.right' => 'mapBuilder.access'),
-        'modify' => array('jacl2.right' => 'lizmap.admin.services.update'),
-        'edit' => array('jacl2.right' => 'lizmap.admin.services.update'),
-        'save' => array('jacl2.right' => 'lizmap.admin.services.update'),
-        'validate' => array('jacl2.right' => 'lizmap.admin.services.update'),
+        'index' => array('jacl2.right' => 'mapBuilder.access'),
+        'modify' => array('jacl2.rights.and' => ['mapBuilder.access', 'lizmap.admin.services.update']),
+        'edit' => array('jacl2.rights.and' => ['mapBuilder.access', 'lizmap.admin.services.update']),
+        'save' => array('jacl2.rights.and' => ['mapBuilder.access', 'lizmap.admin.services.update']),
+        'validate' => array('jacl2.rights.and' => ['mapBuilder.access', 'lizmap.admin.services.update']),
     );
 
     private $ini;
