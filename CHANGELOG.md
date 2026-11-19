@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 2.4.6 - 2026-11-19
+
+### Fixed
+
+* bad rights check in the admin controller
+
 ## 2.4.5 - 2026-06-18
 
 ### Fixed
